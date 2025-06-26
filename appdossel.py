@@ -11,7 +11,7 @@ from pathlib import Path
 from openpyxl import load_workbook
 import pandas as pd
 import plotly.express as px
-from passlib.hash import argon2
+from passlib.hash import pbkdf2_sha256
 from datetime import datetime
 
 
@@ -59,11 +59,11 @@ def init_db():
 
 # --- Autenticação ---
 def hash_password(password: str) -> str:
-    return argon2.using(rounds=4).hash(password)
+    return pbkdf2_sha256.hash(password)
 
 def verify_password(password: str, hash_str: str) -> bool:
     try:
-        return argon2.verify(password, hash_str)
+        return pbkdf2_sha256.verify(password, hash_str)
     except:
         return False
 
