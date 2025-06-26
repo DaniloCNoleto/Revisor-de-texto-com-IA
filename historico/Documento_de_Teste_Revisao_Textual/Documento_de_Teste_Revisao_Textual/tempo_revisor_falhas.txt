@@ -1,1 +1,0 @@
-revisor_falhas.py concluído em 149.6s

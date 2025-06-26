@@ -1,1 +1,0 @@
-mapeador.py concluído em 625.5s

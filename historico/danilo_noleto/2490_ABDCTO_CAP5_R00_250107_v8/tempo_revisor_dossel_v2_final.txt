@@ -1,1 +1,0 @@
-revisor_dossel_v2_final.py concluído em 156.7s
