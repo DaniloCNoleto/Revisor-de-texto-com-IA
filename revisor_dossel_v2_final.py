@@ -13,18 +13,23 @@ from openpyxl import Workbook, load_workbook
 from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
 from dotenv import load_dotenv
+import streamlit as st
+
 
 # Carrega variáveis de ambiente e configurações
-defaults = dict(
-    OPENAI_API_KEY=None,
-    ASSISTENTE_REVISOR_TEXTUAL=None,
-)
-load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY") or defaults["OPENAI_API_KEY"]
-id_textual = os.getenv("ASSISTENTE_REVISOR_TEXTUAL") or defaults["ASSISTENTE_REVISOR_TEXTUAL"]
+# 🔁 Compatível com .env local e st.secrets no Streamlit Cloud
+try:
+    
+    api_key = st.secrets["OPENAI_API_KEY"]
+    id_textual = st.secrets["ASSISTENTE_REVISOR_TEXTUAL"]
+except ImportError:
+    from dotenv import load_dotenv
+    load_dotenv()
+    api_key = os.getenv("OPENAI_API_KEY")
+    id_textual = os.getenv("ASSISTENTE_REVISOR_TEXTUAL")
+
 openai.api_key = api_key
 ASSISTANT_TEXTUAL = id_textual
-
 # Configurações gerais
 PASTA_SAIDA = "saida"
 PASTA_ENTRADA = "entrada"
@@ -87,26 +92,46 @@ def extrair_completo(resp: str):
 
 def acionar_assistant(prompt: str, assistant_id: str) -> str | None:
     try:
-        thread = openai.beta.threads.create()
-        openai.beta.threads.messages.create(thread_id=thread.id, role="user", content=prompt)
-        run = openai.beta.threads.runs.create(thread_id=thread.id, assistant_id=assistant_id)
+        import warnings
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+        # ⏱ Início do processamento
         inicio = time.time()
-        while True:
-            if time.time() - inicio > timeout_seconds:
-                print(f"⏲️ Timeout de {timeout_seconds}s (chars={len(prompt)})")
-                return None
-            run = openai.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
-            if run.status == "completed":
-                break
-            if run.status in ["failed","cancelled"]:
-                return None
-            time.sleep(2)
-        msgs = openai.beta.threads.messages.list(thread_id=thread.id)
-        for msg in reversed(msgs.data):
+
+        # Criação do thread (ainda necessário no fluxo atual com assistant_id)
+        thread = openai.beta.threads.create()
+
+        # Envia a mensagem do usuário
+        openai.beta.threads.messages.create(
+            thread_id=thread.id,
+            role="user",
+            content=prompt
+        )
+
+        # Executa o Assistant via create_and_poll (substitui run + retrieve loop)
+        run = openai.beta.threads.runs.create_and_poll(
+            thread_id=thread.id,
+            assistant_id=assistant_id
+        )
+
+        # Verifica sucesso
+        if run.status != "completed":
+            print(f"❌ Assistant não concluiu. Status: {run.status}")
+            return None
+
+        # Busca a última resposta do assistant
+        mensagens = openai.beta.threads.messages.list(thread_id=thread.id)
+        for msg in reversed(mensagens.data):
             if msg.role == "assistant":
-                return msg.content[0].text.value
-    except:
+                fim = time.time()
+                print(f"✅ Resposta recebida em {round(fim - inicio, 2)}s")
+                return msg.content[0].text.value.strip()
+
+    except Exception as e:
+        print(f"⚠️ Erro ao acionar assistant: {e}")
         return None
+
+
 
 # Revisão de parágrafo
 
