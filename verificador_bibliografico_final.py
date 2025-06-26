@@ -14,11 +14,19 @@ from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
 import tiktoken
 from dotenv import load_dotenv
+import os
+import openai
+import streamlit as st
 
 # ◼ Carrega ambiente e configurações
-load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY")
-id_bibliografico = os.getenv("ASSISTENTE_BIBLIOGRAFICO")
+try:
+    api_key = st.secrets["OPENAI_API_KEY"]
+    id_bibliografico = st.secrets["ASSISTENTE_BIBLIOGRAFICO"]
+except ImportError:
+    load_dotenv()
+    api_key = os.getenv("OPENAI_API_KEY")
+    id_bibliografico = os.getenv("ASSISTENTE_BIBLIOGRAFICO")
+
 openai.api_key = api_key
 ASSISTANT_BIBLIO = id_bibliografico
 
@@ -73,22 +81,46 @@ def validar_url(texto):
 
 # ── Chamada OpenAI ──
 
-def acionar_assistant(prompt, assistant_id):
+def acionar_assistant(prompt: str, assistant_id: str) -> str | None:
     try:
+        import warnings
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+        inicio = time.time()
+
+        # Cria um thread (ainda necessário na Assistants API atual)
         thread = openai.beta.threads.create()
-        openai.beta.threads.messages.create(thread_id=thread.id, role="user", content=prompt)
-        run = openai.beta.threads.runs.create(thread_id=thread.id, assistant_id=assistant_id)
-        while True:
-            run = openai.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
-            if run.status == "completed": break
-            if run.status in ["failed","cancelled"]: return None
-            time.sleep(2)
-        msgs = openai.beta.threads.messages.list(thread_id=thread.id)
-        for msg in reversed(msgs.data):
+
+        # Adiciona mensagem do usuário
+        openai.beta.threads.messages.create(
+            thread_id=thread.id,
+            role="user",
+            content=prompt
+        )
+
+        # Roda o assistant e espera automaticamente
+        run = openai.beta.threads.runs.create_and_poll(
+            thread_id=thread.id,
+            assistant_id=assistant_id
+        )
+
+        # Verifica status
+        if run.status != "completed":
+            print(f"❌ Run falhou: status = {run.status}")
+            return None
+
+        # Pega a resposta da IA
+        mensagens = openai.beta.threads.messages.list(thread_id=thread.id)
+        for msg in reversed(mensagens.data):
             if msg.role == "assistant":
-                return msg.content[0].text.value
-    except:
+                fim = time.time()
+                print(f"✅ Assistant respondeu em {round(fim - inicio, 2)}s")
+                return msg.content[0].text.value.strip()
+
+    except Exception as e:
+        print(f"⚠️ Erro ao acionar assistant: {e}")
         return None
+
 
 # ── Revisão de parágrafo bibliográfico ──
 
