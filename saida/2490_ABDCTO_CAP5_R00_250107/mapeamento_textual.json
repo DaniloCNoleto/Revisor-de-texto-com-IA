@@ -1,0 +1,7010 @@
+[
+  {
+    "paragrafo": 1,
+    "index": 0,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "lógica",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 4,
+    "index": 3,
+    "tipo": [
+      "titulo",
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 2,
+    "index": 1,
+    "tipo": [
+      "titulo",
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 12,
+    "index": 11,
+    "tipo": [
+      "titulo",
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 7,
+    "index": 6,
+    "tipo": [
+      "titulo",
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 10,
+    "index": 9,
+    "tipo": [
+      "titulo",
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 11,
+    "index": 10,
+    "tipo": [
+      "titulo",
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 9,
+    "index": 8,
+    "tipo": [
+      "titulo",
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 6,
+    "index": 5,
+    "tipo": [
+      "titulo",
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 8,
+    "index": 7,
+    "tipo": [
+      "titulo",
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 3,
+    "index": 2,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 5,
+    "index": 4,
+    "tipo": [
+      "titulo",
+      "Nenhumas",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 13,
+    "index": 12,
+    "tipo": [
+      "titulo",
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 20,
+    "index": 19,
+    "tipo": [
+      "titulo",
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 16,
+    "index": 15,
+    "tipo": [
+      "titulo",
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 18,
+    "index": 17,
+    "tipo": [
+      "titulo",
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 17,
+    "index": 16,
+    "tipo": [
+      "titulo",
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 14,
+    "index": 13,
+    "tipo": [
+      "titulo",
+      "Comentário: Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 21,
+    "index": 20,
+    "tipo": [
+      "titulo",
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 24,
+    "index": 23,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 15,
+    "index": 14,
+    "tipo": [
+      "titulo",
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 22,
+    "index": 21,
+    "tipo": [
+      "titulo",
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 19,
+    "index": 18,
+    "tipo": [
+      "titulo",
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 23,
+    "index": 22,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.\n\nComentário: Nenhuma categoria de problemas foi destacada",
+      "pois o trecho está bem estruturado e atende aos requisitos de ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão e consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 25,
+    "index": 24,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 29,
+    "index": 28,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 27,
+    "index": 26,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 28,
+    "index": 27,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 33,
+    "index": 32,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 32,
+    "index": 31,
+    "tipo": [
+      "Ortografia: nenhum",
+      "clareza: nenhum",
+      "coerência: nenhum",
+      "lógica: nenhum",
+      "coesão: nenhum",
+      "consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 30,
+    "index": 29,
+    "tipo": [
+      "ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 31,
+    "index": 30,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 36,
+    "index": 35,
+    "tipo": [
+      "ortografia",
+      "coerência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 34,
+    "index": 33,
+    "tipo": [
+      "Ortografia",
+      "coerência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 35,
+    "index": 34,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 26,
+    "index": 25,
+    "tipo": [
+      "Comentário: Ortografia",
+      "Clareza",
+      "Coesão.\n\nOrtografia: Correto.\nClareza: O trecho está um pouco denso",
+      "especialmente na primeira oração",
+      "o que pode dificultar a compreensão imediata. A frase poderia ser reestruturada para maior clareza sem comprometer o significado.\nCoerência: Correto.\nLógica: Correto.\nCoesão: A conexão entre as ideias poderia ser mais fluida com a utilização de conjunções ou reestruturação da frase.\nConsistência: Correto.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 37,
+    "index": 36,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 38,
+    "index": 37,
+    "tipo": [
+      "Ortografia",
+      "Clareza",
+      "Coerência",
+      "Lógica",
+      "Coesão",
+      "Consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 39,
+    "index": 38,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 41,
+    "index": 40,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 40,
+    "index": 39,
+    "tipo": [
+      "Ortografia",
+      "Clareza",
+      "Coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 43,
+    "index": 42,
+    "tipo": [
+      "Ortografia.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 44,
+    "index": 43,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 47,
+    "index": 46,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 46,
+    "index": 45,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 42,
+    "index": 41,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 45,
+    "index": 44,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 49,
+    "index": 48,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 48,
+    "index": 47,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum\n\nComentário: Nenhuma alteração necessária. O trecho está claro",
+      "coerente",
+      "consistente",
+      "e sem erros de ortografia.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 50,
+    "index": 49,
+    "tipo": [
+      "Comentário: “Nenhum problema encontrado.”",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 51,
+    "index": 50,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 52,
+    "index": 51,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 54,
+    "index": 53,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 53,
+    "index": 52,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 55,
+    "index": 54,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 57,
+    "index": 56,
+    "tipo": [
+      "Ortografia",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 56,
+    "index": 55,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 59,
+    "index": 58,
+    "tipo": [
+      "Corrigido: \"Emissões Atmosféricas\"\nComentário: “Nenhuma alteração necessária.” \n\nClassificação: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 58,
+    "index": 57,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 62,
+    "index": 61,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 61,
+    "index": 60,
+    "tipo": [
+      "Corrigido: “Quadro 5.1-8: Legislação de ruídos aplicável ao empreendimento.”\nComentário: “Nenhuma alteração necessária.” \n\nClassificação: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 63,
+    "index": 62,
+    "tipo": [
+      "Comentário: \"Nenhuma alteração necessária.\"\n\nClassificação: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 60,
+    "index": 59,
+    "tipo": [
+      "Comentário: Nenhuma alteração necessária.\n\nClassificação: nenhuma",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 66,
+    "index": 65,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 65,
+    "index": 64,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 64,
+    "index": 63,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 69,
+    "index": 68,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 70,
+    "index": 69,
+    "tipo": [
+      "Coerência",
+      "Consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 68,
+    "index": 67,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 72,
+    "index": 71,
+    "tipo": [
+      "Corrigido: “Legislação Municipal”\nComentário: “Nenhuma alteração necessária.”\n\nProblemas encontrados: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 67,
+    "index": 66,
+    "tipo": [
+      "Nenhuma.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 71,
+    "index": 70,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 75,
+    "index": 74,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 73,
+    "index": 72,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 76,
+    "index": 75,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 74,
+    "index": 73,
+    "tipo": [
+      "Comentário: Nenhuma alteração necessária.\n\nClassificação: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 77,
+    "index": 76,
+    "tipo": [
+      "Comentário: O trecho não apresenta problemas nas categorias listadas. A nomenclatura está adequada para uma legenda técnica de quadro",
+      "tabelando a legislação técnica relevante para um empreendimento.\n\nClassificação: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 78,
+    "index": 77,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 79,
+    "index": 78,
+    "tipo": [
+      "Comentário: Nenhum problema encontrado.\n\nCategorias encontradas: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 83,
+    "index": 82,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 81,
+    "index": 80,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 82,
+    "index": 81,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 84,
+    "index": 83,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 80,
+    "index": 79,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 85,
+    "index": 84,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 86,
+    "index": 85,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 87,
+    "index": 86,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 89,
+    "index": 88,
+    "tipo": [
+      "Comentário: Nenhuma alteração necessária. \n\nClassificação dos problemas: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 88,
+    "index": 87,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 94,
+    "index": 93,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 92,
+    "index": 91,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 93,
+    "index": 92,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 90,
+    "index": 89,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 91,
+    "index": 90,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 96,
+    "index": 95,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 97,
+    "index": 96,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 98,
+    "index": 97,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 99,
+    "index": 98,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 100,
+    "index": 99,
+    "tipo": [
+      "Ortografia",
+      "Clareza",
+      "Coerência",
+      "Lógica",
+      "Coesão",
+      "Consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 101,
+    "index": 100,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 95,
+    "index": 94,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 103,
+    "index": 102,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 106,
+    "index": 105,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 105,
+    "index": 104,
+    "tipo": [
+      "Coerência",
+      "Consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 102,
+    "index": 101,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 104,
+    "index": 103,
+    "tipo": [
+      "Ortografia: nenhum",
+      "clareza: nenhum",
+      "coerência: nenhum",
+      "lógica: nenhum",
+      "coesão: nenhum",
+      "consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 109,
+    "index": 108,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 110,
+    "index": 109,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 108,
+    "index": 107,
+    "tipo": [
+      "Comentário: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 112,
+    "index": 111,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 107,
+    "index": 106,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.\n\nNenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 111,
+    "index": 110,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 117,
+    "index": 116,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 113,
+    "index": 112,
+    "tipo": [
+      "Comentário: Nenhum problema.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 114,
+    "index": 113,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 118,
+    "index": 117,
+    "tipo": [
+      "Ortografia",
+      "Coerência",
+      "Coesão",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 116,
+    "index": 115,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 119,
+    "index": 118,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 121,
+    "index": 120,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 122,
+    "index": 121,
+    "tipo": [
+      "Comentário: “Nenhum” \n\nExplicação: O trecho se refere apenas ao título \"Resolução CONAMA nº 60\"",
+      "que está corretamente formatado e não apresenta problemas em relação à ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão ou consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 120,
+    "index": 119,
+    "tipo": [
+      "ortografia",
+      "clareza",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 124,
+    "index": 123,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 123,
+    "index": 122,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 127,
+    "index": 126,
+    "tipo": [
+      "Comentário: Nenhuma alteração necessária.\n\nOrtografia",
+      "Clareza",
+      "Coerência",
+      "Lógica",
+      "Coesão",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 125,
+    "index": 124,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 128,
+    "index": 127,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 126,
+    "index": 125,
+    "tipo": [
+      "Nenhuma.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 130,
+    "index": 129,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 129,
+    "index": 128,
+    "tipo": [
+      "Ortografia",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 131,
+    "index": 130,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 132,
+    "index": 131,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 133,
+    "index": 132,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 134,
+    "index": 133,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 135,
+    "index": 134,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 136,
+    "index": 135,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 137,
+    "index": 136,
+    "tipo": [
+      "Corrigido: “Dispõe sobre as concessões de geração",
+      "transmissão e distribuição de energia elétrica",
+      "sobre a redução dos encargos setoriais e sobre a modicidade tarifária; altera as Leis nºs 10.438",
+      "de 26 de abril de 2002",
+      "12.111",
+      "de 9 de dezembro de 2009",
+      "9.648",
+      "de 27 de maio de 1998",
+      "9.427",
+      "de 26 de dezembro de 1996",
+      "e 10.848",
+      "de 15 de março de 2004; revoga dispositivo da Lei nº 8.631",
+      "de 4 de março de 1993; e dá outras providências.”\nComentário: “Nenhuma alteração necessária.”\n\nClassificação de problemas: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 139,
+    "index": 138,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 141,
+    "index": 140,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 138,
+    "index": 137,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 140,
+    "index": 139,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 144,
+    "index": 143,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 143,
+    "index": 142,
+    "tipo": [
+      "Comentário: “Nenhum”",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 147,
+    "index": 146,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 142,
+    "index": 141,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 145,
+    "index": 144,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 151,
+    "index": 150,
+    "tipo": [
+      "Coerência",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 148,
+    "index": 147,
+    "tipo": [
+      "Corrigido: “nenhum”\nComentário: “Nenhuma alteração necessária.”",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 146,
+    "index": 145,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 152,
+    "index": 151,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 149,
+    "index": 148,
+    "tipo": [
+      "Resposta: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 150,
+    "index": 149,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 154,
+    "index": 153,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 153,
+    "index": 152,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 155,
+    "index": 154,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 156,
+    "index": 155,
+    "tipo": [
+      "Ortografia.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 157,
+    "index": 156,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 159,
+    "index": 158,
+    "tipo": [
+      "Ortografia",
+      "Clareza",
+      "Coesão",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 160,
+    "index": 159,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 162,
+    "index": 161,
+    "tipo": [
+      "Clareza",
+      "Coerência",
+      "Coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 161,
+    "index": 160,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 163,
+    "index": 162,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 158,
+    "index": 157,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 166,
+    "index": 165,
+    "tipo": [
+      "Comentário: Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 164,
+    "index": 163,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 165,
+    "index": 164,
+    "tipo": [
+      "Ortografia",
+      "Clareza",
+      "Coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 170,
+    "index": 169,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 167,
+    "index": 166,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 168,
+    "index": 167,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 115,
+    "index": 114,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 169,
+    "index": 168,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 171,
+    "index": 170,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 176,
+    "index": 175,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 173,
+    "index": 172,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 174,
+    "index": 173,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 175,
+    "index": 174,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 177,
+    "index": 176,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 172,
+    "index": 171,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 178,
+    "index": 177,
+    "tipo": [
+      "Resposta: ortografia",
+      "clareza.\n\nComentário: O trecho apresenta um problema de ortografia no termo \"Decreto Lei\"",
+      "que corretamente deve ser grafado como \"Decreto-Lei\". Além disso",
+      "a clareza é comprometida pela ausência de contexto ou descrição adicional sobre o que se refere o \"Decreto-Lei nº 227\".",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 179,
+    "index": 178,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 180,
+    "index": 179,
+    "tipo": [
+      "Comentário: \"nenhum\" \n\nNenhuma das categorias apresenta problemas neste trecho. A ortografia está correta",
+      "e as ideias expressas estão claras",
+      "coerentes",
+      "lógicas",
+      "coesas e consistentes com o texto normativo de referência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 182,
+    "index": 181,
+    "tipo": [
+      "Ortografia",
+      "Clareza",
+      "Coerência",
+      "Lógica",
+      "Coesão",
+      "Consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 184,
+    "index": 183,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 183,
+    "index": 182,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 181,
+    "index": 180,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 185,
+    "index": 184,
+    "tipo": [
+      "Comentário: “Nenhum.”",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 187,
+    "index": 186,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 188,
+    "index": 187,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 189,
+    "index": 188,
+    "tipo": [
+      "Ortografia: nenhum\n\nClareza: nenhum\n\nCoerência: nenhum\n\nLógica: nenhum\n\nCoesão: nenhum\n\nConsistência: nenhum\n\nComentário: O trecho está correto",
+      "não apresenta problemas de ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão ou consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 190,
+    "index": 189,
+    "tipo": [
+      "Problemas: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 186,
+    "index": 185,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 191,
+    "index": 190,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 193,
+    "index": 192,
+    "tipo": [
+      "ortografia",
+      "clareza",
+      "coesão",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 194,
+    "index": 193,
+    "tipo": [
+      "Comentário: O trecho \"Decreto n° 2.221/1997\" não apresenta problemas nas categorias mencionadas. É uma referência normativa clara e padrão",
+      "não havendo questões de ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão ou consistência.\n\nCorreção: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 192,
+    "index": 191,
+    "tipo": [
+      "ortografia",
+      "clareza",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 197,
+    "index": 196,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 196,
+    "index": 195,
+    "tipo": [
+      "Clareza",
+      "Coesão",
+      "Consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 195,
+    "index": 194,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 198,
+    "index": 197,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 203,
+    "index": 202,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 201,
+    "index": 200,
+    "tipo": [
+      "Ortografia — está correta.\n\nClareza — está adequada.\n\nCoerência — está presente.\n\nLógica — está adequada.\n\nCoesão — apresenta problema.\n\nConsistência — está adequada.\n\nLista de categorias encontradas: coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 199,
+    "index": 198,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 200,
+    "index": 199,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 202,
+    "index": 201,
+    "tipo": [
+      "Comentário: “nenhum”",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 204,
+    "index": 203,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 208,
+    "index": 207,
+    "tipo": [
+      "Clareza",
+      "coerência",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 209,
+    "index": 208,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 207,
+    "index": 206,
+    "tipo": [
+      "Classificação: nenhum\n\nComentário: O trecho \"Resolução CONAMA nº 302\" não apresenta problemas de ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão ou consistência. É uma referência que parece completa e correta.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 206,
+    "index": 205,
+    "tipo": [
+      "Nenhuma.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 205,
+    "index": 204,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 213,
+    "index": 212,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 212,
+    "index": 211,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 210,
+    "index": 209,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 211,
+    "index": 210,
+    "tipo": [
+      "Comentário: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 214,
+    "index": 213,
+    "tipo": [
+      "Ortografia",
+      "coerência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 216,
+    "index": 215,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 218,
+    "index": 217,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 217,
+    "index": 216,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 215,
+    "index": 214,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 220,
+    "index": 219,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 219,
+    "index": 218,
+    "tipo": [
+      "Comentário: Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 222,
+    "index": 221,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 223,
+    "index": 222,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 221,
+    "index": 220,
+    "tipo": [
+      "Para analisar a existência de problemas nas categorias de ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão e consistência",
+      "é necessário mais contexto ou conteúdo do texto além do título \"Resolução CONAMA nº 369\". O título sozinho não fornece informações suficientes para avaliar essas categorias. \n\nSe o trecho for apenas o título",
+      "a análise é a seguinte:\n\nOrtografia: nenhum\nClareza: nenhum\nCoerência: nenhum\nLógica: nenhum\nCoesão: nenhum\nConsistência: nenhum\n\nSe houver mais texto para análise",
+      "por favor",
+      "forneça o conteúdo completo para que eu possa avaliar mais especificamente as questões nas categorias mencionadas.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 226,
+    "index": 225,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 225,
+    "index": 224,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 224,
+    "index": 223,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 227,
+    "index": 226,
+    "tipo": [
+      "Ortografia",
+      "Coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 228,
+    "index": 227,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 229,
+    "index": 228,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 230,
+    "index": 229,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 231,
+    "index": 230,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 233,
+    "index": 232,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 232,
+    "index": 231,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 236,
+    "index": 235,
+    "tipo": [
+      "Comentário: \"Nenhum\" \n\nO trecho está adequado quanto à ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão e consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 235,
+    "index": 234,
+    "tipo": [
+      "Comentário: Ortografia",
+      "Clareza",
+      "Coerência",
+      "Lógica",
+      "Coesão",
+      "Consistência.\n\nO trecho \"Instrução Normativa MMA nº 05\" está incompleto para avaliação",
+      "pois não fornece contexto ou detalhes adicionais que permitam uma análise aprofundada nas categorias especificadas. No entanto",
+      "isoladamente",
+      "não apresenta erros ortográficos. Digno de nota é que",
+      "para um conteúdo mais extenso",
+      "áreas como clareza e lógica poderiam ser avaliadas especificamente se houvesse definições",
+      "contextos ou argumentos presentes.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 237,
+    "index": 236,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 234,
+    "index": 233,
+    "tipo": [
+      "Classificação: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 238,
+    "index": 237,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 242,
+    "index": 241,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 240,
+    "index": 239,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 241,
+    "index": 240,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 239,
+    "index": 238,
+    "tipo": [
+      "Comentário: “Nenhum.”",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 244,
+    "index": 243,
+    "tipo": [
+      "Ortografia: nenhum\n\nClareza: nenhum\n\nCoerência: nenhum\n\nLógica: nenhum\n\nCoesão: nenhum\n\nConsistência: nenhum\n\nComentário: Nenhum problema identificado no trecho fornecido.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 246,
+    "index": 245,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 243,
+    "index": 242,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 245,
+    "index": 244,
+    "tipo": [
+      "Comentário: Nenhum problema. A frase consiste apenas no título ou número de uma instrução normativa",
+      "portanto",
+      "não há questões de ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão ou consistência para avaliar.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 247,
+    "index": 246,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 248,
+    "index": 247,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 249,
+    "index": 248,
+    "tipo": [
+      "ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 250,
+    "index": 249,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 252,
+    "index": 251,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 251,
+    "index": 250,
+    "tipo": [
+      "Corrigido: “Aprova a viabilidade ambiental do 'Rodoanel Metropolitano Mário Covas – Trecho Norte'.”\nComentário: Correção de capitalização indevida em \"Viabilidade Ambiental\" para \"viabilidade ambiental\" e ajuste de aspas simples no nome da obra para consistência.\n\nClassificação de problemas: ortografia",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 255,
+    "index": 254,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 256,
+    "index": 255,
+    "tipo": [
+      "Ortografia",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 254,
+    "index": 253,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 259,
+    "index": 258,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 260,
+    "index": 259,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 257,
+    "index": 256,
+    "tipo": [
+      "Comentário: “Nenhum” \n\nA frase apresentada é clara e não contém erros de ortografia",
+      "tem coerência",
+      "lógica",
+      "coesão e consistência na apresentação das informações. É apenas a menção a um documento específico",
+      "portanto",
+      "não existe um contexto adicional que possa introduzir problemas nessas categorias.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 253,
+    "index": 252,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 258,
+    "index": 257,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 266,
+    "index": 265,
+    "tipo": [
+      "Comentário: Nenhuma alteração necessária.\n\nResposta: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 262,
+    "index": 261,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 261,
+    "index": 260,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 265,
+    "index": 264,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 267,
+    "index": 266,
+    "tipo": [
+      "Correção: nenhum\n\nComentário: Nenhuma alteração necessária. O trecho está claro",
+      "é coerente",
+      "lógico",
+      "com coesão",
+      "consistência e não apresenta erros de ortografia.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 263,
+    "index": 262,
+    "tipo": [
+      "Ortografia",
+      "Clareza",
+      "Coerência",
+      "Lógica",
+      "Coesão",
+      "Consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 268,
+    "index": 267,
+    "tipo": [
+      "Comentário: \"Nenhum\"",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 271,
+    "index": 270,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 269,
+    "index": 268,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 270,
+    "index": 269,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 264,
+    "index": 263,
+    "tipo": [
+      "Clareza",
+      "Consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 272,
+    "index": 271,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 274,
+    "index": 273,
+    "tipo": [
+      "Ortografia",
+      "Clareza",
+      "Coerência",
+      "Lógica",
+      "Coesão",
+      "Consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 275,
+    "index": 274,
+    "tipo": [
+      "Ortografia",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 273,
+    "index": 272,
+    "tipo": [
+      "Clareza",
+      "Consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 276,
+    "index": 275,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 280,
+    "index": 279,
+    "tipo": [
+      "Comentário: “Nenhum”",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 277,
+    "index": 276,
+    "tipo": [
+      "ortografia",
+      "clareza",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 278,
+    "index": 277,
+    "tipo": [
+      "Nenhum\n\nComentário: O trecho está claro e coerente",
+      "com boa coesão e consistência. Não há problemas de ortografia ou lógica aparente. Trata-se de uma descrição normativa precisa",
+      "típica do contexto legal.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 279,
+    "index": 278,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão.\n\nComentário: \n- Ortografia: O termo \"no\" deveria ser escrito como \"nº\" ou \"número\" para indicar adequadamente um número de resolução.\n- Clareza: O trecho não fornece contexto ou informações suficientes sobre o que a resolução trata.\n- Coerência e coesão: Não há ligação com outros elementos textuais que proporcionem um entendimento claro do documento ou normativo mencionado.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 283,
+    "index": 282,
+    "tipo": [
+      "Comentário: “Nenhum” \n\nObservação: Trecho se referindo a uma portaria específica não apresenta problemas evidentes nas categorias de ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão ou consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 282,
+    "index": 281,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 281,
+    "index": 280,
+    "tipo": [
+      "Para realizar a classificação do trecho \"Resolução CONSEMA nº 51\"",
+      "analisarei cada critério:\n\nOrtografia: Nenhum problema encontrado.\nClareza: Nenhum problema encontrado.\nCoerência: Nenhum problema encontrado",
+      "desde que o contexto da resolução esteja claro para o leitor.\nLógica: Nenhum problema encontrado.\nCoesão: Nenhum problema encontrado.\nConsistência: Nenhum problema encontrado",
+      "considerando que a numeração da resolução esteja correta e consistentemente usada dentro do contexto do documento.\n\nCorrigido: “Resolução CONSEMA nº 51”\nComentário: “Nenhuma alteração necessária.”\nCategorias encontradas: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 285,
+    "index": 284,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 284,
+    "index": 283,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 287,
+    "index": 286,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 286,
+    "index": 285,
+    "tipo": [
+      "Coerência",
+      "Lógica",
+      "Consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 288,
+    "index": 287,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 289,
+    "index": 288,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 291,
+    "index": 290,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 290,
+    "index": 289,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 295,
+    "index": 294,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 296,
+    "index": 295,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 292,
+    "index": 291,
+    "tipo": [
+      "Comentário: Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 294,
+    "index": 293,
+    "tipo": [
+      "Comentário: \"Nenhum\" (baseado no trecho apresentado",
+      "que não é suficiente para identificar problemas nas categorias solicitadas",
+      "pois é apenas uma referência a uma portaria. Preciso de um contexto ou parágrafo mais extenso para fazer uma análise completa.)",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 293,
+    "index": 292,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 297,
+    "index": 296,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 298,
+    "index": 297,
+    "tipo": [
+      "Clareza",
+      "Coerência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 301,
+    "index": 300,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 300,
+    "index": 299,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 302,
+    "index": 301,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 299,
+    "index": 298,
+    "tipo": [
+      "Ortografia",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 303,
+    "index": 302,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 304,
+    "index": 303,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 307,
+    "index": 306,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 305,
+    "index": 304,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 306,
+    "index": 305,
+    "tipo": [
+      "Ortografia",
+      "clareza (pois não está completo e não fornece o contexto suficiente para entendimento).",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 308,
+    "index": 307,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 310,
+    "index": 309,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 309,
+    "index": 308,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 311,
+    "index": 310,
+    "tipo": [
+      "ortografia",
+      "clareza",
+      "coerência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 313,
+    "index": 312,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 312,
+    "index": 311,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 314,
+    "index": 313,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 315,
+    "index": 314,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 317,
+    "index": 316,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 319,
+    "index": 318,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 316,
+    "index": 315,
+    "tipo": [
+      "Resposta: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 318,
+    "index": 317,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 321,
+    "index": 320,
+    "tipo": [
+      "ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 322,
+    "index": 321,
+    "tipo": [
+      "Responda:\nNenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 326,
+    "index": 325,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 320,
+    "index": 319,
+    "tipo": [
+      "Para realizar uma análise adequada do trecho \"Resolução CNRH nº 65\"",
+      "é importante considerar o contexto em que este trecho é utilizado. No entanto",
+      "com base apenas no conteúdo fornecido",
+      "parece não haver informações suficientes para fazer uma análise detalhada nas categorias mencionadas. De um modo geral",
+      "ele parece ser simplesmente uma referência ou título de uma resolução.\n\nClassificação: nenhum\n\nComentário: O trecho apenas menciona o nome e o número de uma resolução",
+      "sem contexto adicional. Não é possível identificar problemas de ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão ou consistência com base apenas neste trecho.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 323,
+    "index": 322,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 324,
+    "index": 323,
+    "tipo": [
+      "Nenhum problema foi identificado no trecho fornecido. Corrigido: “Resolução CNRH nº 91” Comentário: “Nenhuma alteração necessária.”",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 325,
+    "index": 324,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 327,
+    "index": 326,
+    "tipo": [
+      "Ortografia",
+      "Clareza",
+      "Coerência",
+      "Lógica",
+      "Coesão",
+      "Consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 328,
+    "index": 327,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 331,
+    "index": 330,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 329,
+    "index": 328,
+    "tipo": [
+      "Ortografia",
+      "Clareza",
+      "Coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 332,
+    "index": 331,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 330,
+    "index": 329,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 333,
+    "index": 332,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 336,
+    "index": 335,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 335,
+    "index": 334,
+    "tipo": [
+      "Comentário: Nenhuma alteração necessária.\n\nClassificação: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 337,
+    "index": 336,
+    "tipo": [
+      "Clarificação: O trecho é bem formado e não apresenta erros evidentes nas categorias mencionadas. Entretanto",
+      "existe um contexto limitado para fazer uma avaliação completa de coerência e lógica",
+      "devido à ausência de um documento mais extenso ou de objetivos específicos do texto. Contudo",
+      "baseado apenas no trecho fornecido:\n\nOrtografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 338,
+    "index": 337,
+    "tipo": [
+      "Clareza",
+      "Coerência",
+      "Consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 339,
+    "index": 338,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 343,
+    "index": 342,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 340,
+    "index": 339,
+    "tipo": [
+      "Ortografia: nenhum  \nClareza: nenhum  \nCoerência: nenhum  \nLógica: nenhum  \nCoesão: nenhum  \nConsistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 342,
+    "index": 341,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 345,
+    "index": 344,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 344,
+    "index": 343,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência. Corrigido: \"Dispõe sobre as condições e padrões de lançamento de efluentes",
+      "complementa e altera a Resolução nº 357",
+      "de 17 de março de 2005",
+      "do Conselho Nacional do Meio Ambiente (CONAMA).\" Comentário: Nenhuma alteração necessária.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 346,
+    "index": 345,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 341,
+    "index": 340,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 347,
+    "index": 346,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 349,
+    "index": 348,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 348,
+    "index": 347,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 350,
+    "index": 349,
+    "tipo": [
+      "Claridade.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 351,
+    "index": 350,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 355,
+    "index": 354,
+    "tipo": [
+      "Clareza",
+      "coerência",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 352,
+    "index": 351,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 357,
+    "index": 356,
+    "tipo": [
+      "Ortografia",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 354,
+    "index": 353,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 353,
+    "index": 352,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 358,
+    "index": 357,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 359,
+    "index": 358,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 356,
+    "index": 355,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 360,
+    "index": 359,
+    "tipo": [
+      "Ortografia: nenhum  \nClareza: nenhum  \nCoerência: nenhum  \nLógica: nenhum  \nCoesão: nenhum  \nConsistência: nenhum  \n\nComentário: O trecho está claro e gramaticalmente correto. Não há problemas de ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão ou consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 361,
+    "index": 360,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 363,
+    "index": 362,
+    "tipo": [
+      "Coerência",
+      "Clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 362,
+    "index": 361,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 367,
+    "index": 366,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 366,
+    "index": 365,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 370,
+    "index": 369,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 364,
+    "index": 363,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 368,
+    "index": 367,
+    "tipo": [
+      "Responda: “clareza",
+      "coerência”\n\nComentário: “O trecho apresenta problemas de clareza e coerência. A estrutura da frase é confusa",
+      "pois combina várias ações sem delinear claramente os sujeitos ou os objetivos de tais ações. Uma reescrita pode ser considerada para melhorar a compreensão.”",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 369,
+    "index": 368,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 365,
+    "index": 364,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 371,
+    "index": 370,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 372,
+    "index": 371,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 373,
+    "index": 372,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 374,
+    "index": 373,
+    "tipo": [
+      "Clareza",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 377,
+    "index": 376,
+    "tipo": [
+      "Comentário: “Nenhum.”",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 375,
+    "index": 374,
+    "tipo": [
+      "Ortografia",
+      "Consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 376,
+    "index": 375,
+    "tipo": [
+      "Comentário: \"Nenhum problema identificado.\"",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 379,
+    "index": 378,
+    "tipo": [
+      "Comentário: \"nenhum\" (O trecho \"Instrução Normativa nº 57\" está correto",
+      "não apresenta erros de ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão ou consistência.)",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 378,
+    "index": 377,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 383,
+    "index": 382,
+    "tipo": [
+      "coerência",
+      "coesão",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 382,
+    "index": 381,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 381,
+    "index": 380,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 384,
+    "index": 383,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 380,
+    "index": 379,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 385,
+    "index": 384,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 389,
+    "index": 388,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 387,
+    "index": 386,
+    "tipo": [
+      "Ortografia",
+      "Clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 386,
+    "index": 385,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 388,
+    "index": 387,
+    "tipo": [
+      "Clareza",
+      "coerência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 391,
+    "index": 390,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 334,
+    "index": 333,
+    "tipo": [
+      "ortografia",
+      "clareza",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 390,
+    "index": 389,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 393,
+    "index": 392,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 395,
+    "index": 394,
+    "tipo": [
+      "Comentário: Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 397,
+    "index": 396,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 394,
+    "index": 393,
+    "tipo": [
+      "Ortografia",
+      "Clareza",
+      "Coerência",
+      "Lógica",
+      "Coesão",
+      "Consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 396,
+    "index": 395,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 392,
+    "index": 391,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 400,
+    "index": 399,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 399,
+    "index": 398,
+    "tipo": [
+      "Comentário: Nenhum.\n\nResposta: Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 398,
+    "index": 397,
+    "tipo": [
+      "Ortografia",
+      "coerência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 402,
+    "index": 401,
+    "tipo": [
+      "Comentário: “Nenhum” \n\nO trecho fornecido não apresenta problemas de ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão ou consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 401,
+    "index": 400,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 403,
+    "index": 402,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 406,
+    "index": 405,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 404,
+    "index": 403,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 407,
+    "index": 406,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 405,
+    "index": 404,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 409,
+    "index": 408,
+    "tipo": [
+      "Ortografia: nenhum\nClareza: nenhum\nCoerência: nenhum\nLógica: nenhum\nCoesão: nenhum\nConsistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 408,
+    "index": 407,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 410,
+    "index": 409,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 411,
+    "index": 410,
+    "tipo": [
+      "Comentário: “Nenhuma alteração necessária.”",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 412,
+    "index": 411,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 413,
+    "index": 412,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 417,
+    "index": 416,
+    "tipo": [
+      "ortografia",
+      "clareza",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 416,
+    "index": 415,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 414,
+    "index": 413,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 415,
+    "index": 414,
+    "tipo": [
+      "Ortografia: Nenhum  \nClareza: Nenhum  \nCoerência: Nenhum  \nLógica: Nenhum  \nCoesão: Nenhum  \nConsistência: Nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 420,
+    "index": 419,
+    "tipo": [
+      "Comentário: \"Nenhum problema encontrado.\"",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 419,
+    "index": 418,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 421,
+    "index": 420,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 418,
+    "index": 417,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 422,
+    "index": 421,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 425,
+    "index": 424,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 423,
+    "index": 422,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 424,
+    "index": 423,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 426,
+    "index": 425,
+    "tipo": [
+      "Corrigido: “Lei Orgânica do Município de Vargem de 12/12/1995.”\nComentário: “Nenhuma alteração necessária.”\n\nClassificação de problemas: Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 429,
+    "index": 428,
+    "tipo": [
+      "Comentário: Nenhum problema identificado.\n\nClassificação: Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 428,
+    "index": 427,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 427,
+    "index": 426,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 431,
+    "index": 430,
+    "tipo": [
+      "Ortografia",
+      "Clareza",
+      "Coerência",
+      "Lógica",
+      "Coesão",
+      "Consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 432,
+    "index": 431,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 434,
+    "index": 433,
+    "tipo": [
+      "Comentário: Nenhuma alteração necessária.\n\nClassificação de problemas: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 433,
+    "index": 432,
+    "tipo": [
+      "ortografia",
+      "clareza",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 430,
+    "index": 429,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 435,
+    "index": 434,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 436,
+    "index": 435,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 437,
+    "index": 436,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 440,
+    "index": 439,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 439,
+    "index": 438,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 441,
+    "index": 440,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 443,
+    "index": 442,
+    "tipo": [
+      "Comentário: Nenhum problema encontrado.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 442,
+    "index": 441,
+    "tipo": [
+      "Coerência",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 438,
+    "index": 437,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 445,
+    "index": 444,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 444,
+    "index": 443,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 446,
+    "index": 445,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 448,
+    "index": 447,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 449,
+    "index": 448,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 447,
+    "index": 446,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 450,
+    "index": 449,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 451,
+    "index": 450,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 453,
+    "index": 452,
+    "tipo": [
+      "ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 452,
+    "index": 451,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 455,
+    "index": 454,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 454,
+    "index": 453,
+    "tipo": [
+      "ortografia",
+      "clareza",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 456,
+    "index": 455,
+    "tipo": [
+      "Coerência",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 457,
+    "index": 456,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 460,
+    "index": 459,
+    "tipo": [
+      "Ortografia",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 459,
+    "index": 458,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 458,
+    "index": 457,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 461,
+    "index": 460,
+    "tipo": [
+      "Comentário: “Clareza",
+      "consistência.”\n\nAvaliação:\n- Clareza: A estrutura do trecho pode confundir o leitor por não indicar claramente o sujeito e o objetivo diretamente. Organizar melhor o texto poderia ajudar na compreensão.\n- Consistência: O trecho mistura normas e alterações legais com diferentes datas",
+      "o que pode causar confusão se a relação entre elas não estiver clara. Fornecer mais contexto ajudaria na consistência das informações.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 462,
+    "index": 461,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 463,
+    "index": 462,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 466,
+    "index": 465,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 465,
+    "index": 464,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 464,
+    "index": 463,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 468,
+    "index": 467,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 467,
+    "index": 466,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 471,
+    "index": 470,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 469,
+    "index": 468,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 470,
+    "index": 469,
+    "tipo": [
+      "Ortografia",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 472,
+    "index": 471,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 475,
+    "index": 474,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 473,
+    "index": 472,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 479,
+    "index": 478,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 474,
+    "index": 473,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 476,
+    "index": 475,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 478,
+    "index": 477,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 481,
+    "index": 480,
+    "tipo": [
+      "ortografia",
+      "clareza",
+      "coerência",
+      "coesão",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 477,
+    "index": 476,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 484,
+    "index": 483,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 480,
+    "index": 479,
+    "tipo": [
+      "Ortografia",
+      "Coerência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 483,
+    "index": 482,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 482,
+    "index": 481,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 485,
+    "index": 484,
+    "tipo": [
+      "titulo",
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 489,
+    "index": 488,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 486,
+    "index": 485,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 491,
+    "index": 490,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 490,
+    "index": 489,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 488,
+    "index": 487,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 487,
+    "index": 486,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 493,
+    "index": 492,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 492,
+    "index": 491,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 495,
+    "index": 494,
+    "tipo": [
+      "Comentário: Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 494,
+    "index": 493,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 496,
+    "index": 495,
+    "tipo": [
+      "Comentário: Nenhuma alteração necessária.\n\nClassificação: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 497,
+    "index": 496,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 498,
+    "index": 497,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 504,
+    "index": 503,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 502,
+    "index": 501,
+    "tipo": [
+      "Comentário: \"Nenhum\" \n\nO trecho fornecido \"Decreto nº 5.163\" está correto e não apresenta problemas de ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão ou consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 500,
+    "index": 499,
+    "tipo": [
+      "titulo",
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 501,
+    "index": 500,
+    "tipo": [
+      "Ortografia",
+      "Clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 503,
+    "index": 502,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 505,
+    "index": 504,
+    "tipo": [
+      "ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 506,
+    "index": 505,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 507,
+    "index": 506,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 499,
+    "index": 498,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 508,
+    "index": 507,
+    "tipo": [
+      "Comentário: Nenhuma alteração necessária.\n\nClassificação: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 509,
+    "index": 508,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 512,
+    "index": 511,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 511,
+    "index": 510,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 510,
+    "index": 509,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 518,
+    "index": 517,
+    "tipo": [
+      "Comentário: \"nenhum\"",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 513,
+    "index": 512,
+    "tipo": [
+      "titulo",
+      "Ortografia",
+      "Clareza",
+      "Consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 515,
+    "index": 514,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 517,
+    "index": 516,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 514,
+    "index": 513,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 516,
+    "index": 515,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 519,
+    "index": 518,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 520,
+    "index": 519,
+    "tipo": [
+      "Comentário: “É necessário mais contexto para avaliar a clareza",
+      "coerência",
+      "lógica",
+      "coesão e consistência. No entanto",
+      "o trecho “Decreto nº 5.911” não apresenta problemas de ortografia.”",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 521,
+    "index": 520,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 524,
+    "index": 523,
+    "tipo": [
+      "Ortografia",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 526,
+    "index": 525,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 523,
+    "index": 522,
+    "tipo": [
+      "Problemas: ortografia",
+      "coerência\n\nComentário: A expressão \"de 1 kV\" no final da frase causa problemas de coerência",
+      "pois não especifica claramente o que se refere a \"1 kV\" (se é a tensão",
+      "o campo ou outro aspecto)",
+      "o que pode gerar ambiguidade. Na ortografia",
+      "não há erros",
+      "mas essa ambiguidade influencia também a clareza e a coerência do texto. Uma reformulação ou especificação adicional pode esclarecer.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 525,
+    "index": 524,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 522,
+    "index": 521,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 529,
+    "index": 528,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 528,
+    "index": 527,
+    "tipo": [
+      "Comentário: “Nenhum”",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 530,
+    "index": 529,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 527,
+    "index": 526,
+    "tipo": [
+      "Clareza",
+      "coerência",
+      "lógica.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 532,
+    "index": 531,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 531,
+    "index": 530,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 534,
+    "index": 533,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 536,
+    "index": 535,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 533,
+    "index": 532,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 538,
+    "index": 537,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 539,
+    "index": 538,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 537,
+    "index": 536,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 535,
+    "index": 534,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 542,
+    "index": 541,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 540,
+    "index": 539,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 541,
+    "index": 540,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 543,
+    "index": 542,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 544,
+    "index": 543,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 545,
+    "index": 544,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 547,
+    "index": 546,
+    "tipo": [
+      "Correção: nenhum\nComentário: Nenhuma categoria de problema (ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência) foi encontrada no trecho. O texto está claro",
+      "coerente",
+      "lógico",
+      "coeso e consistente.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 549,
+    "index": 548,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 550,
+    "index": 549,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 546,
+    "index": 545,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 551,
+    "index": 550,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 548,
+    "index": 547,
+    "tipo": [
+      "Ortografia",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 552,
+    "index": 551,
+    "tipo": [
+      "Comentário: Nenhuma alteração necessária.\n\nOrtografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 554,
+    "index": 553,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 553,
+    "index": 552,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 555,
+    "index": 554,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 556,
+    "index": 555,
+    "tipo": [
+      "Resposta: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 558,
+    "index": 557,
+    "tipo": [
+      "titulo",
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 557,
+    "index": 556,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 561,
+    "index": 560,
+    "tipo": [
+      "Categoria(s) encontrada(s): nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 560,
+    "index": 559,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 562,
+    "index": 561,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 559,
+    "index": 558,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.\n\nCorrigido: \"Fornecer os procedimentos para a avaliação de imóveis urbanos.\"\n\nProblemas encontrados: clareza\n\nComentário: A frase original parece uma instrução de título",
+      "mas não está completa. O problema de clareza surge porque o verbo \"fornece\" é usado sem um sujeito explícito ou contexto",
+      "sugerindo que poderia ser um título ou parte da estrutura de um documento que não está completa ou adequada aqui. Uma alternativa seria ajustar o verbo e a estrutura conforme necessário no contexto do documento completo",
+      "mas sem o contexto adicional",
+      "só posso indicar esta necessidade de clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 563,
+    "index": 562,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 567,
+    "index": 566,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 564,
+    "index": 563,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 565,
+    "index": 564,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 568,
+    "index": 567,
+    "tipo": [
+      "Clareza",
+      "coerência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 566,
+    "index": 565,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 570,
+    "index": 569,
+    "tipo": [
+      "Comentário: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 569,
+    "index": 568,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 573,
+    "index": 572,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 571,
+    "index": 570,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 572,
+    "index": 571,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 575,
+    "index": 574,
+    "tipo": [
+      "Ortografia: nenhum",
+      "Clareza: nenhum",
+      "Coerência: nenhum",
+      "Lógica: nenhum",
+      "Coesão: nenhum",
+      "Consistência: nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 574,
+    "index": 573,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 577,
+    "index": 576,
+    "tipo": [
+      "Comentário: Nenhuma alteração necessária. \nCorrigido: “Estabelece disposições relativas à contratação de auditoria para os Programas de Eficiência Energética e de Pesquisa e Desenvolvimento Tecnológico do Setor de Energia Elétrica.”\n\nProblemas encontrados: nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 576,
+    "index": 575,
+    "tipo": [
+      "Ortografia",
+      "Clareza",
+      "Coesão",
+      "Consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 578,
+    "index": 577,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 582,
+    "index": 581,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 579,
+    "index": 578,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 581,
+    "index": 580,
+    "tipo": [
+      "Comentário: \"nenhum.\"",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 583,
+    "index": 582,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 580,
+    "index": 579,
+    "tipo": [
+      "Ortografia",
+      "clareza.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  }
+]

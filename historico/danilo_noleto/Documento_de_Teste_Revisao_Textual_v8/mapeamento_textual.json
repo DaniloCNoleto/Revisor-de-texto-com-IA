@@ -1,0 +1,113 @@
+[
+  {
+    "paragrafo": 1,
+    "index": 0,
+    "tipo": [
+      "Clareza",
+      "Coerência",
+      "Consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 4,
+    "index": 3,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 7,
+    "index": 6,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 8,
+    "index": 7,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 2,
+    "index": 1,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 6,
+    "index": 5,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 9,
+    "index": 8,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão.\n\nComentário: \n- Ortografia: A expressão \"a mobilidade urbana\" está faltando a preposição \"a\" antes de \"mobilidade\".\n- Coesão: A frase \"cuja gravidade foi subestimado\" apresenta problema de concordância",
+      "uma vez que o correto é \"cuja gravidade foi subestimada\" para concordar com \"gravidade\".\n- Clareza: A frase \"priorizando o envolvimento da comunidade e transparência nas próximas etapas\" pode ser melhorada para \"priorizando o envolvimento da comunidade e a transparência nas próximas etapas\" para dar maior clareza com o uso do artigo definido \"a\" antes de \"transparência\".",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 3,
+    "index": 2,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão",
+      "consistência.\n\nExplicação:\n- Ortografia: Correção necessária em \"idealizado\" para \"idealizada\".\n- Clareza: Frases que poderiam ser mais diretas",
+      "como a expressão \"volume de automóveis transportados diariamente\" que poderia ser resumida ou explicada de forma mais simples.\n- Coesão: Uso de conectores inadequados",
+      "como o termo \"todavia\" não está bem encaixado no contexto.\n- Consistência: Concordância verbal incorreta em \"foram cerca de 2.345 indivíduos\" que deveria ser \"foi cerca de 2.345 indivíduos\". Além disso",
+      "\"número de árvores removidos\" deve ser corrigido para \"número de árvores removidas\".",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 5,
+    "index": 4,
+    "tipo": [
+      "Ortografia",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  }
+]

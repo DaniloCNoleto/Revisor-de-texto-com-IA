@@ -1,0 +1,1 @@
+verificador_bibliografico_final.py concluído em 66.5s

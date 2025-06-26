@@ -1,0 +1,118 @@
+[
+  {
+    "paragrafo": 6,
+    "index": 5,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 1,
+    "index": 0,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 4,
+    "index": 3,
+    "tipo": [
+      "Nenhuma categoria mencionada no trecho \"Descrição dos Impactos\". Por favor",
+      "forneça mais contexto ou um texto mais extenso para que eu possa fazer uma análise detalhada.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 8,
+    "index": 7,
+    "tipo": [
+      "Para classificar problemas no trecho \"Considerações Finais\"",
+      "observei o seguinte:\n\nNenhum.\n\nComentário: O trecho é apenas um título ou cabeçalho comum em documentos técnicos e não apresenta problemas de ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão ou consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 3,
+    "index": 2,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 2,
+    "index": 1,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 7,
+    "index": 6,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 5,
+    "index": 4,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 9,
+    "index": 8,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  }
+]

@@ -1,0 +1,119 @@
+[
+  {
+    "paragrafo": 1,
+    "index": 0,
+    "tipo": [
+      "Comentário: “Nenhuma alteração necessária.”",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 4,
+    "index": 3,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "lógica",
+      "coesão",
+      "consistência",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 9,
+    "index": 8,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência.\n\n1. Ortografia: O uso da crase está incorreto na expressão \"a mobilidade urbana\" que deveria ser \"à mobilidade urbana\".\n2. Clareza: O trecho \"enquanto intensificou diferentes danos ambientais e sociais",
+      "cuja gravidade foi subestimado\" possui problemas de clareza quanto ao sujeito (\"gravidade\" deveria concordar com \"danos\").\n3. Coerência: A lógica do texto é comprometida por essa falta de concordância",
+      "o que pode confundir o leitor sobre o que foi subestimado exatamente.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 7,
+    "index": 6,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 2,
+    "index": 1,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 6,
+    "index": 5,
+    "tipo": [
+      "Nenhum.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  },
+  {
+    "paragrafo": 5,
+    "index": 4,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coesão",
+      "consistência.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 3,
+    "index": 2,
+    "tipo": [
+      "Ortografia",
+      "clareza",
+      "coerência",
+      "coesão\n\nComentário:\n- **Ortografia:** \"idealizado\" deveria estar no feminino",
+      "\"idealizada\"",
+      "pois se refere à \"rodovia\".\n- **Clareza e Coerência:** A expressão \"em resposta a pressão populacional local\" deveria ser \"em resposta à pressão populacional local\" para maior clareza.\n- **Coesão:** A concordância verbal e nominal tem erros: \"número de árvores removidos foram\" deveria ser \"número de árvores removidas foi\". Além disso",
+      "a parte \"fator esse que contribuiu\" deveria ser reorganizada para \"fator que contribuiu\" para melhor coesão.\n- **Consistência:** Uso inconsistente de termos como \"replantio\"",
+      "que é mencionado mas não detalhado no contexto apresentado.",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "textual"
+  },
+  {
+    "paragrafo": 8,
+    "index": 7,
+    "tipo": [
+      "nenhum",
+      "abnt"
+    ],
+    "falhas": [],
+    "categoria": "bibliografico"
+  }
+]
