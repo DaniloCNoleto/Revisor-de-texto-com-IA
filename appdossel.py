@@ -24,16 +24,14 @@ from pathlib import Path
 # ------------------------------------------------------------------
 
 def get_url_param(param: str):
-    """Retorna o valor do parâmetro da URL se existir."""
-    q = st.query_params()
-    return q.get(param, [None])[0]
-
+    """Lê o parâmetro da URL usando a nova API do Streamlit."""
+    return st.query_params.get(param, [None])[0]
 
 def set_url_param(param: str, value: str):
-    """Grava/atualiza o parâmetro na URL sem recarregar a página."""
-    q = st.query_params()
+    """Atualiza um parâmetro na URL de forma segura."""
+    q = st.query_params
     q[param] = value
-    st.query_params(**q)
+    st.query_params = q  # <- isso efetiva a mudança
 
 
 # Estado inicial da página — primeiro acesso
