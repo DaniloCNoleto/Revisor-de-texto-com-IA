@@ -11,10 +11,18 @@ from openpyxl import load_workbook, Workbook
 from tqdm import tqdm
 from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
+import openai
+import streamlit as st
 
 # --- Configurações iniciais ---
-load_dotenv()
-client = OpenAI()
+# 🔁 Compatível com .env local e st.secrets no Streamlit Cloud
+try:
+    api_key = st.secrets["OPENAI_API_KEY"]
+except ImportError:
+    load_dotenv()
+    api_key = os.getenv("OPENAI_API_KEY")
+
+openai.api_key = api_key
 PASTA_SAIDA = "saida"
 VALOR_INPUT = 0.005
 VALOR_OUTPUT = 0.015
@@ -40,7 +48,7 @@ def contar_tokens(texto):
 def tentar_revisar(prompt):
     for _ in range(MAX_RETRY):
         try:
-            resp = client.chat.completions.create(
+            resp = openai.api_key.chat.completions.create(
                 model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}]
             )
