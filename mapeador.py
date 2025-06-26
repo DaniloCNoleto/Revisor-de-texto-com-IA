@@ -92,32 +92,48 @@ def contar_tokens(texto):
 def avaliar_trecho(prompt_base, trecho, assistant_id, retries=3):
     prompt = prompt_base + f"\nTrecho:\n{trecho}"
     tokens_prompt = contar_tokens(prompt)
+
     for tentativa in range(retries):
         try:
-            thread = openai.beta.threads.create()
-            openai.beta.threads.messages.create(thread_id=thread.id, role="user", content=prompt)
-            run = openai.beta.threads.runs.create(thread_id=thread.id, assistant_id=assistant_id)
+            import warnings
+            warnings.filterwarnings("ignore", category=DeprecationWarning)
+
             inicio = time.time()
-            while True:
-                run = openai.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
-                if run.status == "completed": break
-                if run.status in ["failed", "cancelled"]: 
-                  print(f"❌ Falha ao rodar assistant. Status: {run.status}")
-                  print("📋 Último estado do run:\n", run)
-                  return "[FALHA]", tokens_prompt, 0, 0
-                  
-                if time.time() - inicio > 60: break
-                time.sleep(1)
-            fim = time.time()
-            msgs = openai.beta.threads.messages.list(thread_id=thread.id)
-            for msg in reversed(msgs.data):
-                if msg.role == "assistant":
-                    resposta = msg.content[0].text.value.strip()
-                    tokens_resposta = contar_tokens(resposta)
-                    return resposta, tokens_prompt, tokens_resposta, round(fim - inicio, 2)
-        except Exception:
-            pass
+
+            # Cria thread e envia mensagem
+            thread = openai.beta.threads.create()
+            openai.beta.threads.messages.create(
+                thread_id=thread.id,
+                role="user",
+                content=prompt
+            )
+
+            # Roda assistant
+            run = openai.beta.threads.runs.create_and_poll(
+                thread_id=thread.id,
+                assistant_id=assistant_id
+            )
+
+            # Se completou com sucesso
+            if run.status == "completed":
+                fim = time.time()
+                msgs = openai.beta.threads.messages.list(thread_id=thread.id)
+                for msg in reversed(msgs.data):
+                    if msg.role == "assistant":
+                        resposta = msg.content[0].text.value.strip()
+                        tokens_resposta = contar_tokens(resposta)
+                        print(f"✅ Revisão concluída em {round(fim - inicio, 2)}s")
+                        return resposta, tokens_prompt, tokens_resposta, round(fim - inicio, 2)
+            else:
+                print(f"❌ Run falhou: status = {run.status}")
+
+        except Exception as e:
+            print(f"⚠️ Tentativa {tentativa+1} falhou: {e}")
+            time.sleep(1)
+
     return "[FALHA]", tokens_prompt, 0, 0
+
+
 
 # 🧩 Mapeia um parágrafo individual
 
