@@ -1,302 +1,167 @@
-# 📌 Revisor Textual Dossel ajustado (com timeout, retries, registro de falhas e suporte a nomes dinâmicos)
+# ✅ Revisor de falhas com agrupamento e revisão contextual (sem mapeamento), com verificação de datas e log no terminal
 import os
 import sys
 import time
-import json
-import traceback
 import re
-import difflib
-import openai
+from pathlib import Path
+from openai import OpenAI
 import tiktoken
 from docx import Document
-from openpyxl import Workbook, load_workbook
+from openpyxl import load_workbook, Workbook
 from tqdm import tqdm
-from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
 from dotenv import load_dotenv
+from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
+import openai
 import streamlit as st
 
-
-# Carrega variáveis de ambiente e configurações
+# --- Configurações iniciais ---
 # 🔁 Compatível com .env local e st.secrets no Streamlit Cloud
 try:
-    
     api_key = st.secrets["OPENAI_API_KEY"]
-    id_textual = st.secrets["ASSISTENTE_REVISOR_TEXTUAL"]
 except ImportError:
-    from dotenv import load_dotenv
     load_dotenv()
     api_key = os.getenv("OPENAI_API_KEY")
-    id_textual = os.getenv("ASSISTENTE_REVISOR_TEXTUAL")
 
 openai.api_key = api_key
-ASSISTANT_TEXTUAL = id_textual
-# Configurações gerais
 PASTA_SAIDA = "saida"
-PASTA_ENTRADA = "entrada"
-# Custos
 VALOR_INPUT = 0.005
 VALOR_OUTPUT = 0.015
 COTACAO_DOLAR = 5.65
 ENCODER = tiktoken.encoding_for_model("gpt-4")
-# Timeouts e tentativas
-timeout_seconds = 180
-max_retries = 3
-result_wait = 10
+TIMEOUT_SEC = 90
+MAX_WORKERS = 4
+MAX_RETRY = 2
 
-# Prompts base
+# --- Prompt ---
 PROMPT_REVISAO = (
-    "Você é um revisor de textos técnicos com padrão de excelência.\n"
-    "Corrija apenas se houver erro. Mantenha o estilo de escrita do autor.\n"
-    "Busque padronizar termos técnicos e melhorar a clareza sem alteração no estilo de escrita.\n"
-    "Busque manter a formatação original, como negrito e itálico e estrutura do parágrafo, quebras de linha e espaçamento, manter a voz ativa e evitar passivas desnecessárias, manter a terminologia técnica e científica adequada, manter a coerência e coesão do texto, manter a formalidade e objetividade do texto técnico,  manter a clareza e fluidez do texto, manter a precisão e exatidão das informações,  manter a lógica e a argumentação do texto e outros termos e abreviações de acordo com a ABNT, manter a concisão, evitar redundâncias\n"
-    "Responda no formato:\n❌ Original: \"...\"\n✅ Corrigido: \"...\"\n📜 Comentário: \"...\"\n"
-)
-PROMPT_FORMATACAO_FIXA = (
-    "Você é um revisor gramatical.\n"
-    "Corrija apenas erros de gramática e ortografia. Mantenha estilo de escrita e concisão.\n"
-    "Em trechos com data no formato Mês/Ano com o mês por extenso, mantenha o formato. Por exemplo: 'Março/2023'.\n"
-    "Responda no formato:\n❌ Original: \"...\"\n✅ Corrigido: \"...\"\n📜 Comentário: \"...\"\n"
+    "Você é um revisor técnico e de estilo com foco em textos acadêmicos e científicos.\n"
+    "Corrija blocos de texto apenas se houver erros de gramática, ortografia, datas mal formatadas (como \"13/03/23\" ou \"202-\"), clareza, coesão ou lógica textual.\n"
+    "Preserve o estilo do autor e a terminologia técnica.\n"
+    "Se houver citação bibliográfica com datas incorretas ou incompletas, corrija ou sinalize de forma padronizada conforme a norma ABNT.\n"
+    "Responda apenas com o texto revisado, sem explicações."
 )
 
-# Helpers
+# --- Funções auxiliares ---
+def contar_tokens(texto):
+    return len(ENCODER.encode(texto))
 
-def workers_dinamicos(minimos=10):
-    try:
-        return max(minimos, os.cpu_count() or 1)
-    except:
-        return minimos
-
-
-def contar_tokens(txt: str) -> int:
-    return len(ENCODER.encode(txt))
-
-
-def similaridade(a: str, b: str) -> float:
-    return difflib.SequenceMatcher(None, a.lower(), b.lower()).ratio()
-
-
-def extrair_completo(resp: str):
-    try:
-        o = re.search(r'❌\s*Original:\s*["“](.*?)["”]', resp, re.DOTALL)
-        c = re.search(r'✅\s*Corrigido:\s*["“](.*?)["”]', resp, re.DOTALL)
-        m = re.search(r'📜\s*Comentário:\s*["“](.*?)["”]', resp, re.DOTALL)
-        return (
-            o.group(1).strip() if o else None,
-            c.group(1).strip() if c else None,
-            m.group(1).strip() if m else None,
-        )
-    except:
-        return None, None, None
-
-# Executa chamada à API com timeout
-
-def acionar_assistant(prompt: str, assistant_id: str) -> str | None:
-    try:
-        import warnings
-        warnings.filterwarnings("ignore", category=DeprecationWarning)
-
-        # ⏱ Início do processamento
-        inicio = time.time()
-
-        # Criação do thread (ainda necessário no fluxo atual com assistant_id)
-        thread = openai.beta.threads.create()
-
-        # Envia a mensagem do usuário
-        openai.beta.threads.messages.create(
-            thread_id=thread.id,
-            role="user",
-            content=prompt
-        )
-
-        # Executa o Assistant via create_and_poll (substitui run + retrieve loop)
-        run = openai.beta.threads.runs.create_and_poll(
-            thread_id=thread.id,
-            assistant_id=assistant_id
-        )
-
-        # Verifica sucesso
-        if run.status != "completed":
-            print(f"❌ Assistant não concluiu. Status: {run.status}")
-            return None
-
-        # Busca a última resposta do assistant
-        mensagens = openai.beta.threads.messages.list(thread_id=thread.id)
-        for msg in reversed(mensagens.data):
-            if msg.role == "assistant":
-                fim = time.time()
-                print(f"✅ Resposta recebida em {round(fim - inicio, 2)}s")
-                return msg.content[0].text.value.strip()
-
-    except Exception as e:
-        print(f"⚠️ Erro ao acionar assistant: {e}")
-        return None
-
-
-
-# Revisão de parágrafo
-
-def revisar_paragrafo(item: dict, parags: list) -> dict | None:
-    if item.get("categoria") != "textual":
-        return None
-    idx = item["index"]
-    if idx < 0 or idx >= len(parags):
-        return None
-    texto = parags[idx].text.strip()
-    tipos = item.get("tipo", []).copy()
-    ajustes = []
-    # define base do prompt
-    prompt_base = PROMPT_REVISAO
-    # correção leve para capas detectadas por regex (ex.: 'estudo impacto' + 'mês/ano')
-    if re.search(r"(estudo|relatório|avaliação).*impacto.*", texto.lower()) and \
-       re.search(r"(janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)/\d{4}", texto.lower()):
-        tipos.append("capa")
-        ajustes.append("manter capa")
-        prompt_base = PROMPT_FORMATACAO_FIXA
-    # correção leve para títulos curtos em maiúsculas
-    elif len(texto.split()) <= 12 and texto.isupper():
-        tipos.append("título curto em maiúsculas")
-        ajustes.append("manter título curto e visual")
-        prompt_base = PROMPT_FORMATACAO_FIXA
-    # monta prompt final
-    prompt = (f"{prompt_base}\nObjetivo: {', '.join(tipos)}\n"
-              f"Trecho:\n{texto}")
-    tokens_in = contar_tokens(prompt)
-
-    # tenta várias vezes
-    for _ in range(max_retries):
-        resp = acionar_assistant(prompt, ASSISTANT_TEXTUAL)
-        if not resp:
-            continue
-        original, corr, com = extrair_completo(resp)
-        # fallback quando similaridade baixa
-        if original and similaridade(original, texto) < 0.75:
-            prompt_base = PROMPT_FORMATACAO_FIXA
-            prompt = f"{prompt_base}\nTrecho:\n{texto}"
-            tokens_in = contar_tokens(prompt)
-            resp = acionar_assistant(prompt, ASSISTANT_TEXTUAL)
-            if not resp:
-                continue
-            original, corr, com = extrair_completo(resp)
-        if corr and corr.lower() != texto.lower():
-            tokens_out = contar_tokens(resp)
-            return {
-                "index": idx,
-                "original": texto,
-                "corrigido": corr,
-                "comentario": com or resp,
-                "tokens_input": tokens_in,
-                "tokens_output": tokens_out,
-                "ajustes": ajustes
-            }
+def tentar_revisar(prompt):
+    for _ in range(MAX_RETRY):
+        try:
+            resp = openai.api_key.chat.completions.create(
+                model="gpt-4o",
+                messages=[{"role": "user", "content": prompt}]
+            )
+            return resp.choices[0].message.content.strip()
+        except Exception as e:
+            print("⚠️ Tentativa de revisão falhou:", e)
+            time.sleep(1)
     return None
 
-# Função principal
+def pular_paragrafo(texto):
+    return (
+        texto.isupper() and len(texto.split()) <= 12
+        or re.search(r'(sum[aá]rio|lista de fig|conte[úu]do|relat[ óo]rio|impacto.*\d{4})', texto.lower())
+        or re.match(r'^\d+(\.\d+)*\s+[A-ZÁÉÍÓÚ]', texto)
+    )
 
-def aplicar(nomes: list[str] | None = None):
-    to_process = nomes or [d for d in os.listdir(PASTA_SAIDA) 
-                            if os.path.isdir(os.path.join(PASTA_SAIDA, d))]
+def agrupar_paragrafos(parags, max_bloco=3):
+    blocos = []
+    bloco_atual = []
+    indices = []
+    for i, p in enumerate(parags):
+        texto = p.text.strip()
+        if not texto or pular_paragrafo(texto):
+            continue
+        bloco_atual.append(texto)
+        indices.append(i)
+        if len(bloco_atual) == max_bloco:
+            blocos.append(("\n\n".join(bloco_atual), indices.copy()))
+            bloco_atual, indices = [], []
+    if bloco_atual:
+        blocos.append(("\n\n".join(bloco_atual), indices.copy()))
+    return blocos
 
+# --- Execução principal ---
+def aplicar(nomes):
+    to_process = [n for n in nomes if os.path.isdir(os.path.join(PASTA_SAIDA, n))]
     for nome in to_process:
         pasta = os.path.join(PASTA_SAIDA, nome)
-        docx_path = os.path.join(PASTA_ENTRADA, nome + ".docx")
-        json_map = os.path.join(pasta, "mapeamento_textual.json")
-        if not os.path.exists(docx_path) or not os.path.exists(json_map):
-            print(f"⏭️ Pulando {nome}")
+        docx_biblio = os.path.join(pasta, f"{nome}_revisado_biblio.docx")
+        docx_texto = os.path.join(pasta, f"{nome}_revisado_texto.docx")
+
+        if os.path.exists(docx_biblio):
+            path_docx = docx_biblio
+        elif os.path.exists(docx_texto):
+            path_docx = docx_texto
+        else:
+            print(f"⚠️ Nenhum documento revisado encontrado para {nome}, pulando.")
             continue
 
-        doc = Document(docx_path)
-        with open(json_map, "r", encoding="utf-8") as f:
-            mapa = json.load(f)
-
-        # extrai parágrafos >15 chars e de tabelas
-        parags = [p for p in doc.paragraphs 
-                  if p.text.strip() and len(p.text.strip()) > 15]
+        print(f"📂 Processando: {nome}")
+        doc = Document(path_docx)
+        parags = [p for p in doc.paragraphs if p.text.strip()]
         for table in doc.tables:
             for row in table.rows:
                 for cell in row.cells:
-                    for p in cell.paragraphs:
-                        if p.text.strip() and len(p.text.strip()) > 15:
-                            parags.append(p)
+                    parags.extend([p for p in cell.paragraphs if p.text.strip()])
 
-        revisoes, failures = [], []
-        tokens_in = tokens_out = 0
-        start_all = time.time()
+        blocos = agrupar_paragrafos(parags, max_bloco=3)
+        revisoes, ti_sum, to_sum = [], 0, 0
+        inicio = time.time()
 
-        with ThreadPoolExecutor(max_workers=workers_dinamicos()) as executor:
-            futures = {executor.submit(revisar_paragrafo, it, parags): it for it in mapa}
-            for fut in tqdm(as_completed(futures), total=len(futures),
-                             desc=f"🔎 {nome}"):
-                item = futures[fut]
+        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+            futures = {
+                executor.submit(tentar_revisar, PROMPT_REVISAO + f"\nTrecho:\n{bloco}"): idxs
+                for bloco, idxs in blocos
+            }
+            for fut in tqdm(as_completed(futures), total=len(futures), desc=f"🔧 Revisando {nome}"):
                 try:
-                    texto_item = parags[item["index"]].text
-                except:
-                    texto_item = ""
-                try:
-                    res = fut.result(timeout=result_wait)
-                except TimeoutError:
-                    failures.append({"index": item["index"], "texto": texto_item})
+                    resp = fut.result(timeout=TIMEOUT_SEC)
+                except Exception:
+                    print("⚠️ Timeout em um bloco de revisão.")
                     continue
-                if not res:
-                    failures.append({"index": item["index"], "texto": texto_item})
-                    continue
-                idx = res["index"]
-                # preserva prefixo numérico somente para títulos
-                if any('título' in t.lower() for t in item.get('tipo', [])):
-                    full = parags[idx].text
-                    m = re.match(r"^(\d+(?:\.\d+)*\s+)", full)
-                    prefix = m.group(1) if m else ""
-                    parags[idx].text = prefix + res["corrigido"]
-                else:
-                    parags[idx].text = res["corrigido"]
-                revisoes.append(res)
-                tokens_in += res["tokens_input"]
-                tokens_out += res["tokens_output"]
+                if resp:
+                    idxs = futures[fut]
+                    partes = [s.strip() for s in resp.split("\n\n") if s.strip()]
+                    for i, idx in enumerate(idxs):
+                        if i < len(partes):
+                            print(f"✅ Parágrafo {idx+1} revisado.")
+                            ti = contar_tokens(PROMPT_REVISAO + f"\nTrecho:\n{parags[idx].text.strip()}")
+                            to = contar_tokens(partes[i])
+                            parags[idx].text = partes[i]
+                            revisoes.append((idx, partes[i]))
+                            ti_sum += ti
+                            to_sum += to
 
-        # salva docx revisado e falhas
-        doc.save(os.path.join(pasta, f"{nome}_revisado_texto.docx"))
-        if failures:
-            with open(os.path.join(pasta, "falhas_textual.json"), "w", encoding="utf-8") as jf:
-                json.dump(failures, jf, ensure_ascii=False, indent=2)
+        doc.save(os.path.join(pasta, f"{nome}_revisado_completo.docx"))
+        print(f"📁 Documento salvo: {nome}_revisado_completo.docx")
 
-        # atualiza planilha e relatório
-        plan_path = os.path.join(pasta, "avaliacao_completa.xlsx")
-        wb = load_workbook(plan_path) if os.path.exists(plan_path) else Workbook()
-        if "Texto" not in wb.sheetnames:
-            aba = wb.create_sheet("Texto")
-            aba.append(["Parágrafo","Tipo","Texto Corrigido"])
-        else:
-            aba = wb["Texto"]
-        for rev in revisoes:
-            aba.append([rev["index"]+1, "Textual", rev["corrigido"]])
-        if "Resumo" not in wb.sheetnames:
-            resumo = wb.create_sheet("Resumo")
-            resumo.append(["Revisor","Tempo (s)","Tokens In","Tokens Out","USD","BRL"])
-        else:
-            resumo = wb["Resumo"]
-        tempo = round(time.time()-start_all, 1)
-        usd = (tokens_in*VALOR_INPUT + tokens_out*VALOR_OUTPUT)/1000
-        resumo.append(["Textual",tempo,tokens_in,tokens_out,round(usd,4),round(usd*COTACAO_DOLAR,2)])
-        wb.save(plan_path)
+        # Planilha
+        plan = os.path.join(pasta, "avaliacao_completa.xlsx")
+        wb = load_workbook(plan) if os.path.exists(plan) else Workbook()
+        aba = wb["Falhas"] if "Falhas" in wb.sheetnames else wb.create_sheet("Falhas")
+        if aba.max_row == 1:
+            aba.append(["Parágrafo", "Texto Corrigido"])
+        for idx, texto in revisoes:
+            aba.append([idx + 1, texto])
 
-        # gera relatório técnico
-        rel_path = os.path.join(pasta, f"relatorio_tecnico_{nome}.docx")
-        rel = Document(rel_path) if os.path.exists(rel_path) else Document()
-        if revisoes:
-            rel.add_page_break()
-            rel.add_heading("1. Revisão Textual Técnica", level=1)
-            for rev in revisoes:
-                par = rel.add_paragraph()
-                par.add_run(f"Parágrafo {rev['index']+1}: ").bold = True
-                par.add_run(rev.get("comentario",""))
-                if rev.get("ajustes"):
-                    rel.add_paragraph("Observações adicionais: "+", ".join(rev["ajustes"]),
-                                     style="Intense Quote")
-        rel.save(rel_path)
-        print(f"✅ Revisão aplicada: {nome}")
+        resumo = wb["Resumo"] if "Resumo" in wb.sheetnames else wb.create_sheet("Resumo")
+        if resumo.max_row == 1:
+            resumo.append(["Revisor", "Tempo (s)", "Tokens In", "Tokens Out", "USD", "BRL"])
+        tempo = round(time.time() - inicio, 1)
+        usd = (ti_sum * VALOR_INPUT + to_sum * VALOR_OUTPUT) / 1000
+        resumo.append(["Falhas", tempo, ti_sum, to_sum, round(usd, 4), round(usd * COTACAO_DOLAR, 2)])
+        wb.save(plan)
+        print(f"📊 Tokens totais: {ti_sum} in / {to_sum} out. Tempo: {tempo}s.\n")
 
 if __name__ == "__main__":
-    try:
-        aplicar(sys.argv[1:] if len(sys.argv)>1 else None)
-    except Exception:
-        print("❌ Erro:", traceback.format_exc())
-        sys.exit(1)
+    raw_args = [arg for arg in sys.argv[1:] if not arg.startswith("--")]
+    nomes = []
+    for arg in raw_args:
+        fname = Path(arg).name
+        if fname.lower().endswith(".docx"):
+            nomes.append(fname[:-5])
+        else:
+            nomes.append(fname)
+    aplicar(nomes=nomes)
