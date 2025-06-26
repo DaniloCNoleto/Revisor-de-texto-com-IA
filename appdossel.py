@@ -25,15 +25,15 @@ from pathlib import Path
 
 def get_url_param(param: str):
     """Retorna o valor do parâmetro da URL se existir."""
-    q = st.experimental_get_query_params()
+    q = st.query_params()
     return q.get(param, [None])[0]
 
 
 def set_url_param(param: str, value: str):
     """Grava/atualiza o parâmetro na URL sem recarregar a página."""
-    q = st.experimental_get_query_params()
+    q = st.query_params()
     q[param] = value
-    st.experimental_set_query_params(**q)
+    st.query_params(**q)
 
 
 # Estado inicial da página — primeiro acesso
