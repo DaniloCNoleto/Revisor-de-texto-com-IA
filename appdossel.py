@@ -13,10 +13,47 @@ import pandas as pd
 import plotly.express as px
 from passlib.hash import pbkdf2_sha256
 from datetime import datetime
+from urllib.parse import urlparse, parse_qs  # ➜ novo import para utilidades de URL
+from streamlit_option_menu import option_menu
+import streamlit as st
+import shutil
+from pathlib import Path
+
+# ------------------------------------------------------------------
+# URL ‑ Sincronizar a página do app com o parâmetro "?pagina="
+# ------------------------------------------------------------------
+
+def get_url_param(param: str):
+    """Retorna o valor do parâmetro da URL se existir."""
+    q = st.experimental_get_query_params()
+    return q.get(param, [None])[0]
 
 
+def set_url_param(param: str, value: str):
+    """Grava/atualiza o parâmetro na URL sem recarregar a página."""
+    q = st.experimental_get_query_params()
+    q[param] = value
+    st.experimental_set_query_params(**q)
 
-# --- Paths e DB ---
+
+# Estado inicial da página — primeiro acesso
+if "pagina" not in st.session_state:
+    pagina_url = get_url_param("pagina")
+    st.session_state["pagina"] = pagina_url if pagina_url else ("login" if "user" not in st.session_state else "upload")
+
+
+# Mantém a URL sempre refletindo o estado atual
+# (será executado a cada rerun do Streamlit)
+
+def _sync_url():
+    set_url_param("pagina", st.session_state.get("pagina", "upload"))
+
+_sync_url()
+
+# ------------------------------------------------------------------
+# ------------------------ Paths e DB ------------------------------
+# ------------------------------------------------------------------
+
 DB_PATH = Path("users.db")
 PASTA_ENTRADA = Path("entrada")
 PASTA_SAIDA = Path("saida")
@@ -27,6 +64,7 @@ LOG_FALHADOS = Path("documentos_falhados.txt")
 QUEUE_FILE = Path("queue.txt")
 
 # --- Inicialização do DB ---
+
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
@@ -58,14 +96,17 @@ def init_db():
     conn.close()
 
 # --- Autenticação ---
+
 def hash_password(password: str) -> str:
     return pbkdf2_sha256.hash(password)
+
 
 def verify_password(password: str, hash_str: str) -> bool:
     try:
         return pbkdf2_sha256.verify(password, hash_str)
     except:
         return False
+
 
 def register_user(username: str, email: str, full_name: str, password: str) -> bool:
     conn = sqlite3.connect(DB_PATH)
@@ -85,6 +126,7 @@ def register_user(username: str, email: str, full_name: str, password: str) -> b
     finally:
         conn.close()
 
+
 def authenticate_user(username: str, password: str) -> dict | None:
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
@@ -96,6 +138,7 @@ def authenticate_user(username: str, password: str) -> dict | None:
     return None
 
 # --- Histórico de Revisões ---
+
 def log_revision(user_id: int, file_name: str, processed_path: str):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
@@ -108,6 +151,7 @@ def log_revision(user_id: int, file_name: str, processed_path: str):
     conn.commit()
     conn.close()
 
+
 def get_history(user_id: int) -> list[tuple]:
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
@@ -119,17 +163,22 @@ def get_history(user_id: int) -> list[tuple]:
     return rows
 
 # --- Fila e status ---
+
 def load_queue():
     if QUEUE_FILE.exists(): return [l.strip() for l in QUEUE_FILE.read_text().splitlines() if l.strip()]
     return []
+
 def save_queue(q): QUEUE_FILE.write_text("\n".join(q))
+
 def add_to_queue(nome):
     q = load_queue();
     if nome not in q: q.append(nome); save_queue(q)
     return q.index(nome) + 1
+
 def remove_from_queue(nome):
     q = load_queue();
     if nome in q: q.remove(nome); save_queue(q)
+
 
 # --- CSS e Layout ---
 def apply_css():
@@ -426,10 +475,8 @@ def page_progress():
             )
             st.session_state['processo_iniciado'] = True
 
-    # lê valor de progresso
     v = int(STATUS_PATH.read_text().strip()) if STATUS_PATH.exists() else 0
 
-    # exibe a barra de progresso estilizada
     bar_html = f"""
     <div style="position: relative; width: 100%; background-color: #f0f0f0;
                 border-radius: 4px; height: 30px; margin-bottom: 10px;">
@@ -442,31 +489,30 @@ def page_progress():
     """
     st.markdown(bar_html, unsafe_allow_html=True)
 
-    # botões Voltar (para upload) e Logout (para login)
-    col_back, col_cancel = st.columns(2)
-    with col_back:
-        if st.button('🔙 Voltar', key='back_progress'):
-            st.session_state['pagina'] = 'upload'
-            st.rerun()
-    with col_cancel:
-        if st.button('❌ Cancelar Revisão', key='cancel_progress'):
-            nome = st.session_state.get('nome')
-            if nome:
-                pasta = PASTA_SAIDA / nome
-                if pasta.exists(): shutil.rmtree(pasta)
-            for f in [STATUS_PATH, LOG_PROCESSADOS, LOG_FALHADOS]:
-                if f.exists(): f.unlink()
-            remove_from_queue(nome)
-            for key in list(st.session_state.keys()):
-                if key != 'user':
-                    del st.session_state[key]
-            st.session_state['pagina'] = 'upload'
-            st.rerun()
-            st.rerun()
-
     if v < 100:
+        col_back, col_cancel = st.columns(2)
+        with col_back:
+            if st.button('🔙 Voltar', key='back_progress'):
+                st.session_state['pagina'] = 'mode'
+                st.rerun()
+        with col_cancel:
+            if st.button('❌ Cancelar Revisão', key='cancel_progress'):
+                nome = st.session_state.get('nome')
+                if nome:
+                    pasta = PASTA_SAIDA / nome
+                    if pasta.exists(): shutil.rmtree(pasta)
+                for f in [STATUS_PATH, LOG_PROCESSADOS, LOG_FALHADOS]:
+                    if f.exists(): f.unlink()
+                remove_from_queue(nome)
+                for key in list(st.session_state.keys()):
+                    if key != 'user':
+                        del st.session_state[key]
+                st.session_state['pagina'] = 'upload'
+                st.rerun()
+
         time.sleep(1)
         st.rerun()
+
     else:
         st.success('✅ Revisão concluída!')
         st.session_state['pagina'] = 'resultados'
@@ -633,49 +679,91 @@ def main():
         return
 
     # Sidebar estilizada
-    st.sidebar.markdown("""
-    <style>
-    .sidebar-title {
-        font-size: 1.2rem;
-        font-weight: bold;
-        margin-top: 1rem;
-        margin-bottom: 0.5rem;
-    }
-    .sidebar-footer {
-        margin-top: 40vh;
-        text-align: center;
-    }
-    </style>
-    <div class='sidebar-title'>Menu</div>
-    """, unsafe_allow_html=True)
+    st.markdown("""
+<style>
+/* Largura compacta da sidebar */
+section[data-testid="stSidebar"]{width:220px !important}
+.css-1d391kg{padding-top:1rem !important}
+.css-1v0mbdj{padding-top:1rem !important}
 
-    choice = st.sidebar.radio("Escolha uma opção:", ["Nova Revisão", "Histórico"])
+/* Tipografia e hover */
+.nav-link{font-size:0.95rem !important;font-weight:500}
+.nav-link:hover{background:#f0f0f0 !important;border-radius:8px}
 
-    st.sidebar.markdown("<div class='sidebar-footer'>", unsafe_allow_html=True)
-    if st.sidebar.button("❌ Logout (sair)"):
+/* Rodapé da sidebar */
+.sidebar-footer{margin-top:3rem;text-align:center;font-size:0.85rem;color:#888}
+</style>
+""", unsafe_allow_html=True)
+
+# ──────────────────────────────────────────────────────────────
+# 🗂️ 2. MENU LATERAL
+with st.sidebar:
+    choice = option_menu(
+        menu_title=None,
+        options=["Nova Revisão", "Histórico", "Configurações"],
+        icons=["file-earmark-text", "clock-history", "gear"],
+        default_index=0,
+        styles={
+            "container": {"padding": "0!important", "background-color": "#ffffff"},
+            "icon": {"color": "#16a085", "font-size": "18px"},
+            "nav-link": {
+                "margin": "2px 0",
+                "--hover-color": "#f7f7f7",
+            },
+            "nav-link-selected": {"background-color": "#d1f2eb"},
+        }
+    )
+
+    # ─── Botão de logout ───────────────────────────────────────
+    st.markdown("<div class='sidebar-footer'>", unsafe_allow_html=True)
+    if st.button("❌ Logout (sair)"):
         nome = st.session_state.get('nome')
         if nome:
-            pasta = PASTA_SAIDA / nome
+            pasta = Path("saida") / nome
             if pasta.exists():
                 shutil.rmtree(pasta)
-        for f in [STATUS_PATH, LOG_PROCESSADOS, LOG_FALHADOS]:
-            if f.exists():
-                f.unlink()
-        remove_from_queue(nome)
+        for f in ["status.txt", "documentos_processados.txt", "documentos_falhados.txt"]:
+            p = Path(f)
+            if p.exists():
+                p.unlink()
         st.session_state.clear()
         st.rerun()
-    st.sidebar.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
-    header()
-    if choice == "Nova Revisão":
-        pag = st.session_state.get('pagina', 'upload')
-        if pag == 'upload': page_upload()
-        elif pag == 'modo': page_mode()
-        elif pag == 'acompanhamento': page_progress()
-        elif pag == 'resultados': page_results()
-    else:
-        page_history()
-    footer()
+# ──────────────────────────────────────────────────────────────
+# 🌀 3. ROTEAMENTO PRINCIPAL
+def header(): 
+    st.title("Revisor Dossel")  # (exemplo) substitua pelo seu header real
+
+def footer(): 
+    st.write("© 2025 Dossel Ambiental")  # (exemplo)
+
+# Suas páginas já existentes
+def page_upload():          ...
+def page_mode():            ...
+def page_progress():        ...
+def page_results():         ...
+def page_history():         ...
+
+# Exibição condicional
+header()
+
+if choice == "Nova Revisão":
+    pag = st.session_state.get('pagina', 'upload')
+    if pag == 'upload':
+        page_upload()
+    elif pag == 'modo':
+        page_mode()
+    elif pag == 'acompanhamento':
+        page_progress()
+    elif pag == 'resultados':
+        page_results()
+elif choice == "Histórico":
+    page_history()
+else:  # Configurações ou outro item
+    st.write("⚙️ Configurações (em construção)")
+
+footer()
 
 if __name__ == "__main__":
     main()
