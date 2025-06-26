@@ -2,8 +2,6 @@ streamlit
 python-docx
 rich
 
----
-
 ## 📝 Execução
 
 1. Coloque o documento .docx na pasta raiz.
