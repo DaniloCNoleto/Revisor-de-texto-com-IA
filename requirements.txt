@@ -9,3 +9,4 @@ tiktoken
 passlib
 pandas
 plotly
+passlib==1.7.4
