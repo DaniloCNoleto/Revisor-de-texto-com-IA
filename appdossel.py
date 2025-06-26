@@ -47,9 +47,11 @@ else:
 # (será executado a cada rerun do Streamlit)
 
 def _sync_url():
-    set_url_param("pagina", st.session_state.get("pagina", "upload"))
+    pag = st.session_state.get("pagina", "upload")
+    if pag not in ["login", "upload", "modo", "acompanhamento", "resultados"]:
+        pag = "login"
+    set_url_param("pagina", pag)
 
-_sync_url()
 
 # ------------------------------------------------------------------
 # ------------------------ Paths e DB ------------------------------
@@ -260,6 +262,14 @@ def apply_css():
         }
     </style>
     """, unsafe_allow_html=True)
+    if "user" not in st.session_state:
+            st.session_state["pagina"] = "login"
+            header()
+            page_login()
+            footer()
+            st.stop()
+
+
 
 def header():
     st.markdown('<div class="main-box">', unsafe_allow_html=True)
