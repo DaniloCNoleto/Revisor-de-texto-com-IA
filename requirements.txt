@@ -1,10 +1,11 @@
 streamlit
+openai
+python-dotenv
 python-docx
-rich
-
-## 📝 Execução
-
-1. Coloque o documento .docx na pasta raiz.
-2. Edite o nome do arquivo na variável `ARQUIVO` dentro do `revisor_dossel_v2_final.py`.
-3. Execute o primeiro script com:
-
+openpyxl
+tqdm
+requests
+tiktoken
+passlib
+pandas
+plotly
