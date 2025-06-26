@@ -25,15 +25,15 @@ from pathlib import Path
 
 def get_url_param(param: str):
     """Retorna o valor do parâmetro da URL se existir."""
-    q = st.experimental_get_query_params()
+    q = st.get_query_params()
     return q.get(param, [None])[0]
 
 
 def set_url_param(param: str, value: str):
     """Grava/atualiza o parâmetro na URL sem recarregar a página."""
-    q = st.experimental_get_query_params()
+    q = st.get_query_params()
     q[param] = value
-    st.experimental_set_query_params(**q)
+    st.set_query_params(**q)
 
 
 # Estado inicial da página — primeiro acesso
@@ -678,90 +678,79 @@ def main():
         page_login()
         return
 
-    # Sidebar estilizada
+    # 2. FUNÇÃO GLOBAL — sem indentação extra!
+def build_sidebar() -> str:
+    with st.sidebar:
+        choice = option_menu(
+            menu_title=None,
+            options=["Nova Revisão", "Histórico", "Configurações"],
+            icons=["file-earmark-text", "clock-history", "gear"],
+            default_index=0,
+            styles={
+                "container": {"padding": "0!important", "background-color": "#ffffff"},
+                "icon": {"color": "#16a085", "font-size": "18px"},
+                "nav-link": {"margin": "2px 0", "--hover-color": "#f7f7f7"},
+                "nav-link-selected": {"background-color": "#d1f2eb"},
+            }
+        )
+
+        # ── Rodapé / Logout
+        st.markdown("<div class='sidebar-footer'>", unsafe_allow_html=True)
+        if st.button("❌ Logout (sair)", use_container_width=True):
+            nome = st.session_state.get('nome')
+            if nome:
+                pasta = Path("saida") / nome
+                if pasta.exists():
+                    shutil.rmtree(pasta)
+            for f in ["status.txt", "documentos_processados.txt", "documentos_falhados.txt"]:
+                p = Path(f)
+                if p.exists():
+                    p.unlink()
+            st.session_state.clear()
+            st.rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    return choice
+# ──────────────────────────────────────────────────────────────
+# 3. LÓGICA DE EXIBIÇÃO DA SIDEBAR
+pagina_atual = st.session_state.get("pagina", "login")
+
+if pagina_atual != "login":
+    choice = build_sidebar()          # ← função agora existe aqui
+else:
     st.markdown("""
-<style>
-/* Largura compacta da sidebar */
-section[data-testid="stSidebar"]{width:220px !important}
-.css-1d391kg{padding-top:1rem !important}
-.css-1v0mbdj{padding-top:1rem !important}
-
-/* Tipografia e hover */
-.nav-link{font-size:0.95rem !important;font-weight:500}
-.nav-link:hover{background:#f0f0f0 !important;border-radius:8px}
-
-/* Rodapé da sidebar */
-.sidebar-footer{margin-top:3rem;text-align:center;font-size:0.85rem;color:#888}
-</style>
-""", unsafe_allow_html=True)
+        <style>
+        section[data-testid="stSidebar"] {display: none;}
+        </style>
+    """, unsafe_allow_html=True)
+    choice = None
 
 # ──────────────────────────────────────────────────────────────
-# 🗂️ 2. MENU LATERAL
-with st.sidebar:
-    choice = option_menu(
-        menu_title=None,
-        options=["Nova Revisão", "Histórico", "Configurações"],
-        icons=["file-earmark-text", "clock-history", "gear"],
-        default_index=0,
-        styles={
-            "container": {"padding": "0!important", "background-color": "#ffffff"},
-            "icon": {"color": "#16a085", "font-size": "18px"},
-            "nav-link": {
-                "margin": "2px 0",
-                "--hover-color": "#f7f7f7",
-            },
-            "nav-link-selected": {"background-color": "#d1f2eb"},
-        }
-    )
+# 4. ROTEAMENTO (mantém igual ao exemplo anterior)
+def header():   ...
+def footer():   ...
+def page_login():          ...
+def page_upload():         ...
+def page_mode():           ...
+def page_progress():       ...
+def page_results():        ...
+def page_history():        ...
 
-    # ─── Botão de logout ───────────────────────────────────────
-    st.markdown("<div class='sidebar-footer'>", unsafe_allow_html=True)
-    if st.button("❌ Logout (sair)"):
-        nome = st.session_state.get('nome')
-        if nome:
-            pasta = Path("saida") / nome
-            if pasta.exists():
-                shutil.rmtree(pasta)
-        for f in ["status.txt", "documentos_processados.txt", "documentos_falhados.txt"]:
-            p = Path(f)
-            if p.exists():
-                p.unlink()
-        st.session_state.clear()
-        st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# ──────────────────────────────────────────────────────────────
-# 🌀 3. ROTEAMENTO PRINCIPAL
-def header(): 
-    st.title("Revisor Dossel")  # (exemplo) substitua pelo seu header real
-
-def footer(): 
-    st.write("© 2025 Dossel Ambiental")  # (exemplo)
-
-# Suas páginas já existentes
-def page_upload():          ...
-def page_mode():            ...
-def page_progress():        ...
-def page_results():         ...
-def page_history():         ...
-
-# Exibição condicional
 header()
 
-if choice == "Nova Revisão":
-    pag = st.session_state.get('pagina', 'upload')
-    if pag == 'upload':
-        page_upload()
-    elif pag == 'modo':
-        page_mode()
-    elif pag == 'acompanhamento':
-        page_progress()
-    elif pag == 'resultados':
-        page_results()
-elif choice == "Histórico":
-    page_history()
-else:  # Configurações ou outro item
-    st.write("⚙️ Configurações (em construção)")
+if pagina_atual == "login":
+    page_login()
+else:
+    if choice == "Nova Revisão":
+        pag = st.session_state.get('pagina', 'upload')
+        if pag == 'upload':            page_upload()
+        elif pag == 'modo':            page_mode()
+        elif pag == 'acompanhamento':  page_progress()
+        elif pag == 'resultados':      page_results()
+    elif choice == "Histórico":
+        page_history()
+    else:
+        st.write("⚙️ Configurações… (em construção)")
 
 footer()
 
