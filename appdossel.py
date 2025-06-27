@@ -685,15 +685,14 @@ def main():
     init_db()
     apply_css()
 
-    # 🔄 Sincroniza ?pagina=... da URL com session_state["pagina"]
+    # 🔄 Recupera a página da URL (?pagina=...)
     pagina_url = get_url_param("pagina")
     if pagina_url in ["upload", "modo", "acompanhamento", "resultados", "historico"]:
         st.session_state["pagina"] = pagina_url
     elif "pagina" not in st.session_state:
         st.session_state["pagina"] = "login" if "user" not in st.session_state else "upload"
 
-
-    # 🔐 Login obrigatório
+    # 🔐 Se não estiver logado, mostra a tela de login
     if "user" not in st.session_state:
         st.session_state["pagina"] = "login"
         header()
@@ -703,26 +702,28 @@ def main():
 
     # === SIDEBAR ===
     with st.sidebar:
+        pagina_atual = st.session_state.get("pagina", "upload")
+        index_padrao = 1 if pagina_atual == "historico" else 0
+
         secao = option_menu(
             menu_title=None,
             options=["Nova Revisão", "Histórico"],
             icons=["file-earmark-text", "clock-history"],
-            default_index=0 if st.session_state.get("pagina") != "historico" else 1,
+            default_index=index_padrao,
             styles={
                 "container": {"padding": "0!important", "background-color": "#ffffff"},
                 "icon": {"color": "#16a085", "font-size": "18px"},
                 "nav-link": {"margin": "2px 0", "--hover-color": "#f7f7f7"},
                 "nav-link-selected": {"background-color": "#d1f2eb"},
             }
-    )
+        )
 
-    if secao == "Histórico":
-        set_url_param("pagina", "historico")
-    else:
-        if st.session_state.get("pagina") == "historico":
-            set_url_param("pagina", "upload")
-
-        
+        # Sidebar atualiza a URL, que vai controlar o conteúdo
+        if secao == "Histórico":
+            set_url_param("pagina", "historico")
+        else:
+            if pagina_atual == "historico":
+                set_url_param("pagina", "upload")
 
         if st.button("❌ Logout (sair)", use_container_width=True):
             nome = st.session_state.get('nome')
@@ -741,16 +742,25 @@ def main():
     # === CONTEÚDO PRINCIPAL ===
     header()
 
-    # Sidebar decide apenas a URL
-    if secao == "Histórico":
-        set_url_param("pagina", "historico")
-    else:
-        set_url_param("pagina", "upload")
+    pagina = st.session_state.get("pagina", "upload")
 
+    if pagina == "historico":
+        page_history()
+    elif pagina == "upload":
+        page_upload()
+    elif pagina == "modo":
+        page_mode()
+    elif pagina == "acompanhamento":
+        page_progress()
+    elif pagina == "resultados":
+        page_results()
+    else:
+        st.warning(f"⚠️ Página inválida: {pagina}")
 
     footer()
 
-    # 🌐 Atualiza a URL com a página atual
+    # 🔁 Reflete a página atual na URL
     _sync_url()
+
 if __name__ == "__main__":
     main()
