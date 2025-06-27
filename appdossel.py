@@ -286,8 +286,12 @@ def page_login():
     if st.button("Entrar", key="login_enter"):
         user = authenticate_user(username, password)
         if user:
+            st.session_state.clear()
             st.session_state['user'] = user
+            st.session_state['pagina'] = 'upload'
+            set_url_param("pagina", "upload")
             st.rerun()
+
         else:
             st.error("Credenciais inválidas")
     st.markdown("---")
