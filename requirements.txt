@@ -11,3 +11,5 @@ pandas
 plotly
 streamlit-option-menu
 typing-extensions
+streamlit_option_menu
+option_menu
