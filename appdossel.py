@@ -690,12 +690,13 @@ def main():
     init_db()
     apply_css()
 
-    # 🔄 Sincroniza ?pagina=... com session_state["pagina"]
-    pagina_url = get_url_param("pagina")
-    if pagina_url in ["upload", "modo", "acompanhamento", "resultados", "historico", "login"]:
-        st.session_state["pagina"] = pagina_url
-    elif "pagina" not in st.session_state:
-        st.session_state["pagina"] = "login" if "user" not in st.session_state else "upload"
+    # 🔄 Sincroniza ?pagina=... com session_state["pagina"], mas só se ainda não estiver definida
+    if "pagina" not in st.session_state:
+        pagina_url = get_url_param("pagina")
+        if pagina_url in ["upload", "modo", "acompanhamento", "resultados", "historico", "login"]:
+            st.session_state["pagina"] = pagina_url
+        else:
+            st.session_state["pagina"] = "login" if "user" not in st.session_state else "upload"
 
     # 🔐 Redireciona para login se não autenticado
     if "user" not in st.session_state:
@@ -752,9 +753,6 @@ def main():
 
     pagina = st.session_state.get("pagina", "upload")
 
-    # 🔎 Diagnóstico para garantir que está interpretando corretamente a página
-    st.write("🔁 Página ativa no main():", pagina)
-
     if pagina == "login":
         page_login()
     elif pagina == "historico":
@@ -762,7 +760,6 @@ def main():
     elif pagina == "upload":
         page_upload()
     elif pagina == "modo":
-        st.write("🚀 Chamando page_mode()")
         page_mode()
     elif pagina == "acompanhamento":
         page_progress()
@@ -773,10 +770,8 @@ def main():
 
     footer()
 
-    # 🌐 Atualiza a URL com a página atual
+    # 🌐 Atualiza a URL com a página atual (sincronização final)
     _sync_url()
-
-
 
 if __name__ == "__main__":
     main()
