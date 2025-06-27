@@ -423,10 +423,9 @@ def page_upload():
             st.session_state['entrada_path'] = str(file_path)
             st.session_state['pagina'] = 'modo'
 
-            # ✅ Atualiza URL corretamente
+            # Atualiza a URL e para a execução (deixa a URL aplicar)
             set_url_param("pagina", "modo")
-            st.rerun()
-
+            st.stop()
 
 
     
