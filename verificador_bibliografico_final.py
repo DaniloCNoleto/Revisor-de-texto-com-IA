@@ -162,8 +162,9 @@ def aplicar(nomes=None, usuario=""):
     if nomes:
         to_process = nomes
     else:
-        to_process = [d for d in os.listdir(PASTA_SAIDA) 
-                      if os.path.isdir(os.path.join(PASTA_SAIDA, d))]
+        base = os.path.join(PASTA_SAIDA, usuario)
+        to_process = [d for d in os.listdir(base)
+                      if os.path.isdir(os.path.join(base, d))]
 
     pasta_base = os.path.join(PASTA_SAIDA, usuario)
 
