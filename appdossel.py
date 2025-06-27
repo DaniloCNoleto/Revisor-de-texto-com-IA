@@ -586,8 +586,11 @@ def page_progress():
 
 def page_results():
     # 🚫 Se dados básicos faltarem, volta para upload
+    user     = st.session_state.get("user") 
     nome     = st.session_state.get("nome")
-    usuario  = st.session_state.get("usuario")
+    usuario  = user["username"] if user else st.session_state.get("usuario")
+    lite     = st.session_state.get("modo_lite", False)
+    
     if not (nome and usuario):
         st.session_state["pagina"] = "upload"
         st.rerun()
@@ -600,7 +603,7 @@ def page_results():
         st.session_state["removed_from_queue"] = True
 
     # --- Caminhos padrão ---------------------------------------------------
-    src_dir = PASTA_SAIDA / usuario['username'] / nome
+    src_dir = PASTA_SAIDA / user['username'] / nome
     xlsx    = src_dir / "avaliacao_completa.xlsx"
     tokens  = src_dir / "mapeamento_tokens.xlsx"
 
