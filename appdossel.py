@@ -311,29 +311,52 @@ def page_register():
 
 def page_history():
     st.subheader("Histórico de Revisões")
-    user = st.session_state['user']
+
+    user = st.session_state.get("user")
     if not user:
         st.error("Usuário não autenticado.")
         return
-    usuario = user['username']
-    rows = get_history(user['id'])
+
+    usuario = user["username"]
+    rows = get_history(user["id"])          # (file_name, processed_path, timestamp)
     if not rows:
         st.info("Nenhuma revisão encontrada.")
         return
+
+    # Mais recente primeiro
     rows = sorted(rows, key=lambda x: x[2], reverse=True)
 
-    for fname, path, ts in rows:
-        data_br = datetime.fromisoformat(ts).strftime('%d/%m/%Y')
+    for fname, processed_path, ts_iso in rows:
+        data_br = datetime.fromisoformat(ts_iso).strftime("%d/%m/%Y")
         st.write(f"**{data_br} — {fname}**")
 
-        p = Path(PASTA_SAIDA) / usuario / fname
-        if p.is_dir():
-            doc_final = None
-            tipo = "Desconhecido"
-            relatorio = None
+        # ---------------------------------------------------------------
+        # 1️⃣ Caminho salvo no banco
+        dir_saida = Path(processed_path) if processed_path else None
 
-            for child in p.iterdir():
-                if "_revisado" in child.name and child.suffix == ".docx" and not doc_final:
+        # 2️⃣ Caminho "padrão" (caso o banco não tenha ou foi movido)
+        if not (dir_saida and dir_saida.exists()):
+            dir_saida = Path(PASTA_SAIDA) / usuario / fname
+
+        # 3️⃣ Busca em toda a árvore se ainda não achar
+        if not dir_saida.exists():
+            encontrados = list(Path(PASTA_SAIDA).glob(f"*/{fname}"))
+            if encontrados:
+                dir_saida = encontrados[0]
+
+        # ---------------------------------------------------------------
+        if not dir_saida.exists() or not dir_saida.is_dir():
+            st.warning("⚠️ Pasta de saída não encontrada para este item.")
+            continue
+
+        # Procura arquivos dentro da pasta
+        doc_final  = None
+        relatorio  = None
+        tipo       = "Desconhecido"
+
+        for child in dir_saida.iterdir():
+            if child.suffix == ".docx":
+                if "_revisado" in child.name and not doc_final:
                     doc_final = child
                     if "completo" in child.name:
                         tipo = "Revisão Completa"
@@ -345,30 +368,28 @@ def page_history():
                         tipo = "Revisão Bibliográfica"
                     else:
                         tipo = "Revisado"
-                elif "relatorio_tecnico" in child.name and child.suffix == ".docx":
+                elif child.name.startswith("relatorio_tecnico"):
                     relatorio = child
 
-            st.caption(f"🧾 Tipo: {tipo}")
+        st.caption(f"🧾 Tipo: {tipo}")
 
-            col1, col2 = st.columns(2)
-            if doc_final and doc_final.is_file():
-                with col1:
-                    st.download_button(
-                        label="📄 Download Revisado",
-                        data=doc_final.read_bytes(),
-                        file_name=doc_final.name,
-                        key=f"{fname}_{ts}_{doc_final.name}"
-                    )
-            if relatorio and relatorio.is_file():
-                with col2:
-                    st.download_button(
-                        label="📑 Download Relatório",
-                        data=relatorio.read_bytes(),
-                        file_name=relatorio.name,
-                        key=f"{fname}_{ts}_{relatorio.name}"
-                    )
-        else:
-            st.warning("⚠️ Pasta de saída não encontrada para este item.")
+        col1, col2 = st.columns(2)
+        if doc_final and doc_final.is_file():
+            with col1:
+                st.download_button(
+                    label="📄 Download Revisado",
+                    data=doc_final.read_bytes(),
+                    file_name=doc_final.name,
+                    key=f"{fname}_{ts_iso}_{doc_final.name}"
+                )
+        if relatorio and relatorio.is_file():
+            with col2:
+                st.download_button(
+                    label="📑 Download Relatório",
+                    data=relatorio.read_bytes(),
+                    file_name=relatorio.name,
+                    key=f"{fname}_{ts_iso}_{relatorio.name}"
+                )
 
 
 
