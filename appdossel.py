@@ -20,34 +20,6 @@ import shutil
 from pathlib import Path
 
 # ------------------------------------------------------------------
-# URL ‑ Sincronizar a página do app com o parâmetro "?pagina="
-# ------------------------------------------------------------------
-
-def get_url_param(param: str):
-    """Lê o parâmetro da URL usando a nova API do Streamlit."""
-    return st.query_params.get(param, [None])[0]
-
-def set_url_param(param: str, value: str):
-    """Atualiza um parâmetro na URL de forma segura."""
-    q = st.query_params
-    q[param] = value
-    st.query_params = q  # <- isso efetiva a mudança
-
-
-
-
-# Mantém a URL sempre refletindo o estado atual
-# (será executado a cada rerun do Streamlit)
-
-def _sync_url():
-    pag = st.session_state.get("pagina", "upload")
-    if pag not in ["upload", "modo", "acompanhamento", "resultados", "historico"]:
-        return
-    set_url_param("pagina", pag)
-
-
-
-# ------------------------------------------------------------------
 # ------------------------ Paths e DB ------------------------------
 # ------------------------------------------------------------------
 
@@ -289,7 +261,6 @@ def page_login():
             st.session_state.clear()
             st.session_state['user'] = user
             st.session_state['pagina'] = 'upload'
-            set_url_param("pagina", "upload")
             st.rerun()
 
         else:
@@ -384,8 +355,12 @@ def page_history():
 
 # --- Fluxo Original de Revisão ---
 def page_upload():
-    if 'pagina' not in st.session_state:
-        st.session_state['pagina'] = 'upload'
+    if st.session_state.get("pagina") != "upload":
+        return
+
+    # Limpa estados antigos que atrapalham a transição
+    for key in ['modo_selected', 'modo_lite', 'removed_from_queue', 'want_start', 'processo_iniciado', 'entrada_path']:
+        st.session_state.pop(key, None)
 
     st.subheader("Envie um arquivo .docx para revisão:")
     arquivo = st.file_uploader("Selecione um arquivo .docx para revisão:", type="docx", label_visibility='collapsed')
@@ -394,28 +369,40 @@ def page_upload():
         return
 
     nome = arquivo.name.replace('.docx', '')
+    usuario = st.session_state['user']['username']
     st.session_state['nome'] = nome
+    st.session_state['usuario'] = usuario
     st.write(f"**Arquivo carregado:** {nome}")
 
     if st.button(f"▶️ Iniciar Revisão: {nome}"):
-        pos = add_to_queue(nome)
-        if pos > 1:
-            st.warning(f"📋 Sua revisão está na posição {pos} da fila. Aguarde sua vez.")
-        else:
-            PASTA_ENTRADA.mkdir(exist_ok=True)
-            for fpath in PASTA_ENTRADA.iterdir():
-                fpath.unlink()
+        st.session_state['want_start'] = True
 
-            file_path = PASTA_ENTRADA / arquivo.name
-            with open(file_path, 'wb') as f:
-                f.write(arquivo.getbuffer())
+    if st.session_state.get('want_start'):
+        # Cria pasta de entrada específica do usuário
+        pasta_entrada_usuario = PASTA_ENTRADA / usuario
+        pasta_entrada_usuario.mkdir(parents=True, exist_ok=True)
 
-            st.session_state['entrada_path'] = str(file_path)
-            st.session_state['pagina'] = 'modo'
-            st.rerun()
+        # Limpa arquivos anteriores
+        for fpath in pasta_entrada_usuario.iterdir():
+            try:
+                if fpath.is_file():
+                    fpath.unlink()
+                elif fpath.is_dir():
+                    shutil.rmtree(fpath)
+            except FileNotFoundError:
+                pass
+
+        file_path = pasta_entrada_usuario / arquivo.name
+        with open(file_path, 'wb') as f:
+            f.write(arquivo.getbuffer())
+
+        # Atualiza estado e avança para próxima página
+        st.session_state['entrada_path'] = str(file_path)
+        st.session_state['pagina'] = 'modo'
+        st.rerun()
+
 
 def page_mode():
-    st.write("🚀 Entrou na page_mode()")
     nome = st.session_state['nome']
 
     if not st.session_state.get('modo_selected'):
@@ -424,14 +411,13 @@ def page_mode():
         if c1.button('🔎 Revisão Completa'):
             st.session_state['modo_selected'] = True
             st.session_state['modo_lite'] = False
-            set_url_param("pagina", "modo")
             st.rerun()
         if c2.button('⚡ Revisão Lite'):
             st.session_state['modo_selected'] = True
             st.session_state['modo_lite'] = True
-            set_url_param("pagina", "modo")
             st.rerun()
-    else:
+
+    elif not st.session_state.get('pagina') == 'acompanhamento':  # <-- evita reexibir se já mudou
         modo = 'Lite' if st.session_state['modo_lite'] else 'Completa'
         st.markdown(f"#### Você quer realizar a revisão **{modo}** do documento **{nome}**?")
         col1, col2 = st.columns([1, 1])
@@ -439,15 +425,11 @@ def page_mode():
             if st.button('✅ Confirmar Revisão'):
                 st.session_state['pagina'] = 'acompanhamento'
                 st.session_state['processo_iniciado'] = False
-                set_url_param("pagina", "acompanhamento")
                 st.rerun()
         with col2:
             if st.button('🔙 Voltar'):
                 st.session_state['pagina'] = 'upload'
-                set_url_param("pagina", "upload")
                 st.rerun()
-
-
     
 def page_progress():
     entrada_path = st.session_state.get('entrada_path')
@@ -455,7 +437,6 @@ def page_progress():
 
     if not entrada_path or not nome:
         st.session_state['pagina'] = 'upload'
-        set_url_param("pagina", "upload")
         st.rerun()
 
     lite = st.session_state.get('modo_lite', False)
@@ -484,14 +465,14 @@ def page_progress():
             return
 
         with st.spinner('👷 Iniciando gerenciador...'):
+            usuario = st.session_state['user']['username']
             subprocess.Popen(
-                [sys.executable, str(gerenciador), entrada_path] +
+                [sys.executable, str(gerenciador), entrada_path, usuario] +
                 (['--lite'] if lite else [])
-            )
+)
+
             st.session_state['processo_iniciado'] = True
 
-        # ✅ Garante que a URL seja atualizada para a página de acompanhamento
-        set_url_param("pagina", "acompanhamento")
         st.rerun()
 
     # 🔄 Atualiza barra de progresso
@@ -514,7 +495,6 @@ def page_progress():
         with col_back:
             if st.button('🔙 Voltar', key='back_progress'):
                 st.session_state['pagina'] = 'modo'
-                set_url_param("pagina", "modo")
                 st.rerun()
 
         with col_cancel:
@@ -532,7 +512,6 @@ def page_progress():
                     if key != 'user':
                         del st.session_state[key]
                 st.session_state['pagina'] = 'upload'
-                set_url_param("pagina", "upload")
                 st.rerun()
 
         time.sleep(1)
@@ -541,7 +520,6 @@ def page_progress():
     else:
         st.success('✅ Revisão concluída!')
         st.session_state['pagina'] = 'resultados'
-        set_url_param("pagina", "resultados")
         st.rerun()
 
 def page_results():
@@ -549,14 +527,10 @@ def page_results():
     nome = st.session_state.get('nome')
     if not nome:
         st.session_state["pagina"] = "upload"
-        set_url_param("pagina", "upload")
         st.rerun()
 
     lite = st.session_state.get('modo_lite', False)
 
-    # ✅ Garante URL correta
-    if st.query_params.get("pagina", [""])[0] != "resultados":
-        set_url_param("pagina", "resultados")
 
     # Remove da fila na primeira renderização
     if not st.session_state.get('removed_from_queue', False):
@@ -669,21 +643,13 @@ def main():
     init_db()
     apply_css()
 
-    # 🔄 Sincroniza session_state["pagina"] com ?pagina=
-    pagina_url = get_url_param("pagina")
-    pagina_ss = st.session_state.get("pagina")
-
-    # Define a página no session_state, respeitando o usuário autenticado
-    if pagina_url in ["upload", "modo", "acompanhamento", "resultados", "historico", "login"]:
-        st.session_state["pagina"] = pagina_url
-    elif not pagina_ss:
+    if "pagina" not in st.session_state:
         st.session_state["pagina"] = "upload" if "user" in st.session_state else "login"
 
     # 🔐 Redireciona para login se necessário
     if "user" not in st.session_state:
         if st.session_state["pagina"] != "login":
             st.session_state["pagina"] = "login"
-            set_url_param("pagina", "login")
             st.rerun()
         header()
         page_login()
@@ -708,14 +674,18 @@ def main():
             }
         )
 
-        if secao == "Histórico" and pagina_atual != "historico":
+        # Registra a última página de revisão (se não for histórico ou login)
+        if st.session_state["pagina"] not in ["historico", "login"]:
+            st.session_state["pagina_revisao"] = st.session_state["pagina"]
+
+        if secao == "Histórico" and st.session_state["pagina"] != "historico":
             st.session_state["pagina"] = "historico"
-            set_url_param("pagina", "historico")
             st.rerun()
-        elif secao == "Nova Revisão" and pagina_atual != "upload":
-            st.session_state["pagina"] = "upload"
-            set_url_param("pagina", "upload")
-            st.rerun()
+        elif secao == "Nova Revisão":
+            voltar_para = st.session_state.get("pagina_revisao", "upload")
+            if st.session_state["pagina"] != voltar_para:
+                st.session_state["pagina"] = voltar_para
+                st.rerun()
 
         if st.button("❌ Logout (sair)", use_container_width=True):
             nome = st.session_state.get("nome")
@@ -734,12 +704,10 @@ def main():
     # === CONTEÚDO PRINCIPAL ===
     header()
 
-    pagina = st.session_state.get("pagina", "upload")
+    pagina = st.session_state["pagina"]
 
     if pagina == "login":
         page_login()
-    elif pagina == "historico":
-        page_history()
     elif pagina == "upload":
         page_upload()
     elif pagina == "modo":
@@ -748,10 +716,12 @@ def main():
         page_progress()
     elif pagina == "resultados":
         page_results()
+    elif pagina == "historico":
+        page_history()
     else:
-        st.warning(f"⚠️ Página inválida: {pagina}")
+        st.error("Página inválida")
 
     footer()
-    _sync_url()
+
 if __name__ == "__main__":
     main()
