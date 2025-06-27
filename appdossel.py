@@ -690,88 +690,24 @@ def main():
     init_db()
     apply_css()
 
-    # 🔄 Sincroniza ?pagina=... com session_state["pagina"], mas só se ainda não estiver definida
-    if "pagina" not in st.session_state:
-        pagina_url = get_url_param("pagina")
-        if pagina_url in ["upload", "modo", "acompanhamento", "resultados", "historico", "login"]:
+    # 🔄 Se a URL foi alterada externamente, atualize o session_state
+    pagina_url = get_url_param("pagina")
+    pagina_ss = st.session_state.get("pagina")
+
+    # Se estão diferentes, sincroniza usando a URL apenas se ela for válida
+    if pagina_url in ["upload", "modo", "acompanhamento", "resultados", "historico", "login"]:
+        if pagina_url != pagina_ss:
             st.session_state["pagina"] = pagina_url
-        else:
-            st.session_state["pagina"] = "login" if "user" not in st.session_state else "upload"
 
-    # 🔐 Redireciona para login se não autenticado
-    if "user" not in st.session_state:
+    # Garante uma página inicial
+    if "pagina" not in st.session_state:
+        st.session_state["pagina"] = "login" if "user" not in st.session_state else "upload"
+
+    # Redireciona para login se necessário
+    if "user" not in st.session_state and st.session_state["pagina"] != "login":
         st.session_state["pagina"] = "login"
-        header()
-        page_login()
-        footer()
-        return
-
-    # === SIDEBAR ===
-    with st.sidebar:
-        pagina_atual = st.session_state.get("pagina", "upload")
-        index_padrao = 1 if pagina_atual == "historico" else 0
-
-        secao = option_menu(
-            menu_title=None,
-            options=["Nova Revisão", "Histórico"],
-            icons=["file-earmark-text", "clock-history"],
-            default_index=index_padrao,
-            styles={
-                "container": {"padding": "0!important", "background-color": "#ffffff"},
-                "icon": {"color": "#16a085", "font-size": "18px"},
-                "nav-link": {"margin": "2px 0", "--hover-color": "#f7f7f7"},
-                "nav-link-selected": {"background-color": "#d1f2eb"},
-            }
-        )
-
-        # Navegação via URL
-        if secao == "Histórico" and st.session_state["pagina"] != "historico":
-            st.session_state["pagina"] = "historico"
-            set_url_param("pagina", "historico")
-            st.rerun()
-        elif secao == "Nova Revisão" and st.session_state["pagina"] != "upload":
-            st.session_state["pagina"] = "upload"
-            set_url_param("pagina", "upload")
-            st.rerun()
-
-        if st.button("❌ Logout (sair)", use_container_width=True):
-            nome = st.session_state.get('nome')
-            if nome:
-                pasta = Path("saida") / nome
-                if pasta.exists():
-                    shutil.rmtree(pasta)
-            for f in ["status.txt", "documentos_processados.txt", "documentos_falhados.txt"]:
-                p = Path(f)
-                if p.exists():
-                    p.unlink()
-            remove_from_queue(nome)
-            st.session_state.clear()
-            st.rerun()
-
-    # === CONTEÚDO PRINCIPAL ===
-    header()
-
-    pagina = st.session_state.get("pagina", "upload")
-
-    if pagina == "login":
-        page_login()
-    elif pagina == "historico":
-        page_history()
-    elif pagina == "upload":
-        page_upload()
-    elif pagina == "modo":
-        page_mode()
-    elif pagina == "acompanhamento":
-        page_progress()
-    elif pagina == "resultados":
-        page_results()
-    else:
-        st.warning(f"⚠️ Página inválida: {pagina}")
-
-    footer()
-
-    # 🌐 Atualiza a URL com a página atual (sincronização final)
-    _sync_url()
+        set_url_param("pagina", "login")
+        st.rerun()
 
 if __name__ == "__main__":
     main()
