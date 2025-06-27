@@ -195,13 +195,13 @@ def revisar_paragrafo(item: dict, parags: list) -> dict | None:
 
 # Função principal
 
-def aplicar(nomes: list[str] | None = None, usuario: str = ""):
-    to_process = nomes or [d for d in os.listdir(PASTA_SAIDA) 
-                            if os.path.isdir(os.path.join(PASTA_SAIDA, d))]
+def aplicar(nomes: list[tuple[str, Path]] | None = None, usuario: str = ""):
+    to_process = nomes or []
+    for nome, entrada_path in to_process:
 
-    for nome in to_process:
-        pasta = os.path.join(PASTA_SAIDA, usuario, nome)
-        docx_path = os.path.join(PASTA_ENTRADA, usuario, nome + ".docx")
+        for nome in to_process:
+            pasta = os.path.join(PASTA_SAIDA, usuario, nome)
+            docx_path = str(entrada_path)
 
         json_map = os.path.join(pasta, "mapeamento_textual.json")
         if not os.path.exists(docx_path) or not os.path.exists(json_map):
