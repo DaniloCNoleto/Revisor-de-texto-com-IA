@@ -471,53 +471,65 @@ def page_mode():
                 st.session_state['pagina'] = 'upload'
                 st.rerun()
     
-def page_progress():
-    entrada_path = st.session_state.get('entrada_path')
-    nome = st.session_state.get('nome')
-    usuario = st.session_state.get('usuario')
+import re, sys, time, shutil, subprocess
+from pathlib import Path
+import streamlit as st
 
+# PASTA_SAIDA, PASTA_HISTORICO, STATUS_PATH, LOG_PROCESSADOS, LOG_FALHADOS,
+# remove_from_queue(), log_revision()  ➜  já existem no seu script
+
+def page_progress():
+    entrada_path = st.session_state.get("entrada_path")
+    nome         = st.session_state.get("nome")           # nome do doc / pasta
+    usuario      = st.session_state.get("usuario")        # login do usuário
+
+    # ────────────────────────── validações iniciais ───────────────────────
     if not entrada_path or not nome:
-        st.session_state['pagina'] = 'upload'
+        st.session_state["pagina"] = "upload"
         st.rerun()
 
-    lite = st.session_state.get('modo_lite', False)
-    gerenciador = Path(__file__).parent / 'gerenciador_revisao_dossel.py'
+    lite        = st.session_state.get("modo_lite", False)
+    gerenciador = Path(__file__).parent / "gerenciador_revisao_dossel.py"
 
-    if not st.session_state.get('processo_iniciado', False):
+    # ────────────────────────── dispara o gerenciador ─────────────────────
+    if not st.session_state.get("processo_iniciado", False):
+
+        # limpa status antigo
         if STATUS_PATH.exists():
             STATUS_PATH.unlink()
 
-        antiga = Path(PASTA_SAIDA) / st.session_state['usuario'] / nome
+        # versiona revisão anterior, se houver
+        antiga = Path(PASTA_SAIDA) / usuario / nome
         if antiga.exists():
-            user = st.session_state['user']
-            user_dir = PASTA_HISTORICO / user['username']
-            user_dir.mkdir(parents=True, exist_ok=True)
+            user      = st.session_state["user"]
+            hist_dir  = Path(PASTA_HISTORICO) / user["username"]
+            hist_dir.mkdir(parents=True, exist_ok=True)
 
-            pattern = re.compile(rf"^{re.escape(nome)}_v(\d+)$")
-            versões = [int(m.group(1)) for p in user_dir.iterdir() if (m := pattern.match(p.name))]
-            próxima = max(versões, default=0) + 1
+            pattern   = re.compile(rf"^{re.escape(nome)}_v(\d+)$")
+            versoes   = [int(m.group(1))
+                         for p in hist_dir.iterdir()
+                         if (m := pattern.match(p.name))]
+            proxima   = max(versoes, default=0) + 1
 
-            dest = user_dir / f"{nome}_v{próxima}"
+            dest      = hist_dir / f"{nome}_v{proxima}"
             shutil.move(str(antiga), str(dest))
-            log_revision(user['id'], nome, str(dest))
+            log_revision(user["id"], nome, str(dest))
 
         if not gerenciador.exists():
             st.error(f"Script não encontrado: {gerenciador}")
             return
 
-        with st.spinner('👷 Iniciando gerenciador...'):
+        with st.spinner("👷 Iniciando gerenciador…"):
             subprocess.Popen(
-                [sys.executable, str(gerenciador), entrada_path, usuario] +
-                (['--lite'] if lite else [])
+                [sys.executable, str(gerenciador), entrada_path, usuario]
+                + (["--lite"] if lite else [])
             )
 
-        st.session_state['processo_iniciado'] = True
-
+        st.session_state["processo_iniciado"] = True
         st.rerun()
 
-    # 🔄 Atualiza barra de progresso
+    # ────────────────────────── barra de progresso ────────────────────────
     v = int(STATUS_PATH.read_text().strip()) if STATUS_PATH.exists() else 0
-
     bar_html = f"""
     <div style="position: relative; width: 100%; background-color: #f0f0f0;
                 border-radius: 4px; height: 30px; margin-bottom: 10px;">
@@ -530,18 +542,19 @@ def page_progress():
     """
     st.markdown(bar_html, unsafe_allow_html=True)
 
+    # ────────────────────────── enquanto < 100 % ──────────────────────────
     if v < 100:
         col_back, col_cancel = st.columns(2)
+
         with col_back:
-            if st.button('🔙 Voltar', key='back_progress'):
-                st.session_state['pagina'] = 'modo'
+            if st.button("🔙 Voltar", key="back_progress"):
+                st.session_state["pagina"] = "modo"
                 st.rerun()
 
         with col_cancel:
-            if st.button('❌ Cancelar Revisão', key='cancel_progress'):
-                nome = st.session_state.get('nome')
+            if st.button("❌ Cancelar Revisão", key="cancel_progress"):
                 if nome:
-                    pasta = Path(PASTA_SAIDA) / st.session_state['usuario'] / nome
+                    pasta = Path(PASTA_SAIDA) / usuario / nome
                     if pasta.exists():
                         shutil.rmtree(pasta)
                 for f in [STATUS_PATH, LOG_PROCESSADOS, LOG_FALHADOS]:
@@ -549,18 +562,27 @@ def page_progress():
                         f.unlink()
                 remove_from_queue(nome)
                 for key in list(st.session_state.keys()):
-                    if key != 'user':
+                    if key != "user":
                         del st.session_state[key]
-                st.session_state['pagina'] = 'upload'
+                st.session_state["pagina"] = "upload"
                 st.rerun()
 
         time.sleep(1)
         st.rerun()
 
-    else:
-        st.success('✅ Revisão concluída!')
-        st.session_state['pagina'] = 'resultados'
-        st.rerun()
+    # ────────────────────────── quando chegar a 100 % ─────────────────────
+    st.success("✅ Revisão concluída!")
+
+    # grava histórico apenas uma vez
+    if not st.session_state.get("revision_logged", False):
+        user     = st.session_state["user"]
+        src_dir  = Path(PASTA_SAIDA) / usuario / nome
+        log_revision(user["id"], nome, str(src_dir))
+        st.session_state["revision_logged"] = True
+
+    st.session_state["pagina"] = "resultados"
+    st.rerun()
+
 
 def page_results():
     # 🚫 Se dados básicos faltarem, volta para upload
@@ -578,7 +600,7 @@ def page_results():
         st.session_state["removed_from_queue"] = True
 
     # --- Caminhos padrão ---------------------------------------------------
-    src_dir = Path(PASTA_SAIDA) / usuario / nome
+    src_dir = PASTA_SAIDA / usuario['username'] / nome
     xlsx    = src_dir / "avaliacao_completa.xlsx"
     tokens  = src_dir / "mapeamento_tokens.xlsx"
 
