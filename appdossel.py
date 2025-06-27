@@ -345,15 +345,22 @@ def page_history():
             tipo = "Desconhecido"
             relatorio = None
 
-            for child in p.iterdir():
-                if child.name.endswith("_revisado_completo.docx"):
+                        for child in p.iterdir():
+                if "_revisado" in child.name and child.suffix == ".docx" and not doc_final:
                     doc_final = child
-                    tipo = "Revisão Completa"
-                elif child.name.endswith("_revisado_texto.docx") and not doc_final:
-                    doc_final = child
-                    tipo = "Revisão Rápida"
-                elif child.name.startswith("relatorio_tecnico_") and child.name.endswith(".docx"):
+                    if "completo" in child.name:
+                        tipo = "Revisão Completa"
+                    elif "texto" in child.name:
+                        tipo = "Revisão Rápida"
+                    elif "falhas" in child.name:
+                        tipo = "Revisão com Falhas"
+                    elif "biblio" in child.name:
+                        tipo = "Revisão Bibliográfica"
+                    else:
+                        tipo = "Revisado"
+                elif "relatorio_tecnico" in child.name and child.suffix == ".docx":
                     relatorio = child
+
 
             st.caption(f"🧾 Tipo: {tipo}")
 
