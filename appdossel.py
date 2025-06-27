@@ -670,15 +670,15 @@ def main():
     apply_css()
 
     # 🔄 Sincroniza ?pagina=... com session_state["pagina"]
-    pagina_ss = st.session_state.get("pagina")
     pagina_url = get_url_param("pagina")
+    pagina_ss = st.session_state.get("pagina")
 
     if pagina_url and pagina_url != pagina_ss:
-        # sincroniza a session com a URL somente se foi alterada manualmente
         st.session_state["pagina"] = pagina_url
+        st.rerun()
 
-    elif not pagina_ss:
-        # define página inicial baseada em autenticação
+# Se nenhuma das duas estiver definida ainda
+    if not pagina_url and not pagina_ss:
         st.session_state["pagina"] = "upload" if "user" in st.session_state else "login"
 
 
