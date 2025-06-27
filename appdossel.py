@@ -603,7 +603,7 @@ def page_results():
         st.session_state["removed_from_queue"] = True
 
     # --- Caminhos padrão ---------------------------------------------------
-    src_dir = PASTA_SAIDA / user['username'] / nome
+    src_dir = Path(PASTA_SAIDA) / usuario / nome
     xlsx    = src_dir / "avaliacao_completa.xlsx"
     tokens  = src_dir / "mapeamento_tokens.xlsx"
 
