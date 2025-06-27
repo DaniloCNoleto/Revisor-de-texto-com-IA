@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 import os
 import openai
 import streamlit as st
+from pathlib import Path
 
 # ◼ Carrega ambiente e configurações
 try:
@@ -31,8 +32,8 @@ openai.api_key = api_key
 ASSISTANT_BIBLIO = id_bibliografico
 
 PASTA_SAIDA = "saida"
-VALOR_INPUT = 0.005
-VALOR_OUTPUT = 0.015
+VALOR_INPUT = 0.01
+VALOR_OUTPUT = 0.03
 COTACAO_DOLAR = 5.65
 ENCODER = tiktoken.encoding_for_model("gpt-4")
 MAX_WORKERS = 10
@@ -224,9 +225,11 @@ def aplicar(nomes=None):
         rel.save(rel_path)
 
 if __name__ == "__main__":
-    # aceita nomes de pastas como argumentos opcionais
-    args = sys.argv[1:]
     try:
-        aplicar(args if args else None)
+        if len(sys.argv) >= 3:
+            entrada = sys.argv[1]
+            usuario = sys.argv[2]
+            nome = Path(entrada).stem
+            aplicar([nome])
     except Exception:
         print("❌ Erro na revisão bibliográfica:\n", traceback.format_exc())
