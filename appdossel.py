@@ -406,6 +406,7 @@ def page_upload():
 
     if st.button(f"▶️ Iniciar Revisão: {nome}"):
         st.session_state['want_start'] = True
+        st.rerun()  # ✅ dispara novo ciclo pra processar `want_start`
 
     if st.session_state.get('want_start'):
         if pos > 1:
@@ -422,11 +423,7 @@ def page_upload():
 
             st.session_state['entrada_path'] = str(file_path)
             st.session_state['pagina'] = 'modo'
-
-            # Atualiza a URL e para a execução (deixa a URL aplicar)
-            set_url_param("pagina", "modo")
-            st.stop()
-
+            st.rerun()  # ✅ vai para a página modo
 
     
 def page_mode():
