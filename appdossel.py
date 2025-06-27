@@ -542,111 +542,115 @@ def page_progress():
         st.rerun()
 
 def page_results():
-    # 🚫 Se nome estiver ausente, volta para upload
-    nome = st.session_state.get('nome')
-    usuario = st.session_state.get('usuario')
-    if not nome or not usuario:
+    # 🚫 Se dados básicos faltarem, volta para upload
+    nome     = st.session_state.get("nome")
+    usuario  = st.session_state.get("usuario")
+    if not (nome and usuario):
         st.session_state["pagina"] = "upload"
         st.rerun()
 
-    lite = st.session_state.get('modo_lite', False)
+    lite = st.session_state.get("modo_lite", False)
 
     # Remove da fila na primeira renderização
-    if not st.session_state.get('removed_from_queue', False):
+    if not st.session_state.get("removed_from_queue", False):
         remove_from_queue(nome)
-        st.session_state['removed_from_queue'] = True
+        st.session_state["removed_from_queue"] = True
 
-    usuario = st.session_state.get('usuario')
-    src_dir = Path(PASTA_SAIDA) / st.session_state['usuario'] / nome
-    xlsx = src_dir / 'avaliacao_completa.xlsx'
-    tokens_path = src_dir / 'mapeamento_tokens.xlsx'
+    # --- Caminhos padrão ---------------------------------------------------
+    src_dir = Path(PASTA_SAIDA) / usuario / nome
+    xlsx    = src_dir / "avaliacao_completa.xlsx"
+    tokens  = src_dir / "mapeamento_tokens.xlsx"
 
+    # --- 1) Espera até 30 s pelo arquivo no caminho padrão -----------------
+    for _ in range(30):                      # 30 × 1 s  → 30 s máx.
+        if xlsx.exists():
+            break
+        with st.spinner("Processando… aguarde alguns segundos."):
+            time.sleep(1)
+        st.rerun()                           # força nova renderização
+
+    # --- 2) Procura em toda a árvore caso ainda não exista -----------------
     if not xlsx.exists():
-        st.error("Arquivo de resultados não encontrado em saida.")
-        return
+        possiveis = list(                  # procura apenas 2 níveis abaixo
+            Path(PASTA_SAIDA).glob(f"*/{nome}/avaliacao_completa.xlsx")
+        )
+        if possiveis:
+            xlsx    = possiveis[0]
+            src_dir = xlsx.parent
+            tokens  = src_dir / "mapeamento_tokens.xlsx"
 
+    # Dê-se por vencido se não achou de jeito nenhum
+    if not xlsx.exists():
+        st.error("Nenhum resultado encontrado em **PASTA_SAIDA**.")
+        st.stop()
+
+    # -------- Daqui para baixo o código original (leituras, gráficos, etc.)
     wb = load_workbook(xlsx, data_only=True)
-    rs = wb['Resumo']
+    rs = wb["Resumo"]
 
     tempo, in_tk, out_tk = 0, 0, 0
-    for row in rs.iter_rows(min_row=2, values_only=True):
-        if not row or len(row) < 4:
-            continue
-        tempo += row[1] or 0
-        in_tk += row[2] or 0
-        out_tk += row[3] or 0
+    for r in rs.iter_rows(min_row=2, values_only=True):
+        if r and len(r) >= 4:
+            tempo  += r[1] or 0
+            in_tk  += r[2] or 0
+            out_tk += r[3] or 0
 
     # Tokens adicionais
-    if tokens_path.exists():
+    if tokens.exists():
         try:
-            wb_tokens = load_workbook(tokens_path, data_only=True)
-            aba_tokens = wb_tokens['MapaTokens']
-            for row in aba_tokens.iter_rows(min_row=2, values_only=True):
-                if row and row[1] and row[2]:
-                    in_tk += int(row[1])
-                    out_tk += int(row[2])
+            wb_tok = load_workbook(tokens, data_only=True)
+            aba    = wb_tok["MapaTokens"]
+            for r in aba.iter_rows(min_row=2, values_only=True):
+                if r and r[1] and r[2]:
+                    in_tk  += int(r[1])
+                    out_tk += int(r[2])
         except Exception as e:
             st.warning(f"Erro ao somar tokens do mapeador: {e}")
 
     # Totais por tipo
     tot = {}
-    if 'Texto' in wb.sheetnames:
-        tot['Textual'] = wb['Texto'].max_row - 1
-    if 'Bibliográfica' in wb.sheetnames:
-        tot['Bibliográfica'] = wb['Bibliográfica'].max_row - 1
-    if 'Falhas' in wb.sheetnames:
-        tot['Estrutura'] = wb['Falhas'].max_row - 1
+    if "Texto"        in wb.sheetnames: tot["Textual"]      = wb["Texto"].max_row        - 1
+    if "Bibliográfica" in wb.sheetnames: tot["Bibliográfica"] = wb["Bibliográfica"].max_row - 1
+    if "Falhas"       in wb.sheetnames: tot["Estrutura"]    = wb["Falhas"].max_row       - 1
 
-    df = pd.DataFrame.from_dict(tot, orient='index', columns=['Total']).sort_values('Total')
-    cores = {'Textual':'#007f56','Bibliográfica':'#5A4A2F','Estrutura':'#00AF74'}
+    df    = pd.DataFrame.from_dict(tot, orient="index", columns=["Total"]).sort_values("Total")
+    cores = {"Textual":"#007f56", "Bibliográfica":"#5A4A2F", "Estrutura":"#00AF74"}
 
     c1, c2, c3 = st.columns([1, 1.2, 1])
 
-    # 📊 Gráfico de barras
+    # 📊 Barras
     with c1:
         st.plotly_chart(
-            px.bar(
-                df,
-                orientation='h',
-                color=df.index,
-                color_discrete_map=cores,
-                labels={'index':'Tipo','Total':'Qtd'}
-            ), use_container_width=True
+            px.bar(df, orientation="h", color=df.index,
+                   color_discrete_map=cores,
+                   labels={"index":"Tipo", "Total":"Qtd"}),
+            use_container_width=True
         )
 
     # 📈 Métricas + Downloads
     with c2:
-        st.metric('⏱ Tempo (s)', f"{tempo:.1f}")
-        st.metric('📝 Palavras de Entrada', f"{int(in_tk)*0.75:.0f}")
-        st.metric('✍️ Palavras Alteradas', f"{int(out_tk)*0.75:.0f}")
+        st.metric("⏱ Tempo (s)", f"{tempo:.1f}")
+        st.metric("📝 Palavras de Entrada",  f"{int(in_tk)*0.75:.0f}")
+        st.metric("✍️ Palavras Alteradas",   f"{int(out_tk)*0.75:.0f}")
 
-        docs = []
-        if lite:
-            docs.append((f"{nome}_revisado_texto.docx", '📄 Documento Revisado (Lite)'))
-        else:
-            docs.append((f"{nome}_revisado_completo.docx", '📄 Documento Revisado'))
-        docs.append((f"relatorio_tecnico_{nome}.docx", '📑 Relatório Técnico'))
+        # Arquivos disponíveis
+        docs = [(f"{nome}_revisado_texto.docx",   "📄 Documento Revisado (Lite)")] if lite else \
+               [(f"{nome}_revisado_completo.docx","📄 Documento Revisado")]
+        docs.append((f"relatorio_tecnico_{nome}.docx", "📑 Relatório Técnico"))
 
         for fn, lbl in docs:
             p = src_dir / fn
             if p.exists():
-                st.download_button(
-                    label=lbl,
-                    data=p.read_bytes(),
-                    file_name=p.name,
-                    key=f"download_{fn}"
-                )
+                st.download_button(lbl, p.read_bytes(), file_name=p.name,
+                                   key=f"dl_{fn}")
 
-    # 🥧 Pizza de distribuição
+    # 🥧 Pizza
     with c3:
         st.plotly_chart(
-            px.pie(
-                df,
-                values='Total',
-                names=df.index,
-                color_discrete_map=cores,
-                title='Distribuição %'
-            ), use_container_width=True
+            px.pie(df, values="Total", names=df.index,
+                   color_discrete_map=cores,
+                   title="Distribuição %"),
+            use_container_width=True
         )
 
 
