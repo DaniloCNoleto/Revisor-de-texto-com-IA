@@ -684,14 +684,14 @@ def main():
     init_db()
     apply_css()
 
-    # 🔄 SINCRONIZA URL → session_state["pagina"]
+    # 🔄 Sincroniza a URL com o estado da página
     pagina_url = get_url_param("pagina")
     if pagina_url in ["login", "upload", "modo", "acompanhamento", "resultados", "historico"]:
         st.session_state["pagina"] = pagina_url
     elif "pagina" not in st.session_state:
         st.session_state["pagina"] = "login" if "user" not in st.session_state else "upload"
 
-    # 🔐 Login obrigatório
+    # 🔐 Força login se não autenticado
     if 'user' not in st.session_state:
         st.session_state["pagina"] = "login"
         header()
@@ -699,13 +699,13 @@ def main():
         footer()
         return
 
-    # Sidebar controla apenas a seção geral
+    # SIDEBAR: define seção (não altera página diretamente!)
     with st.sidebar:
-        st.session_state["secao"] = option_menu(
+        secao = option_menu(
             menu_title=None,
             options=["Nova Revisão", "Histórico"],
             icons=["file-earmark-text", "clock-history"],
-            default_index=0,
+            default_index=0 if st.session_state.get("pagina") != "historico" else 1,
             styles={
                 "container": {"padding": "0!important", "background-color": "#ffffff"},
                 "icon": {"color": "#16a085", "font-size": "18px"},
@@ -713,7 +713,6 @@ def main():
                 "nav-link-selected": {"background-color": "#d1f2eb"},
             }
         )
-        st.markdown("<div class='sidebar-footer'>", unsafe_allow_html=True)
         if st.button("❌ Logout (sair)", use_container_width=True):
             nome = st.session_state.get('nome')
             if nome:
@@ -727,24 +726,22 @@ def main():
             remove_from_queue(nome)
             st.session_state.clear()
             st.rerun()
-        st.markdown("</div>", unsafe_allow_html=True)
 
-    # Página principal
+    # RENDERIZAÇÃO DAS PÁGINAS
     header()
 
-    if st.session_state["secao"] == "Histórico":
+    if secao == "Histórico":
         st.session_state["pagina"] = "historico"
         page_history()
-
-    elif st.session_state["secao"] == "Nova Revisão":
-        pag = st.session_state.get("pagina", "upload")
-        if pag == 'upload':
+    else:
+        pagina = st.session_state.get("pagina", "upload")
+        if pagina == "upload":
             page_upload()
-        elif pag == 'modo':
+        elif pagina == "modo":
             page_mode()
-        elif pag == 'acompanhamento':
+        elif pagina == "acompanhamento":
             page_progress()
-        elif pag == 'resultados':
+        elif pagina == "resultados":
             page_results()
 
     footer()
