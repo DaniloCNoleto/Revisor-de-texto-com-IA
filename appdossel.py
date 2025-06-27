@@ -684,11 +684,16 @@ def main():
 
     # 🔐 Redireciona para login se não autenticado
     if "user" not in st.session_state:
-        st.session_state["pagina"] = "login"
+        if st.session_state.get("pagina") != "login":
+            st.session_state["pagina"] = "login"
+            set_url_param("pagina", "login")
+            st.rerun()
+
         header()
         page_login()
         footer()
         return
+
 
     # === SIDEBAR ===
     with st.sidebar:
