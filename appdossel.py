@@ -773,3 +773,5 @@ def main():
 
     # 🌐 Atualiza a URL com a página atual no final da execução
     _sync_url()
+if __name__ == "__main__":
+    main()
