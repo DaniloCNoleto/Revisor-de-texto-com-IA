@@ -424,29 +424,34 @@ def page_upload():
     
 def page_mode():
     nome = st.session_state['nome']
+
     if not st.session_state.get('modo_selected'):
         st.markdown('### Escolha o tipo de revisão:')
         c1, c2 = st.columns(2)
         if c1.button('🔎 Revisão Completa'):
             st.session_state['modo_selected'] = True
             st.session_state['modo_lite'] = False
+            set_url_param("pagina", "modo")
             st.rerun()
         if c2.button('⚡ Revisão Lite'):
             st.session_state['modo_selected'] = True
             st.session_state['modo_lite'] = True
+            set_url_param("pagina", "modo")
             st.rerun()
     else:
         modo = 'Lite' if st.session_state['modo_lite'] else 'Completa'
         st.markdown(f"#### Você quer realizar a revisão **{modo}** do documento **{nome}**?")
-        col1, col2 = st.columns([1,1])
+        col1, col2 = st.columns([1, 1])
         with col1:
             if st.button('✅ Confirmar Revisão'):
                 st.session_state['pagina'] = 'acompanhamento'
                 st.session_state['processo_iniciado'] = False
+                set_url_param("pagina", "acompanhamento")
                 st.rerun()
         with col2:
             if st.button('🔙 Voltar'):
                 st.session_state['pagina'] = 'upload'
+                set_url_param("pagina", "upload")
                 st.rerun()
 
 
@@ -454,9 +459,11 @@ def page_mode():
 def page_progress():
     entrada_path = st.session_state.get('entrada_path')
     nome = st.session_state.get('nome')
+
     if not entrada_path or not nome:
         st.session_state['pagina'] = 'upload'
-        st.rerun()
+        set_url_param("pagina", "upload")
+        st.experimental_rerun()
 
     lite = st.session_state.get('modo_lite', False)
     gerenciador = Path(__file__).parent / 'gerenciador_revisao_dossel.py'
@@ -490,6 +497,11 @@ def page_progress():
             )
             st.session_state['processo_iniciado'] = True
 
+        # ✅ Garante que a URL seja atualizada para a página de acompanhamento
+        set_url_param("pagina", "acompanhamento")
+        st.experimental_rerun()
+
+    # 🔄 Atualiza barra de progresso
     v = int(STATUS_PATH.read_text().strip()) if STATUS_PATH.exists() else 0
 
     bar_html = f"""
@@ -508,35 +520,50 @@ def page_progress():
         col_back, col_cancel = st.columns(2)
         with col_back:
             if st.button('🔙 Voltar', key='back_progress'):
-                st.session_state['pagina'] = 'mode'
-                st.rerun()
+                st.session_state['pagina'] = 'modo'
+                set_url_param("pagina", "modo")
+                st.experimental_rerun()
+
         with col_cancel:
             if st.button('❌ Cancelar Revisão', key='cancel_progress'):
                 nome = st.session_state.get('nome')
                 if nome:
                     pasta = PASTA_SAIDA / nome
-                    if pasta.exists(): shutil.rmtree(pasta)
+                    if pasta.exists():
+                        shutil.rmtree(pasta)
                 for f in [STATUS_PATH, LOG_PROCESSADOS, LOG_FALHADOS]:
-                    if f.exists(): f.unlink()
+                    if f.exists():
+                        f.unlink()
                 remove_from_queue(nome)
                 for key in list(st.session_state.keys()):
                     if key != 'user':
                         del st.session_state[key]
                 st.session_state['pagina'] = 'upload'
-                st.rerun()
+                set_url_param("pagina", "upload")
+                st.experimental_rerun()
 
         time.sleep(1)
-        st.rerun()
+        st.experimental_rerun()
 
     else:
         st.success('✅ Revisão concluída!')
         st.session_state['pagina'] = 'resultados'
-        st.rerun()
-
+        set_url_param("pagina", "resultados")
+        st.experimental_rerun()
 
 def page_results():
-    nome = st.session_state['nome']
+    # 🚫 Se nome estiver ausente, volta para upload
+    nome = st.session_state.get('nome')
+    if not nome:
+        st.session_state["pagina"] = "upload"
+        set_url_param("pagina", "upload")
+        st.experimental_rerun()
+
     lite = st.session_state.get('modo_lite', False)
+
+    # ✅ Garante URL correta
+    if st.query_params.get("pagina", [""])[0] != "resultados":
+        set_url_param("pagina", "resultados")
 
     # Remove da fila na primeira renderização
     if not st.session_state.get('removed_from_queue', False):
@@ -562,7 +589,7 @@ def page_results():
         in_tk += row[2] or 0
         out_tk += row[3] or 0
 
-    # Incluir tokens do mapeador
+    # Tokens adicionais
     if tokens_path.exists():
         try:
             wb_tokens = load_workbook(tokens_path, data_only=True)
@@ -584,12 +611,11 @@ def page_results():
         tot['Estrutura'] = wb['Falhas'].max_row - 1
 
     df = pd.DataFrame.from_dict(tot, orient='index', columns=['Total']).sort_values('Total')
-
     cores = {'Textual':'#007f56','Bibliográfica':'#5A4A2F','Estrutura':'#00AF74'}
 
     c1, c2, c3 = st.columns([1, 1.2, 1])
 
-    # Gráficos
+    # 📊 Gráfico de barras
     with c1:
         st.plotly_chart(
             px.bar(
@@ -601,13 +627,12 @@ def page_results():
             ), use_container_width=True
         )
 
-    # Métricas e Downloads
+    # 📈 Métricas + Downloads
     with c2:
         st.metric('⏱ Tempo (s)', f"{tempo:.1f}")
         st.metric('📝 Palavras de Entrada', f"{int(in_tk)*0.75:.0f}")
         st.metric('✍️ Palavras Alteradas', f"{int(out_tk)*0.75:.0f}")
 
-        # Botões de download
         docs = []
         if lite:
             docs.append((f"{nome}_revisado_texto.docx", '📄 Documento Revisado (Lite)'))
@@ -618,52 +643,14 @@ def page_results():
         for fn, lbl in docs:
             p = src_dir / fn
             if p.exists():
-                data = p.read_bytes()
                 st.download_button(
                     label=lbl,
-                    data=data,
+                    data=p.read_bytes(),
                     file_name=p.name,
                     key=f"download_{fn}"
                 )
 
-    # Pizza de distribuição
-    with c3:
-        st.plotly_chart(
-            px.pie(
-                df,
-                values='Total',
-                names=df.index,
-                color_discrete_map=cores,
-                title='Distribuição %'
-            ), use_container_width=True
-        )
-
-    # Métricas e Downloads
-    with c2:
-        st.metric('⏱ Tempo (s)', f"{tempo}")
-        st.metric('📝 Palavras de Entrada', f"{int(in_tk)*0.75:.0f}")
-        st.metric('✍️ Palavras Alteradas', f"{int(out_tk)*0.75:.0f}")
-
-        # Botões de download
-        docs = []
-        if lite:
-            docs.append((f"{nome}_revisado_texto.docx", '📄 Documento Revisado (Lite)'))
-        else:
-            docs.append((f"{nome}_revisado_completo.docx", '📄 Documento Revisado'))
-        docs.append((f"relatorio_tecnico_{nome}.docx", '📑 Relatório Técnico'))
-
-        for fn, lbl in docs:
-            p = src_dir / fn
-            if p.exists():
-                data = p.read_bytes()
-                st.download_button(
-                    label=lbl,
-                    data=data,
-                    file_name=p.name,
-                    key=f"download_{fn}"
-                )
-
-    # Pizza de distribuição
+    # 🥧 Pizza de distribuição
     with c3:
         st.plotly_chart(
             px.pie(
@@ -723,10 +710,15 @@ def main():
         )
 
         # Navegação via URL
-        if secao == "Histórico":
+        if secao == "Histórico" and st.session_state["pagina"] != "historico":
+            st.session_state["pagina"] = "historico"
             set_url_param("pagina", "historico")
-        else:
+            st.experimental_rerun()
+        elif secao == "Nova Revisão" and st.session_state["pagina"] != "upload":
+            st.session_state["pagina"] = "upload"
             set_url_param("pagina", "upload")
+            st.experimental_rerun()
+
 
         if st.button("❌ Logout (sair)", use_container_width=True):
             nome = st.session_state.get('nome')
