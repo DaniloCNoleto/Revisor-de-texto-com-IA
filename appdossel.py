@@ -36,7 +36,7 @@ def set_url_param(param: str, value: str):
 
 # Estado inicial da página — primeiro acesso
 pagina_url = get_url_param("pagina")
-if pagina_url in ["login", "upload", "modo", "acompanhamento", "resultados"]:
+if pagina_url in ["upload", "modo", "acompanhamento", "resultados"]:
     st.session_state["pagina"] = pagina_url
 else:
     st.session_state["pagina"] = "login" if "user" not in st.session_state else "upload"
@@ -361,26 +361,25 @@ def page_history():
                 elif "relatorio_tecnico" in child.name and child.suffix == ".docx":
                     relatorio = child
 
-
             st.caption(f"🧾 Tipo: {tipo}")
 
             col1, col2 = st.columns(2)
             if doc_final and doc_final.is_file():
                 with col1:
                     st.download_button(
-                    label="📄 Download Revisado",
-                    data=doc_final.read_bytes(),
-                    file_name=doc_final.name,
-                    key=f"{fname}_{ts}_{doc_final.name}"
-                )
+                        label="📄 Download Revisado",
+                        data=doc_final.read_bytes(),
+                        file_name=doc_final.name,
+                        key=f"{fname}_{ts}_{doc_final.name}"
+                    )
             if relatorio and relatorio.is_file():
                 with col2:
-                            st.download_button(
-                            label="📑 Download Relatório",
-                            data=relatorio.read_bytes(),
-                            file_name=relatorio.name,
-                            key=f"{fname}_{ts}_{relatorio.name}"
-                )
+                    st.download_button(
+                        label="📑 Download Relatório",
+                        data=relatorio.read_bytes(),
+                        file_name=relatorio.name,
+                        key=f"{fname}_{ts}_{relatorio.name}"
+                    )
         else:
             st.warning("⚠️ Pasta de saída não encontrada para este item.")
 
