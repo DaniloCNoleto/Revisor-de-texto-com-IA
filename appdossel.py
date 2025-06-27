@@ -34,13 +34,6 @@ def set_url_param(param: str, value: str):
     st.query_params = q  # <- isso efetiva a mudança
 
 
-# Estado inicial da página — primeiro acesso
-pagina_url = get_url_param("pagina")
-if pagina_url in ["upload", "modo", "acompanhamento", "resultados"]:
-    st.session_state["pagina"] = pagina_url
-else:
-    st.session_state["pagina"] = "login" if "user" not in st.session_state else "upload"
-
 
 
 # Mantém a URL sempre refletindo o estado atual
@@ -691,17 +684,25 @@ def main():
     init_db()
     apply_css()
 
+    # 🔄 SINCRONIZA O PARÂMETRO DA URL COM o session_state (antes de usar "pagina")
+    pagina_url = get_url_param("pagina")
+    if pagina_url in ["login", "upload", "modo", "acompanhamento", "resultados"]:
+        st.session_state["pagina"] = pagina_url
+    elif "pagina" not in st.session_state:
+        st.session_state["pagina"] = "login" if "user" not in st.session_state else "upload"
+
+    # Usa o valor agora sincronizado
     pagina_atual = st.session_state.get("pagina", "login")
 
+    # 🔐 Login obrigatório
     if 'user' not in st.session_state:
-        # Se não estiver logado, força a página de login
         st.session_state["pagina"] = "login"
         header()
         page_login()
         footer()
         return
 
-    # Sidebar somente se logado
+    # Sidebar
     with st.sidebar:
         choice = option_menu(
             menu_title=None,
@@ -731,7 +732,7 @@ def main():
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # Lógica de navegação
+    # Página principal
     header()
 
     if choice == "Nova Revisão":
@@ -745,5 +746,5 @@ def main():
 
     footer()
 
-# --- Executa direto no Streamlit ---
-main()
+    # 🌐 Atualiza a URL com base na navegação atual
+    _sync_url()
