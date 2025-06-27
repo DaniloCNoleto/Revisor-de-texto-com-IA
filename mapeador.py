@@ -182,6 +182,7 @@ def mapear_paragrafo(i, trecho):
 
 def mapear_documento(nome_arquivo):
     usuario = os.environ.get("USUARIO", "")  # ou use um argumento adicional
+    nome_saida = os.path.splitext(nome_arquivo)[0]
     doc_path = os.path.join(PASTA_ENTRADA, usuario, nome_arquivo)
     pasta_saida = os.path.join(PASTA_SAIDA, usuario, nome_saida)
     os.makedirs(pasta_saida, exist_ok=True)
@@ -191,8 +192,6 @@ def mapear_documento(nome_arquivo):
 
     resultados = []
     registros_tokens = []
-    nome_saida = os.path.splitext(nome_arquivo)[0]
-    os.makedirs(os.path.join(PASTA_SAIDA, nome_saida), exist_ok=True)
     path_json = os.path.join(pasta_saida, "mapeamento_textual.json")
     path_tokens = os.path.join(pasta_saida, "mapeamento_tokens.xlsx")
 
