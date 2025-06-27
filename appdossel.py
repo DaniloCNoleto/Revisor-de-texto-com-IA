@@ -685,14 +685,14 @@ def main():
     init_db()
     apply_css()
 
-    # 🔄 Recupera a página da URL (?pagina=...)
+    # 🔄 Sincroniza ?pagina=... com session_state["pagina"]
     pagina_url = get_url_param("pagina")
-    if pagina_url in ["upload", "modo", "acompanhamento", "resultados", "historico"]:
+    if pagina_url in ["upload", "modo", "acompanhamento", "resultados", "historico", "login"]:
         st.session_state["pagina"] = pagina_url
     elif "pagina" not in st.session_state:
         st.session_state["pagina"] = "login" if "user" not in st.session_state else "upload"
 
-    # 🔐 Se não estiver logado, mostra a tela de login
+    # 🔐 Redireciona para login se não autenticado
     if "user" not in st.session_state:
         st.session_state["pagina"] = "login"
         header()
@@ -718,12 +718,11 @@ def main():
             }
         )
 
-        # Sidebar atualiza a URL, que vai controlar o conteúdo
+        # Navegação via URL
         if secao == "Histórico":
             set_url_param("pagina", "historico")
         else:
-            if pagina_atual == "historico":
-                set_url_param("pagina", "upload")
+            set_url_param("pagina", "upload")
 
         if st.button("❌ Logout (sair)", use_container_width=True):
             nome = st.session_state.get('nome')
@@ -744,7 +743,9 @@ def main():
 
     pagina = st.session_state.get("pagina", "upload")
 
-    if pagina == "historico":
+    if pagina == "login":
+        page_login()
+    elif pagina == "historico":
         page_history()
     elif pagina == "upload":
         page_upload()
@@ -759,8 +760,9 @@ def main():
 
     footer()
 
-    # 🔁 Reflete a página atual na URL
+    # 🌐 Atualiza a URL com a página atual
     _sync_url()
+
 
 if __name__ == "__main__":
     main()
