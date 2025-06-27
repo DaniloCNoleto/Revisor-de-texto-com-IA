@@ -14,6 +14,9 @@ from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
 from dotenv import load_dotenv
 import streamlit as st
+from typing import Optional
+from pathlib import Path
+
 
 
 # Carrega variáveis de ambiente e configurações
@@ -34,8 +37,8 @@ ASSISTANT_TEXTUAL = id_textual
 PASTA_SAIDA = "saida"
 PASTA_ENTRADA = "entrada"
 # Custos
-VALOR_INPUT = 0.005
-VALOR_OUTPUT = 0.015
+VALOR_INPUT = 0.01
+VALOR_OUTPUT = 0.03
 COTACAO_DOLAR = 5.65
 ENCODER = tiktoken.encoding_for_model("gpt-4")
 # Timeouts e tentativas
@@ -90,7 +93,7 @@ def extrair_completo(resp: str):
 
 # Executa chamada à API com timeout
 
-def acionar_assistant(prompt: str, assistant_id: str) -> str | None:
+def acionar_assistant(prompt: str, assistant_id: str) -> Optional[str]:
     try:
         import warnings
         warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -192,13 +195,14 @@ def revisar_paragrafo(item: dict, parags: list) -> dict | None:
 
 # Função principal
 
-def aplicar(nomes: list[str] | None = None):
+def aplicar(nomes: list[str] | None = None, usuario: str = ""):
     to_process = nomes or [d for d in os.listdir(PASTA_SAIDA) 
                             if os.path.isdir(os.path.join(PASTA_SAIDA, d))]
 
     for nome in to_process:
-        pasta = os.path.join(PASTA_SAIDA, nome)
-        docx_path = os.path.join(PASTA_ENTRADA, nome + ".docx")
+        pasta = os.path.join(PASTA_SAIDA, usuario, nome)
+        docx_path = os.path.join(PASTA_ENTRADA, usuario, nome + ".docx")
+
         json_map = os.path.join(pasta, "mapeamento_textual.json")
         if not os.path.exists(docx_path) or not os.path.exists(json_map):
             print(f"⏭️ Pulando {nome}")
@@ -296,7 +300,12 @@ def aplicar(nomes: list[str] | None = None):
 
 if __name__ == "__main__":
     try:
-        aplicar(sys.argv[1:] if len(sys.argv)>1 else None)
+        if len(sys.argv) >= 3:
+            entrada = sys.argv[1]
+            usuario = sys.argv[2]
+            nome = Path(entrada).stem
+            aplicar([(nome, Path(entrada))], usuario)
+
     except Exception:
         print("❌ Erro:", traceback.format_exc())
         sys.exit(1)
