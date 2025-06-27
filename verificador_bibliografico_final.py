@@ -157,7 +157,7 @@ def revisar_biblio(item, parags):
 
 # ▶️ Pipeline de aplicação
 
-def aplicar(nomes=None):
+def aplicar(nomes=None, usuario=""):
     # define pastas a processar
     if nomes:
         to_process = nomes
@@ -165,8 +165,10 @@ def aplicar(nomes=None):
         to_process = [d for d in os.listdir(PASTA_SAIDA) 
                       if os.path.isdir(os.path.join(PASTA_SAIDA, d))]
 
+    pasta_base = os.path.join(PASTA_SAIDA, usuario)
+
     for nome in to_process:
-        pasta = os.path.join(PASTA_SAIDA, nome)
+        pasta = os.path.join(pasta_base, nome)
         docx_text = os.path.join(pasta, f"{nome}_revisado_texto.docx")
         map_json = os.path.join(pasta, "mapeamento_textual.json")
         if not os.path.exists(docx_text) or not os.path.exists(map_json):
@@ -230,6 +232,6 @@ if __name__ == "__main__":
             entrada = sys.argv[1]
             usuario = sys.argv[2]
             nome = Path(entrada).stem
-            aplicar([nome])
+            aplicar([nome], usuario)
     except Exception:
         print("❌ Erro na revisão bibliográfica:\n", traceback.format_exc())
