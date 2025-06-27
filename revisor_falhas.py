@@ -85,7 +85,11 @@ def agrupar_paragrafos(parags, max_bloco=3):
 
 # --- Execução principal ---
 def aplicar(nomes, usuario=""):
-    to_process = [n for n in nomes if os.path.isdir(os.path.join(PASTA_SAIDA, n))]
+    to_process = [
+        n
+        for n in nomes
+        if os.path.isdir(os.path.join(PASTA_SAIDA, usuario, n))
+    ]
     pasta_base = os.path.join(PASTA_SAIDA, usuario)
     for nome in to_process:
         pasta = os.path.join(pasta_base, nome)
