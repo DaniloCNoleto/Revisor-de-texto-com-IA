@@ -84,10 +84,11 @@ def agrupar_paragrafos(parags, max_bloco=3):
     return blocos
 
 # --- Execução principal ---
-def aplicar(nomes):
+def aplicar(nomes, usuario=""):
     to_process = [n for n in nomes if os.path.isdir(os.path.join(PASTA_SAIDA, n))]
+    pasta_base = os.path.join(PASTA_SAIDA, usuario)
     for nome in to_process:
-        pasta = os.path.join(PASTA_SAIDA, nome)
+        pasta = os.path.join(pasta_base, nome)
         docx_biblio = os.path.join(pasta, f"{nome}_revisado_biblio.docx")
         docx_texto = os.path.join(pasta, f"{nome}_revisado_texto.docx")
 
@@ -162,7 +163,7 @@ if __name__ == "__main__":
             entrada = sys.argv[1]
             usuario = sys.argv[2]
             nome = Path(entrada).stem
-            aplicar([nome])
+            aplicar([nome], usuario)
     except Exception as e:
         print(f"❌ Erro na revisão de falhas: {e}")
 
