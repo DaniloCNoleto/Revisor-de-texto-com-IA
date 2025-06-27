@@ -82,7 +82,7 @@ def rodar_script(args):
     if not os.path.exists(script):
         print(f"❌ Script não encontrado: {script}")
         return 1
-    comando = [sys.executable, script, str(entrada_path)]
+    comando = [sys.executable, script, str(entrada_path), usuario]
     if MODO_LITE and "revisor_dossel" in script:
         comando.append("--lite")
     print(f"▶️ Executando: {script} para {nome}")
@@ -198,6 +198,9 @@ def main():
 
     entrada_path = Path(raw_args[0]).resolve()
     usuario = raw_args[1]
+    
+    os.environ["USUARIO"] = usuario
+
     nomes = []
     if not retry:
         if entrada_path.is_file() and entrada_path.suffix == ".docx":
@@ -213,10 +216,12 @@ def main():
     print(f"🔎 Documentos a revisar: {len(nomes)}")
     processar_assistente("mapeador.py", nomes, usuario, etapa=25)
 
-    for nome, _ in nomes:
+    for nome, entrada_path in nomes:
         categorias = categorias_do_documento(nome, usuario)
         print(f"📂 {nome}: Categorias detectadas: {sorted(categorias)}")
-        if "textual" in categorias:
+
+        # Força execução textual se nenhuma categoria for detectada
+        if "textual" in categorias or not categorias:
             rodar_script(("revisor_dossel_v2_final.py", nome, usuario, entrada_path))
             atualizar_status_global(50)
         if "bibliografico" in categorias and not MODO_LITE:
