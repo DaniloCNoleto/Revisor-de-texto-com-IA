@@ -345,7 +345,7 @@ def page_history():
             tipo = "Desconhecido"
             relatorio = None
 
-                        for child in p.iterdir():
+            for child in p.iterdir():
                 if "_revisado" in child.name and child.suffix == ".docx" and not doc_final:
                     doc_final = child
                     if "completo" in child.name:
@@ -748,4 +748,3 @@ def main():
 
 # --- Executa direto no Streamlit ---
 main()
-
