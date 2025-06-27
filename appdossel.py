@@ -36,7 +36,7 @@ def set_url_param(param: str, value: str):
 
 # Estado inicial da página — primeiro acesso
 pagina_url = get_url_param("pagina")
-if pagina_url in ["login", "upload", "modo", "acompanhamento", "resultados"]:
+if pagina_url in ["upload", "modo", "acompanhamento", "resultados"]:
     st.session_state["pagina"] = pagina_url
 else:
     st.session_state["pagina"] = "login" if "user" not in st.session_state else "upload"
@@ -680,22 +680,27 @@ def footer():
 # --- Main ---
 st.set_page_config(page_title='Revisor Dossel', layout='centered')
 
+# --- Função principal do app ---
 def main():
     init_db()
     apply_css()
 
+    pagina_atual = st.session_state.get("pagina", "login")
+
     if 'user' not in st.session_state:
+        # Se não estiver logado, força a página de login
+        st.session_state["pagina"] = "login"
         header()
         page_login()
+        footer()
         return
 
-    # 2. FUNÇÃO GLOBAL — sem indentação extra!
-def build_sidebar() -> str:
+    # Sidebar somente se logado
     with st.sidebar:
         choice = option_menu(
             menu_title=None,
-            options=["Nova Revisão", "Histórico", "Configurações"],
-            icons=["file-earmark-text", "clock-history", "gear"],
+            options=["Nova Revisão", "Histórico"],
+            icons=["file-earmark-text", "clock-history"],
             default_index=0,
             styles={
                 "container": {"padding": "0!important", "background-color": "#ffffff"},
@@ -704,8 +709,6 @@ def build_sidebar() -> str:
                 "nav-link-selected": {"background-color": "#d1f2eb"},
             }
         )
-
-        # ── Rodapé / Logout
         st.markdown("<div class='sidebar-footer'>", unsafe_allow_html=True)
         if st.button("❌ Logout (sair)", use_container_width=True):
             nome = st.session_state.get('nome')
@@ -717,41 +720,14 @@ def build_sidebar() -> str:
                 p = Path(f)
                 if p.exists():
                     p.unlink()
+            remove_from_queue(nome)
             st.session_state.clear()
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
 
-    return choice
-# ──────────────────────────────────────────────────────────────
-# 3. LÓGICA DE EXIBIÇÃO DA SIDEBAR
-pagina_atual = st.session_state.get("pagina", "login")
+    # Lógica de navegação
+    header()
 
-if pagina_atual != "login":
-    choice = build_sidebar()          # ← função agora existe aqui
-else:
-    st.markdown("""
-        <style>
-        section[data-testid="stSidebar"] {display: none;}
-        </style>
-    """, unsafe_allow_html=True)
-    choice = None
-
-# ──────────────────────────────────────────────────────────────
-# 4. ROTEAMENTO (mantém igual ao exemplo anterior)
-def header():   ...
-def footer():   ...
-def page_login():          ...
-def page_upload():         ...
-def page_mode():           ...
-def page_progress():       ...
-def page_results():        ...
-def page_history():        ...
-
-header()
-
-if pagina_atual == "login":
-    page_login()
-else:
     if choice == "Nova Revisão":
         pag = st.session_state.get('pagina', 'upload')
         if pag == 'upload':            page_upload()
@@ -760,10 +736,9 @@ else:
         elif pag == 'resultados':      page_results()
     elif choice == "Histórico":
         page_history()
-    else:
-        st.write("⚙️ Configurações… (em construção)")
 
-footer()
+    footer()
 
-if __name__ == "__main__":
-    main()
+# --- Executa direto no Streamlit ---
+main()
+
