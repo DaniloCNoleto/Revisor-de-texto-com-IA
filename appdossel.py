@@ -387,48 +387,31 @@ def page_upload():
     if 'pagina' not in st.session_state:
         st.session_state['pagina'] = 'upload'
 
-    st.markdown(f"📍 Início `page_upload()`, pagina = {st.session_state['pagina']}")
-
-
     st.subheader("Envie um arquivo .docx para revisão:")
     arquivo = st.file_uploader("Selecione um arquivo .docx para revisão:", type="docx", label_visibility='collapsed')
 
-    if arquivo:
-        nome = arquivo.name.replace('.docx', '')
-        st.session_state['nome'] = nome
-        st.session_state['arquivo_buffer'] = arquivo.getbuffer()
+    if not arquivo:
+        return
 
-        st.write(f"**Arquivo carregado:** {nome}")
+    nome = arquivo.name.replace('.docx', '')
+    st.session_state['nome'] = nome
+    st.write(f"**Arquivo carregado:** {nome}")
 
-        if 'pos' not in st.session_state:
-            pos = add_to_queue(nome)
-            st.session_state['pos'] = pos
-        else:
-            pos = st.session_state['pos']
-
-        if st.button(f"▶️ Iniciar Revisão: {nome}"):
-            st.session_state['want_start'] = True
-            st.rerun()
-
-    # Processamento da etapa após clique no botão
-    if st.session_state.get('want_start'):
-        nome = st.session_state.get('nome')
-        pos = st.session_state.get('pos', 0)
-
-        st.markdown(f"📌 `want_start` True com nome: {nome}")
-        st.markdown(f"📋 Posição na fila: {pos}")
+    if st.button(f"▶️ Iniciar Revisão: {nome}"):
+        pos = add_to_queue(nome)
+        st.session_state['pos'] = pos
 
         if pos > 1:
             st.warning(f"📋 Sua revisão está na posição {pos} da fila. Aguarde sua vez.")
         else:
-            # Limpa pasta de entrada
+            # prepara pasta de entrada
             PASTA_ENTRADA.mkdir(exist_ok=True)
             for fpath in PASTA_ENTRADA.iterdir():
                 fpath.unlink()
 
-            file_path = PASTA_ENTRADA / f"{nome}.docx"
+            file_path = PASTA_ENTRADA / arquivo.name
             with open(file_path, 'wb') as f:
-                f.write(st.session_state['arquivo_buffer'])
+                f.write(arquivo.getbuffer())
 
             st.session_state['entrada_path'] = str(file_path)
             st.session_state['pagina'] = 'modo'
