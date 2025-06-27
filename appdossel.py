@@ -735,9 +735,12 @@ def main():
         page_history()
     else:
         pagina = st.session_state.get("pagina", "upload")
-        if pagina == "upload":
-            page_upload()
-        elif pagina == "modo":
-            page_mode()
-        elif pagina == "acompanhamento":
-            page_progress
+
+    if pagina in ["upload", "modo", "acompanhamento", "resultados"]:
+        if pagina == "upload": page_upload()
+        elif pagina == "modo": page_mode()
+        elif pagina == "acompanhamento": page_progress()
+        elif pagina == "resultados": page_results()
+    else:
+        st.warning(f"⚠️ Página inválida: {pagina}")
+
