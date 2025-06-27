@@ -740,9 +740,12 @@ def main():
     # === CONTEÚDO PRINCIPAL ===
     header()
 
+    # Sidebar decide apenas a URL
     if secao == "Histórico":
-        st.session_state["pagina"] = "historico"
-        page_history()
+        set_url_param("pagina", "historico")
+    else:
+        set_url_param("pagina", "upload")
+
 
     footer()
 
