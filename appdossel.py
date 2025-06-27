@@ -669,32 +669,26 @@ def main():
     init_db()
     apply_css()
 
-    # 🔄 Sincroniza ?pagina=... com session_state["pagina"]
-    pagina_ss = st.session_state.get("pagina")
+    # 🔄 Sincroniza session_state["pagina"] com ?pagina=
     pagina_url = get_url_param("pagina")
+    pagina_ss = st.session_state.get("pagina")
 
-    if pagina_url and pagina_url != pagina_ss:
-        # sincroniza a session com a URL somente se foi alterada manualmente
+    # Define a página no session_state, respeitando o usuário autenticado
+    if pagina_url in ["upload", "modo", "acompanhamento", "resultados", "historico", "login"]:
         st.session_state["pagina"] = pagina_url
-
     elif not pagina_ss:
-    # Só define se absolutamente necessário, e NÃO força para login diretamente
-        st.session_state["pagina"] = pagina_url or ("upload" if "user" in st.session_state else "login")
+        st.session_state["pagina"] = "upload" if "user" in st.session_state else "login"
 
-
-
-    # 🔐 Redireciona para login se não autenticado
+    # 🔐 Redireciona para login se necessário
     if "user" not in st.session_state:
-        if st.session_state.get("pagina") != "login":
+        if st.session_state["pagina"] != "login":
             st.session_state["pagina"] = "login"
             set_url_param("pagina", "login")
             st.rerun()
-
         header()
         page_login()
         footer()
         return
-
 
     # === SIDEBAR ===
     with st.sidebar:
@@ -714,18 +708,17 @@ def main():
             }
         )
 
-        # Navegação via URL
-        if secao == "Histórico" and st.session_state["pagina"] != "historico":
+        if secao == "Histórico" and pagina_atual != "historico":
             st.session_state["pagina"] = "historico"
             set_url_param("pagina", "historico")
             st.rerun()
-        elif secao == "Nova Revisão" and st.session_state["pagina"] != "upload":
+        elif secao == "Nova Revisão" and pagina_atual != "upload":
             st.session_state["pagina"] = "upload"
             set_url_param("pagina", "upload")
             st.rerun()
 
         if st.button("❌ Logout (sair)", use_container_width=True):
-            nome = st.session_state.get('nome')
+            nome = st.session_state.get("nome")
             if nome:
                 pasta = Path("saida") / nome
                 if pasta.exists():
@@ -759,8 +752,6 @@ def main():
         st.warning(f"⚠️ Página inválida: {pagina}")
 
     footer()
-
-    # 🌐 Atualiza a URL com a página atual
     _sync_url()
 
 if __name__ == "__main__":
