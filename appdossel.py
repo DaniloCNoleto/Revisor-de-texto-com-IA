@@ -387,7 +387,8 @@ def page_upload():
     if 'pagina' not in st.session_state:
         st.session_state['pagina'] = 'upload'
 
-    st.markdown("📍 Início `page_upload()`, pagina =", st.session_state['pagina'])
+    st.markdown(f"📍 Início `page_upload()`, pagina = {st.session_state['pagina']}")
+
 
     st.subheader("Envie um arquivo .docx para revisão:")
     arquivo = st.file_uploader("Selecione um arquivo .docx para revisão:", type="docx", label_visibility='collapsed')
