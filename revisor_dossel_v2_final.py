@@ -198,11 +198,8 @@ def revisar_paragrafo(item: dict, parags: list) -> dict | None:
 def aplicar(nomes: list[tuple[str, Path]] | None = None, usuario: str = ""):
     to_process = nomes or []
     for nome, entrada_path in to_process:
-
-        for nome in to_process:
-            pasta = os.path.join(PASTA_SAIDA, usuario, nome)
-            docx_path = str(entrada_path)
-
+        pasta = os.path.join(PASTA_SAIDA, usuario, nome)
+        docx_path = str(entrada_path)
         json_map = os.path.join(pasta, "mapeamento_textual.json")
         if not os.path.exists(docx_path) or not os.path.exists(json_map):
             print(f"⏭️ Pulando {nome}")
