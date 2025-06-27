@@ -684,15 +684,12 @@ def main():
     init_db()
     apply_css()
 
-    # 🔄 SINCRONIZA O PARÂMETRO DA URL COM o session_state (antes de usar "pagina")
+    # 🔄 SINCRONIZA URL → session_state["pagina"]
     pagina_url = get_url_param("pagina")
-    if pagina_url in ["login", "upload", "modo", "acompanhamento", "resultados"]:
+    if pagina_url in ["login", "upload", "modo", "acompanhamento", "resultados", "historico"]:
         st.session_state["pagina"] = pagina_url
     elif "pagina" not in st.session_state:
         st.session_state["pagina"] = "login" if "user" not in st.session_state else "upload"
-
-    # Usa o valor agora sincronizado
-    pagina_atual = st.session_state.get("pagina", "login")
 
     # 🔐 Login obrigatório
     if 'user' not in st.session_state:
@@ -702,9 +699,9 @@ def main():
         footer()
         return
 
-    # Sidebar
+    # Sidebar controla apenas a seção geral
     with st.sidebar:
-        choice = option_menu(
+        st.session_state["secao"] = option_menu(
             menu_title=None,
             options=["Nova Revisão", "Histórico"],
             icons=["file-earmark-text", "clock-history"],
@@ -735,16 +732,20 @@ def main():
     # Página principal
     header()
 
-    if choice == "Nova Revisão":
-        pag = st.session_state.get('pagina', 'upload')
-        if pag == 'upload':            page_upload()
-        elif pag == 'modo':            page_mode()
-        elif pag == 'acompanhamento':  page_progress()
-        elif pag == 'resultados':      page_results()
-    elif choice == "Histórico":
+    if st.session_state["secao"] == "Histórico":
+        st.session_state["pagina"] = "historico"
         page_history()
 
-    footer()
+    elif st.session_state["secao"] == "Nova Revisão":
+        pag = st.session_state.get("pagina", "upload")
+        if pag == 'upload':
+            page_upload()
+        elif pag == 'modo':
+            page_mode()
+        elif pag == 'acompanhamento':
+            page_progress()
+        elif pag == 'resultados':
+            page_results()
 
-    # 🌐 Atualiza a URL com base na navegação atual
+    footer()
     _sync_url()
