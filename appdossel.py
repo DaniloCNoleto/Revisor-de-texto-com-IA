@@ -463,7 +463,7 @@ def page_progress():
     if not entrada_path or not nome:
         st.session_state['pagina'] = 'upload'
         set_url_param("pagina", "upload")
-        st.experimental_rerun()
+        st.rerun()
 
     lite = st.session_state.get('modo_lite', False)
     gerenciador = Path(__file__).parent / 'gerenciador_revisao_dossel.py'
@@ -499,7 +499,7 @@ def page_progress():
 
         # ✅ Garante que a URL seja atualizada para a página de acompanhamento
         set_url_param("pagina", "acompanhamento")
-        st.experimental_rerun()
+        st.rerun()
 
     # 🔄 Atualiza barra de progresso
     v = int(STATUS_PATH.read_text().strip()) if STATUS_PATH.exists() else 0
@@ -522,7 +522,7 @@ def page_progress():
             if st.button('🔙 Voltar', key='back_progress'):
                 st.session_state['pagina'] = 'modo'
                 set_url_param("pagina", "modo")
-                st.experimental_rerun()
+                st.rerun()
 
         with col_cancel:
             if st.button('❌ Cancelar Revisão', key='cancel_progress'):
@@ -540,16 +540,16 @@ def page_progress():
                         del st.session_state[key]
                 st.session_state['pagina'] = 'upload'
                 set_url_param("pagina", "upload")
-                st.experimental_rerun()
+                st.rerun()
 
         time.sleep(1)
-        st.experimental_rerun()
+        st.rerun()
 
     else:
         st.success('✅ Revisão concluída!')
         st.session_state['pagina'] = 'resultados'
         set_url_param("pagina", "resultados")
-        st.experimental_rerun()
+        st.rerun()
 
 def page_results():
     # 🚫 Se nome estiver ausente, volta para upload
@@ -557,7 +557,7 @@ def page_results():
     if not nome:
         st.session_state["pagina"] = "upload"
         set_url_param("pagina", "upload")
-        st.experimental_rerun()
+        st.rerun()
 
     lite = st.session_state.get('modo_lite', False)
 
@@ -713,11 +713,11 @@ def main():
         if secao == "Histórico" and st.session_state["pagina"] != "historico":
             st.session_state["pagina"] = "historico"
             set_url_param("pagina", "historico")
-            st.experimental_rerun()
+            st.rerun()
         elif secao == "Nova Revisão" and st.session_state["pagina"] != "upload":
             st.session_state["pagina"] = "upload"
             set_url_param("pagina", "upload")
-            st.experimental_rerun()
+            st.rerun()
 
 
         if st.button("❌ Logout (sair)", use_container_width=True):
