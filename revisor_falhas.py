@@ -24,8 +24,8 @@ except ImportError:
 
 openai.api_key = api_key
 PASTA_SAIDA = "saida"
-VALOR_INPUT = 0.005
-VALOR_OUTPUT = 0.015
+VALOR_INPUT = 0.01
+VALOR_OUTPUT = 0.03
 COTACAO_DOLAR = 5.65
 ENCODER = tiktoken.encoding_for_model("gpt-4")
 TIMEOUT_SEC = 90
@@ -37,6 +37,7 @@ PROMPT_REVISAO = (
     "Você é um revisor técnico e de estilo com foco em textos acadêmicos e científicos.\n"
     "Corrija blocos de texto apenas se houver erros de gramática, ortografia, datas mal formatadas (como \"13/03/23\" ou \"202-\"), clareza, coesão ou lógica textual.\n"
     "Preserve o estilo do autor e a terminologia técnica.\n"
+    "Em trechos com data no formato Mês/Ano com o mês por extenso, mantenha o formato. Por exemplo: 'Março/2023'.\n"
     "Se houver citação bibliográfica com datas incorretas ou incompletas, corrija ou sinalize de forma padronizada conforme a norma ABNT.\n"
     "Responda apenas com o texto revisado, sem explicações."
 )
@@ -156,12 +157,12 @@ def aplicar(nomes):
         print(f"📊 Tokens totais: {ti_sum} in / {to_sum} out. Tempo: {tempo}s.\n")
 
 if __name__ == "__main__":
-    raw_args = [arg for arg in sys.argv[1:] if not arg.startswith("--")]
-    nomes = []
-    for arg in raw_args:
-        fname = Path(arg).name
-        if fname.lower().endswith(".docx"):
-            nomes.append(fname[:-5])
-        else:
-            nomes.append(fname)
-    aplicar(nomes=nomes)
+    try:
+        if len(sys.argv) >= 3:
+            entrada = sys.argv[1]
+            usuario = sys.argv[2]
+            nome = Path(entrada).stem
+            aplicar([nome])
+    except Exception as e:
+        print(f"❌ Erro na revisão de falhas: {e}")
+
