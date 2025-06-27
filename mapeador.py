@@ -181,7 +181,9 @@ def mapear_paragrafo(i, trecho):
 # 📄 Processa um documento inteiro .docx
 
 def mapear_documento(nome_arquivo):
-    doc_path = os.path.join(PASTA_ENTRADA, nome_arquivo)
+    usuario = os.environ.get("USUARIO", "")  # ou use um argumento adicional
+    doc_path = os.path.join(PASTA_ENTRADA, usuario, nome_arquivo)
+
     doc = Document(doc_path)
     paragrafos = coletar_paragrafos(doc)
     print(f"\U0001f50d Mapeando {nome_arquivo}... Total: {len(paragrafos)} parágrafos")
@@ -223,7 +225,10 @@ def mapear_documento(nome_arquivo):
 # ▶️ Execução principal
 
 def main():
-    arquivos = [f for f in os.listdir(PASTA_ENTRADA) if f.endswith(".docx") and not f.startswith("~$")]
+    usuario = os.environ.get("USUARIO", "")
+    pasta_usuario = os.path.join(PASTA_ENTRADA, usuario)
+    arquivos = [f for f in os.listdir(pasta_usuario) if f.endswith(".docx") and not f.startswith("~$")]
+
     for nome in arquivos:
         mapear_documento(nome)
 
