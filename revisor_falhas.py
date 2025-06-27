@@ -49,7 +49,7 @@ def contar_tokens(texto):
 def tentar_revisar(prompt):
     for _ in range(MAX_RETRY):
         try:
-            resp = openai.api_key.chat.completions.create(
+            resp = openai.chat.completions.create(
                 model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}]
             )
