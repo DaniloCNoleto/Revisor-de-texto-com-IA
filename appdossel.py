@@ -384,49 +384,29 @@ def page_history():
 
 # --- Fluxo Original de Revisão ---
 def page_upload():
-    if 'pagina' not in st.session_state:
-        st.session_state['pagina'] = 'upload'
+    st.write("📍 Início page_upload(), pagina =", st.session_state.get("pagina"))
 
-    # limpa estados antigos
-    for key in ['modo_selected', 'modo_lite', 'removed_from_queue', 'want_start', 'processo_iniciado', 'entrada_path']:
-        st.session_state.pop(key, None)
+    arquivo = st.file_uploader("Selecione um arquivo .docx:", type="docx")
+    st.write("📁 Arquivo selecionado:", arquivo.name if arquivo else None)
 
-    st.subheader("Envie um arquivo .docx para revisão:")
-    arquivo = st.file_uploader("Selecione um arquivo .docx para revisão:", type="docx", label_visibility='collapsed')
-
-    if not arquivo:
-        return
-
-    nome = arquivo.name.replace('.docx', '')
-    st.session_state['nome'] = nome
-    st.write(f"**Arquivo carregado:** {nome}")
-
-    if st.button(f"▶️ Iniciar Revisão: {nome}"):
+    if arquivo and st.button(f"▶️ Iniciar:"):
         st.session_state['want_start'] = True
-        st.rerun()  # Força nova avaliação
+        st.rerun()
 
-    if st.session_state.get('want_start'):
+    st.write("want_start?", st.session_state.get("want_start"))
+
+    if st.session_state.get("want_start"):
+        nome = st.session_state['nome']
+        st.write("📌 want_start True com nome:", nome)
         pos = add_to_queue(nome)
-        st.session_state['pos'] = pos
+        st.write("📋 Posição na fila:", pos)
 
         if pos > 1:
-            st.warning(f"📋 Sua revisão está na posição {pos} da fila. Aguarde sua vez.")
+            st.warning(f"Ainda na fila (pos={pos}).")
         else:
-            # prepara pasta de entrada
-            PASTA_ENTRADA.mkdir(exist_ok=True)
-            for fpath in PASTA_ENTRADA.iterdir():
-                fpath.unlink()
-
-            file_path = PASTA_ENTRADA / arquivo.name
-            with open(file_path, 'wb') as f:
-                f.write(arquivo.getbuffer())
-
-            st.session_state['entrada_path'] = str(file_path)
+            st.write("✅ Vai mudar para modo agora")
             st.session_state['pagina'] = 'modo'
-            set_url_param("pagina", "modo")
             st.rerun()
-
-
 
     
 def page_mode():
