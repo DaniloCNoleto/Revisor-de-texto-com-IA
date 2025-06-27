@@ -15,9 +15,7 @@ from passlib.hash import pbkdf2_sha256
 from datetime import datetime
 from urllib.parse import urlparse, parse_qs  # ➜ novo import para utilidades de URL
 from streamlit_option_menu import option_menu
-import streamlit as st
-import shutil
-from pathlib import Path
+import sqlite3
 
 # ------------------------------------------------------------------
 # ------------------------ Paths e DB ------------------------------
@@ -25,7 +23,7 @@ from pathlib import Path
 
 DB_PATH = Path("users.db")
 PASTA_ENTRADA = Path("entrada")
-PASTA_SAIDA = Path("saida")
+PASTA_SAIDA = "saida"
 PASTA_HISTORICO = Path("historico")
 STATUS_PATH = Path("status.txt")
 LOG_PROCESSADOS = Path("documentos_processados.txt")
@@ -121,15 +119,28 @@ def log_revision(user_id: int, file_name: str, processed_path: str):
     conn.close()
 
 
-def get_history(user_id: int) -> list[tuple]:
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute(
-        "SELECT file_name, processed_path, timestamp FROM revisions WHERE user_id = ? ORDER BY timestamp DESC", (user_id,)
-    )
-    rows = c.fetchall()
-    conn.close()
-    return rows
+def get_history(user_id: int) -> list[tuple[str, str, str]]:
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute(
+            """
+            SELECT file_name, processed_path, timestamp 
+            FROM revisions 
+            WHERE user_id = ? 
+            ORDER BY timestamp DESC
+            """,
+            (user_id,)
+        )
+        rows = c.fetchall()
+        return rows
+    except sqlite3.Error as e:
+        print(f"❌ Erro no banco de dados: {e}")
+        return []
+    finally:
+        if conn:
+            conn.close()
+
 
 # --- Fila e status ---
 
@@ -300,15 +311,21 @@ def page_register():
 def page_history():
     st.subheader("Histórico de Revisões")
     user = st.session_state['user']
+    if not user:
+        st.error("Usuário não autenticado.")
+        return
+    usuario = user['username']
     rows = get_history(user['id'])
     if not rows:
         st.info("Nenhuma revisão encontrada.")
         return
+    rows = sorted(rows, key=lambda x: x[2], reverse=True)
 
     for fname, path, ts in rows:
         data_br = datetime.fromisoformat(ts).strftime('%d/%m/%Y')
         st.write(f"**{data_br} — {fname}**")
-        p = Path(path)
+
+        p = Path(PASTA_SAIDA) / usuario / fname
         if p.is_dir():
             doc_final = None
             tipo = "Desconhecido"
@@ -351,6 +368,7 @@ def page_history():
                     )
         else:
             st.warning("⚠️ Pasta de saída não encontrada para este item.")
+
 
 
 # --- Fluxo Original de Revisão ---
@@ -434,6 +452,7 @@ def page_mode():
 def page_progress():
     entrada_path = st.session_state.get('entrada_path')
     nome = st.session_state.get('nome')
+    usuario = st.session_state['user']['username']
 
     if not entrada_path or not nome:
         st.session_state['pagina'] = 'upload'
@@ -446,7 +465,7 @@ def page_progress():
         if STATUS_PATH.exists():
             STATUS_PATH.unlink()
 
-        antiga = PASTA_SAIDA / nome
+        antiga = Path(PASTA_SAIDA) / usuario / nome
         if antiga.exists():
             user = st.session_state['user']
             user_dir = PASTA_HISTORICO / user['username']
@@ -469,9 +488,9 @@ def page_progress():
             subprocess.Popen(
                 [sys.executable, str(gerenciador), entrada_path, usuario] +
                 (['--lite'] if lite else [])
-)
+        )
 
-            st.session_state['processo_iniciado'] = True
+        st.session_state['processo_iniciado'] = True
 
         st.rerun()
 
@@ -501,7 +520,7 @@ def page_progress():
             if st.button('❌ Cancelar Revisão', key='cancel_progress'):
                 nome = st.session_state.get('nome')
                 if nome:
-                    pasta = PASTA_SAIDA / nome
+                    pasta = Path(PASTA_SAIDA) / usuario / nome
                     if pasta.exists():
                         shutil.rmtree(pasta)
                 for f in [STATUS_PATH, LOG_PROCESSADOS, LOG_FALHADOS]:
@@ -525,19 +544,20 @@ def page_progress():
 def page_results():
     # 🚫 Se nome estiver ausente, volta para upload
     nome = st.session_state.get('nome')
-    if not nome:
+    usuario = st.session_state.get('usuario')
+    if not nome or not usuario:
         st.session_state["pagina"] = "upload"
         st.rerun()
 
     lite = st.session_state.get('modo_lite', False)
-
 
     # Remove da fila na primeira renderização
     if not st.session_state.get('removed_from_queue', False):
         remove_from_queue(nome)
         st.session_state['removed_from_queue'] = True
 
-    src_dir = PASTA_SAIDA / nome
+    usuario = st.session_state['user']['username']
+    src_dir = Path(PASTA_SAIDA) / usuario / nome
     xlsx = src_dir / 'avaliacao_completa.xlsx'
     tokens_path = src_dir / 'mapeamento_tokens.xlsx'
 
@@ -628,6 +648,7 @@ def page_results():
                 title='Distribuição %'
             ), use_container_width=True
         )
+
 
 # --- Footer ---
 def footer():
