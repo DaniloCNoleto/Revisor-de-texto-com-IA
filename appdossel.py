@@ -41,9 +41,10 @@ def set_url_param(param: str, value: str):
 
 def _sync_url():
     pag = st.session_state.get("pagina", "upload")
-    if pag not in ["upload", "modo", "acompanhamento", "resultados"]:
+    if pag not in ["upload", "modo", "acompanhamento", "resultados", "historico"]:
         return
     set_url_param("pagina", pag)
+
 
 
 # ------------------------------------------------------------------
