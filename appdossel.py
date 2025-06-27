@@ -739,9 +739,9 @@ def main():
             default_index=index_padrao,
             styles={
                 "container": {"padding": "0!important", "background-color": "#ffffff"},
-                "icon": {"color": "#16a085", "font-size": "18px"},
+                "icon": {"color": "#00AF74", "font-size": "18px"},
                 "nav-link": {"margin": "2px 0", "--hover-color": "#f7f7f7"},
-                "nav-link-selected": {"background-color": "#d1f2eb"},
+                "nav-link-selected": {"background-color": "#00AF74"},
             }
         )
 
