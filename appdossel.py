@@ -711,7 +711,7 @@ def main():
         if st.button("❌ Logout (sair)", use_container_width=True):
             nome = st.session_state.get("nome")
             if nome:
-                pasta = Path("saida") / nome
+                pasta = Path(PASTA_SAIDA) / st.session_state['usuario'] / nome
                 if pasta.exists():
                     shutil.rmtree(pasta)
             for f in ["status.txt", "documentos_processados.txt", "documentos_falhados.txt"]:
