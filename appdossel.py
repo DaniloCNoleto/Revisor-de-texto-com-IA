@@ -36,7 +36,7 @@ def set_url_param(param: str, value: str):
 
 # Estado inicial da página — primeiro acesso
 pagina_url = get_url_param("pagina")
-if pagina_url in ["upload", "modo", "acompanhamento", "resultados"]:
+if pagina_url in ["login", "upload", "modo", "acompanhamento", "resultados"]:
     st.session_state["pagina"] = pagina_url
 else:
     st.session_state["pagina"] = "login" if "user" not in st.session_state else "upload"
