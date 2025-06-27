@@ -41,8 +41,8 @@ def set_url_param(param: str, value: str):
 
 def _sync_url():
     pag = st.session_state.get("pagina", "upload")
-    if pag not in ["login", "upload", "modo", "acompanhamento", "resultados"]:
-        pag = "login"
+    if pag not in ["upload", "modo", "acompanhamento", "resultados"]:
+        return
     set_url_param("pagina", pag)
 
 
@@ -684,14 +684,14 @@ def main():
     init_db()
     apply_css()
 
-    # 🔄 Atualiza st.session_state["pagina"] com base na URL
+    # 🔄 Sincroniza ?pagina=... da URL com session_state["pagina"]
     pagina_url = get_url_param("pagina")
-    if pagina_url in ["login", "upload", "modo", "acompanhamento", "resultados"]:
+    if pagina_url in ["upload", "modo", "acompanhamento", "resultados"]:
         st.session_state["pagina"] = pagina_url
     elif "pagina" not in st.session_state:
         st.session_state["pagina"] = "login" if "user" not in st.session_state else "upload"
 
-    # 🔐 Tela de login
+    # 🔐 Login obrigatório
     if "user" not in st.session_state:
         st.session_state["pagina"] = "login"
         header()
@@ -699,13 +699,13 @@ def main():
         footer()
         return
 
-    # Sidebar: define apenas a seção visual
+    # === SIDEBAR ===
     with st.sidebar:
         secao = option_menu(
             menu_title=None,
             options=["Nova Revisão", "Histórico"],
             icons=["file-earmark-text", "clock-history"],
-            default_index=0 if st.session_state.get("pagina") != "historico" else 1,
+            default_index=0,
             styles={
                 "container": {"padding": "0!important", "background-color": "#ffffff"},
                 "icon": {"color": "#16a085", "font-size": "18px"},
@@ -728,19 +728,26 @@ def main():
             st.session_state.clear()
             st.rerun()
 
-    # 🧭 Conteúdo principal
+    # === CONTEÚDO PRINCIPAL ===
     header()
 
     if secao == "Histórico":
         page_history()
-    else:
+
+    elif secao == "Nova Revisão":
         pagina = st.session_state.get("pagina", "upload")
+        if pagina == "upload":
+            page_upload()
+        elif pagina == "modo":
+            page_mode()
+        elif pagina == "acompanhamento":
+            page_progress()
+        elif pagina == "resultados":
+            page_results()
+        else:
+            st.warning(f"⚠️ Página inválida: {pagina}")
 
-    if pagina in ["upload", "modo", "acompanhamento", "resultados"]:
-        if pagina == "upload": page_upload()
-        elif pagina == "modo": page_mode()
-        elif pagina == "acompanhamento": page_progress()
-        elif pagina == "resultados": page_results()
-    else:
-        st.warning(f"⚠️ Página inválida: {pagina}")
+    footer()
 
+    # === Atualiza a URL com base na navegação atual ===
+    _sync_url()
