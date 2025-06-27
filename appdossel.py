@@ -388,7 +388,7 @@ def page_upload():
         st.session_state['pagina'] = 'upload'
 
     # limpa estados antigos
-    for key in ['modo_selected', 'modo_lite', 'removed_from_queue', 'want_start', 'processo_iniciado', 'entrada_path']:
+    for key in ['modo_selected', 'modo_lite', 'removed_from_queue', 'processo_iniciado', 'entrada_path']:
         st.session_state.pop(key, None)
 
     st.subheader("Envie um arquivo .docx para revisão:")
@@ -401,18 +401,17 @@ def page_upload():
     st.session_state['nome'] = nome
     st.write(f"**Arquivo carregado:** {nome}")
 
-    pos = add_to_queue(nome)
-    st.session_state['pos'] = pos
-
     if st.button(f"▶️ Iniciar Revisão: {nome}"):
         st.session_state['want_start'] = True
-        st.rerun()  # ✅ dispara novo ciclo pra processar `want_start`
+        st.rerun()  # novo ciclo
 
     if st.session_state.get('want_start'):
+        pos = add_to_queue(nome)  # <-- REFAZ AQUI DENTRO!
+        st.session_state['pos'] = pos
+
         if pos > 1:
             st.warning(f"📋 Sua revisão está na posição {pos} da fila. Aguarde sua vez.")
         else:
-            # prepara pasta de entrada
             PASTA_ENTRADA.mkdir(exist_ok=True)
             for fpath in PASTA_ENTRADA.iterdir():
                 fpath.unlink()
@@ -423,7 +422,8 @@ def page_upload():
 
             st.session_state['entrada_path'] = str(file_path)
             st.session_state['pagina'] = 'modo'
-            st.rerun()  # ✅ vai para a página modo
+            st.rerun()  # ✅ agora vai corretamente
+
 
     
 def page_mode():
