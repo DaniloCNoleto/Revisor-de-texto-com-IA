@@ -670,20 +670,22 @@ def main():
     apply_css()
 
     # 🔄 Sincroniza ?pagina=... com session_state["pagina"]
-    pagina_url = get_url_param("pagina")
     pagina_ss = st.session_state.get("pagina")
+    pagina_url = get_url_param("pagina")
 
     if pagina_url and pagina_url != pagina_ss:
+        # sincroniza a session com a URL somente se foi alterada manualmente
         st.session_state["pagina"] = pagina_url
-        st.rerun()
 
-    # Se nenhuma das duas estiver definida ainda
-    if not pagina_url and not pagina_ss:
-        st.session_state["pagina"] = "upload" if "user" in st.session_state else "login"
+    elif not pagina_ss:
+    # Só define se absolutamente necessário, e NÃO força para login diretamente
+        st.session_state["pagina"] = pagina_url or ("upload" if "user" in st.session_state else "login")
+
+
 
     # 🔐 Redireciona para login se não autenticado
     if "user" not in st.session_state:
-        if st.session_state["pagina"] != "login":
+        if st.session_state.get("pagina") != "login":
             st.session_state["pagina"] = "login"
             set_url_param("pagina", "login")
             st.rerun()
@@ -692,6 +694,7 @@ def main():
         page_login()
         footer()
         return
+
 
     # === SIDEBAR ===
     with st.sidebar:
@@ -711,7 +714,7 @@ def main():
             }
         )
 
-        # Navegação via menu
+        # Navegação via URL
         if secao == "Histórico" and st.session_state["pagina"] != "historico":
             st.session_state["pagina"] = "historico"
             set_url_param("pagina", "historico")
@@ -757,7 +760,7 @@ def main():
 
     footer()
 
-    # 🌐 Atualiza a URL com a página atual (reflexo final)
+    # 🌐 Atualiza a URL com a página atual
     _sync_url()
 
 if __name__ == "__main__":
