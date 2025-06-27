@@ -384,15 +384,8 @@ def page_history():
 
 # --- Fluxo Original de Revisão ---
 def page_upload():
-    if 'pagina' not in st.session_state:
-        st.session_state['pagina'] = 'upload'
-
     st.subheader("Envie um arquivo .docx para revisão:")
-    arquivo = st.file_uploader(
-        "Selecione um arquivo .docx para revisão:", 
-        type="docx", 
-        label_visibility='collapsed'
-    )
+    arquivo = st.file_uploader("Selecione um arquivo .docx para revisão:", type="docx", label_visibility='collapsed')
 
     if not arquivo:
         return
@@ -401,17 +394,12 @@ def page_upload():
     st.session_state['nome'] = nome
     st.write(f"**Arquivo carregado:** {nome}")
 
-    # ⚠️ Evita recriar a fila toda vez
-    if 'pos' not in st.session_state:
-        pos = add_to_queue(nome)
-        st.session_state['pos'] = pos
-    else:
-        pos = st.session_state['pos']
-
     if st.button(f"▶️ Iniciar Revisão: {nome}"):
+        pos = add_to_queue(nome)
         if pos > 1:
             st.warning(f"📋 Sua revisão está na posição {pos} da fila. Aguarde sua vez.")
         else:
+            # Prepara a pasta de entrada
             PASTA_ENTRADA.mkdir(exist_ok=True)
             for fpath in PASTA_ENTRADA.iterdir():
                 fpath.unlink()
@@ -422,8 +410,9 @@ def page_upload():
 
             st.session_state['entrada_path'] = str(file_path)
             st.session_state['pagina'] = 'modo'
-            set_url_param("pagina", "modo")  # ✅ Atualiza URL corretamente
+            set_url_param("pagina", "modo")
             st.rerun()
+
 
 def page_mode():
     st.write("🚀 Entrou na page_mode()")
@@ -680,71 +669,67 @@ def main():
     init_db()
     apply_css()
 
-    # 🔄 URL e session_state sincronizados corretamente
     pagina_url = get_url_param("pagina")
     pagina_ss = st.session_state.get("pagina")
 
-    # 🔐 Se não estiver logado, força a página de login
-    if "user" not in st.session_state:
-        if pagina_ss != "login":
-            st.session_state["pagina"] = "login"
-            set_url_param("pagina", "login")
-            st.rerun()
-    else:
-        # Se está logado, sincroniza a URL com o estado
-        if pagina_url in ["upload", "modo", "acompanhamento", "resultados", "historico"]:
-            st.session_state["pagina"] = pagina_url
-        elif not pagina_ss:
-            st.session_state["pagina"] = "upload"
-            set_url_param("pagina", "upload")
+    # Define a página com base na URL ou autenticação
+    if pagina_url and pagina_url != pagina_ss:
+        st.session_state["pagina"] = pagina_url
+    elif not pagina_ss:
+        st.session_state["pagina"] = "upload" if "user" in st.session_state else "login"
 
-    # === SIDEBAR ===
-    with st.sidebar:
-        pagina_atual = st.session_state.get("pagina", "upload")
-        index_padrao = 1 if pagina_atual == "historico" else 0
+    pagina = st.session_state["pagina"]
 
-        secao = option_menu(
-            menu_title=None,
-            options=["Nova Revisão", "Histórico"],
-            icons=["file-earmark-text", "clock-history"],
-            default_index=index_padrao,
-            styles={
-                "container": {"padding": "0!important", "background-color": "#ffffff"},
-                "icon": {"color": "#16a085", "font-size": "18px"},
-                "nav-link": {"margin": "2px 0", "--hover-color": "#f7f7f7"},
-                "nav-link-selected": {"background-color": "#d1f2eb"},
-            }
-        )
+    # Redireciona para login se necessário
+    if pagina != "login" and "user" not in st.session_state:
+        st.session_state["pagina"] = "login"
+        set_url_param("pagina", "login")
+        st.rerun()
 
-        # Navegação via menu
-        if secao == "Histórico" and st.session_state["pagina"] != "historico":
-            st.session_state["pagina"] = "historico"
-            set_url_param("pagina", "historico")
-            st.rerun()
-        elif secao == "Nova Revisão" and st.session_state["pagina"] != "upload":
-            st.session_state["pagina"] = "upload"
-            set_url_param("pagina", "upload")
-            st.rerun()
+    # --- SIDEBAR ---
+    if "user" in st.session_state:
+        with st.sidebar:
+            index_padrao = 1 if pagina == "historico" else 0
+            secao = option_menu(
+                menu_title=None,
+                options=["Nova Revisão", "Histórico"],
+                icons=["file-earmark-text", "clock-history"],
+                default_index=index_padrao,
+                styles={
+                    "container": {"padding": "0!important", "background-color": "#ffffff"},
+                    "icon": {"color": "#16a085", "font-size": "18px"},
+                    "nav-link": {"margin": "2px 0", "--hover-color": "#f7f7f7"},
+                    "nav-link-selected": {"background-color": "#d1f2eb"},
+                }
+            )
 
-        # Logout
-        if st.button("❌ Logout (sair)", use_container_width=True):
-            nome = st.session_state.get('nome')
-            if nome:
-                pasta = Path("saida") / nome
-                if pasta.exists():
-                    shutil.rmtree(pasta)
-            for f in ["status.txt", "documentos_processados.txt", "documentos_falhados.txt"]:
-                p = Path(f)
-                if p.exists():
-                    p.unlink()
-            remove_from_queue(nome)
-            st.session_state.clear()
-            set_url_param("pagina", "login")
-            st.rerun()
+            if secao == "Histórico" and pagina != "historico":
+                st.session_state["pagina"] = "historico"
+                set_url_param("pagina", "historico")
+                st.rerun()
+            elif secao == "Nova Revisão" and pagina != "upload":
+                st.session_state["pagina"] = "upload"
+                set_url_param("pagina", "upload")
+                st.rerun()
 
-    # === CONTEÚDO PRINCIPAL ===
+            if st.button("❌ Logout (sair)", use_container_width=True):
+                nome = st.session_state.get("nome")
+                if nome:
+                    pasta = Path("saida") / nome
+                    if pasta.exists():
+                        shutil.rmtree(pasta)
+                for f in ["status.txt", "documentos_processados.txt", "documentos_falhados.txt"]:
+                    p = Path(f)
+                    if p.exists():
+                        p.unlink()
+                remove_from_queue(nome)
+                st.session_state.clear()
+                set_url_param("pagina", "login")
+                st.rerun()
+
+    # --- CONTEÚDO ---
     header()
-    pagina = st.session_state.get("pagina", "upload")
+    pagina = st.session_state["pagina"]
 
     if pagina == "login":
         page_login()
@@ -762,9 +747,8 @@ def main():
         st.warning(f"⚠️ Página inválida: {pagina}")
 
     footer()
-
-    # 🌐 Garante que a URL reflita a página atual
     _sync_url()
+
 
 if __name__ == "__main__":
     main()
