@@ -388,7 +388,11 @@ def page_upload():
         st.session_state['pagina'] = 'upload'
 
     st.subheader("Envie um arquivo .docx para revisão:")
-    arquivo = st.file_uploader("Selecione um arquivo .docx para revisão:", type="docx", label_visibility='collapsed')
+    arquivo = st.file_uploader(
+        "Selecione um arquivo .docx para revisão:", 
+        type="docx", 
+        label_visibility='collapsed'
+    )
 
     if not arquivo:
         return
@@ -397,8 +401,14 @@ def page_upload():
     st.session_state['nome'] = nome
     st.write(f"**Arquivo carregado:** {nome}")
 
-    if st.button(f"▶️ Iniciar Revisão: {nome}"):
+    # ⚠️ Evita recriar a fila toda vez
+    if 'pos' not in st.session_state:
         pos = add_to_queue(nome)
+        st.session_state['pos'] = pos
+    else:
+        pos = st.session_state['pos']
+
+    if st.button(f"▶️ Iniciar Revisão: {nome}"):
         if pos > 1:
             st.warning(f"📋 Sua revisão está na posição {pos} da fila. Aguarde sua vez.")
         else:
@@ -412,6 +422,7 @@ def page_upload():
 
             st.session_state['entrada_path'] = str(file_path)
             st.session_state['pagina'] = 'modo'
+            set_url_param("pagina", "modo")  # ✅ Atualiza URL corretamente
             st.rerun()
 
 def page_mode():
@@ -669,26 +680,23 @@ def main():
     init_db()
     apply_css()
 
-    # 🔄 Sincroniza session_state["pagina"] com ?pagina=
+    # 🔄 URL e session_state sincronizados corretamente
     pagina_url = get_url_param("pagina")
     pagina_ss = st.session_state.get("pagina")
 
-    # Define a página no session_state, respeitando o usuário autenticado
-    if pagina_url in ["upload", "modo", "acompanhamento", "resultados", "historico", "login"]:
-        st.session_state["pagina"] = pagina_url
-    elif not pagina_ss:
-        st.session_state["pagina"] = "upload" if "user" in st.session_state else "login"
-
-    # 🔐 Redireciona para login se necessário
+    # 🔐 Se não estiver logado, força a página de login
     if "user" not in st.session_state:
-        if st.session_state["pagina"] != "login":
+        if pagina_ss != "login":
             st.session_state["pagina"] = "login"
             set_url_param("pagina", "login")
             st.rerun()
-        header()
-        page_login()
-        footer()
-        return
+    else:
+        # Se está logado, sincroniza a URL com o estado
+        if pagina_url in ["upload", "modo", "acompanhamento", "resultados", "historico"]:
+            st.session_state["pagina"] = pagina_url
+        elif not pagina_ss:
+            st.session_state["pagina"] = "upload"
+            set_url_param("pagina", "upload")
 
     # === SIDEBAR ===
     with st.sidebar:
@@ -708,17 +716,19 @@ def main():
             }
         )
 
-        if secao == "Histórico" and pagina_atual != "historico":
+        # Navegação via menu
+        if secao == "Histórico" and st.session_state["pagina"] != "historico":
             st.session_state["pagina"] = "historico"
             set_url_param("pagina", "historico")
             st.rerun()
-        elif secao == "Nova Revisão" and pagina_atual != "upload":
+        elif secao == "Nova Revisão" and st.session_state["pagina"] != "upload":
             st.session_state["pagina"] = "upload"
             set_url_param("pagina", "upload")
             st.rerun()
 
+        # Logout
         if st.button("❌ Logout (sair)", use_container_width=True):
-            nome = st.session_state.get("nome")
+            nome = st.session_state.get('nome')
             if nome:
                 pasta = Path("saida") / nome
                 if pasta.exists():
@@ -729,11 +739,11 @@ def main():
                     p.unlink()
             remove_from_queue(nome)
             st.session_state.clear()
+            set_url_param("pagina", "login")
             st.rerun()
 
     # === CONTEÚDO PRINCIPAL ===
     header()
-
     pagina = st.session_state.get("pagina", "upload")
 
     if pagina == "login":
@@ -752,6 +762,8 @@ def main():
         st.warning(f"⚠️ Página inválida: {pagina}")
 
     footer()
+
+    # 🌐 Garante que a URL reflita a página atual
     _sync_url()
 
 if __name__ == "__main__":
