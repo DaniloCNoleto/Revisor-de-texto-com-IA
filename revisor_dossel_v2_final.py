@@ -1,302 +1,727 @@
-# 📌 Revisor Textual Dossel ajustado (com timeout, retries, registro de falhas e suporte a nomes dinâmicos)
-import os
-import sys
-import time
-import json
-import traceback
-import re
-import difflib
-import openai
-import tiktoken
-from docx import Document
-from openpyxl import Workbook, load_workbook
-from tqdm import tqdm
-from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
-from dotenv import load_dotenv
 import streamlit as st
+import os
+import re
+import shutil
+import time
+import subprocess
+import sys
+import sqlite3
+import datetime
+from pathlib import Path
+from openpyxl import load_workbook
+import pandas as pd
+import plotly.express as px
+from passlib.hash import pbkdf2_sha256
+from datetime import datetime
+from urllib.parse import urlparse, parse_qs  # ➜ novo import para utilidades de URL
+from streamlit_option_menu import option_menu
+import streamlit as st
+import shutil
+from pathlib import Path
+
+# ------------------------------------------------------------------
+# ------------------------ Paths e DB ------------------------------
+# ------------------------------------------------------------------
+
+DB_PATH = Path("users.db")
+PASTA_ENTRADA = Path("entrada")
+PASTA_SAIDA = Path("saida")
+PASTA_HISTORICO = Path("historico")
+STATUS_PATH = Path("status.txt")
+LOG_PROCESSADOS = Path("documentos_processados.txt")
+LOG_FALHADOS = Path("documentos_falhados.txt")
+QUEUE_FILE = Path("queue.txt")
+
+# --- Inicialização do DB ---
+
+def init_db():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            full_name TEXT,
+            password_hash TEXT NOT NULL,
+            created_at TEXT NOT NULL
+        )
+        """
+    )
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS revisions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            file_name TEXT NOT NULL,
+            processed_path TEXT NOT NULL,
+            timestamp TEXT NOT NULL,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        )
+        """
+    )
+    conn.commit()
+    conn.close()
+
+# --- Autenticação ---
+
+def hash_password(password: str) -> str:
+    return pbkdf2_sha256.hash(password)
 
 
-# Carrega variáveis de ambiente e configurações
-# 🔁 Compatível com .env local e st.secrets no Streamlit Cloud
-try:
-    
-    api_key = st.secrets["OPENAI_API_KEY"]
-    id_textual = st.secrets["ASSISTENTE_REVISOR_TEXTUAL"]
-except ImportError:
-    from dotenv import load_dotenv
-    load_dotenv()
-    api_key = os.getenv("OPENAI_API_KEY")
-    id_textual = os.getenv("ASSISTENTE_REVISOR_TEXTUAL")
-
-openai.api_key = api_key
-ASSISTANT_TEXTUAL = id_textual
-# Configurações gerais
-PASTA_SAIDA = "saida"
-PASTA_ENTRADA = "entrada"
-# Custos
-VALOR_INPUT = 0.005
-VALOR_OUTPUT = 0.015
-COTACAO_DOLAR = 5.65
-ENCODER = tiktoken.encoding_for_model("gpt-4")
-# Timeouts e tentativas
-timeout_seconds = 180
-max_retries = 3
-result_wait = 10
-
-# Prompts base
-PROMPT_REVISAO = (
-    "Você é um revisor de textos técnicos com padrão de excelência.\n"
-    "Corrija apenas se houver erro. Mantenha o estilo de escrita do autor.\n"
-    "Busque padronizar termos técnicos e melhorar a clareza sem alteração no estilo de escrita.\n"
-    "Busque manter a formatação original, como negrito e itálico e estrutura do parágrafo, quebras de linha e espaçamento, manter a voz ativa e evitar passivas desnecessárias, manter a terminologia técnica e científica adequada, manter a coerência e coesão do texto, manter a formalidade e objetividade do texto técnico,  manter a clareza e fluidez do texto, manter a precisão e exatidão das informações,  manter a lógica e a argumentação do texto e outros termos e abreviações de acordo com a ABNT, manter a concisão, evitar redundâncias\n"
-    "Responda no formato:\n❌ Original: \"...\"\n✅ Corrigido: \"...\"\n📜 Comentário: \"...\"\n"
-)
-PROMPT_FORMATACAO_FIXA = (
-    "Você é um revisor gramatical.\n"
-    "Corrija apenas erros de gramática e ortografia. Mantenha estilo de escrita e concisão.\n"
-    "Em trechos com data no formato Mês/Ano com o mês por extenso, mantenha o formato. Por exemplo: 'Março/2023'.\n"
-    "Responda no formato:\n❌ Original: \"...\"\n✅ Corrigido: \"...\"\n📜 Comentário: \"...\"\n"
-)
-
-# Helpers
-
-def workers_dinamicos(minimos=10):
+def verify_password(password: str, hash_str: str) -> bool:
     try:
-        return max(minimos, os.cpu_count() or 1)
+        return pbkdf2_sha256.verify(password, hash_str)
     except:
-        return minimos
+        return False
 
 
-def contar_tokens(txt: str) -> int:
-    return len(ENCODER.encode(txt))
-
-
-def similaridade(a: str, b: str) -> float:
-    return difflib.SequenceMatcher(None, a.lower(), b.lower()).ratio()
-
-
-def extrair_completo(resp: str):
+def register_user(username: str, email: str, full_name: str, password: str) -> bool:
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
     try:
-        o = re.search(r'❌\s*Original:\s*["“](.*?)["”]', resp, re.DOTALL)
-        c = re.search(r'✅\s*Corrigido:\s*["“](.*?)["”]', resp, re.DOTALL)
-        m = re.search(r'📜\s*Comentário:\s*["“](.*?)["”]', resp, re.DOTALL)
-        return (
-            o.group(1).strip() if o else None,
-            c.group(1).strip() if c else None,
-            m.group(1).strip() if m else None,
+        pwd_hash = hash_password(password)
+        now = datetime.now().isoformat()
+
+        c.execute(
+            "INSERT INTO users (username, email, full_name, password_hash, created_at) VALUES (?, ?, ?, ?, ?)",
+            (username, email, full_name, pwd_hash, now)
         )
-    except:
-        return None, None, None
-
-# Executa chamada à API com timeout
-
-def acionar_assistant(prompt: str, assistant_id: str) -> str | None:
-    try:
-        import warnings
-        warnings.filterwarnings("ignore", category=DeprecationWarning)
-
-        # ⏱ Início do processamento
-        inicio = time.time()
-
-        # Criação do thread (ainda necessário no fluxo atual com assistant_id)
-        thread = openai.beta.threads.create()
-
-        # Envia a mensagem do usuário
-        openai.beta.threads.messages.create(
-            thread_id=thread.id,
-            role="user",
-            content=prompt
-        )
-
-        # Executa o Assistant via create_and_poll (substitui run + retrieve loop)
-        run = openai.beta.threads.runs.create_and_poll(
-            thread_id=thread.id,
-            assistant_id=assistant_id
-        )
-
-        # Verifica sucesso
-        if run.status != "completed":
-            print(f"❌ Assistant não concluiu. Status: {run.status}")
-            return None
-
-        # Busca a última resposta do assistant
-        mensagens = openai.beta.threads.messages.list(thread_id=thread.id)
-        for msg in reversed(mensagens.data):
-            if msg.role == "assistant":
-                fim = time.time()
-                print(f"✅ Resposta recebida em {round(fim - inicio, 2)}s")
-                return msg.content[0].text.value.strip()
-
-    except Exception as e:
-        print(f"⚠️ Erro ao acionar assistant: {e}")
-        return None
+        conn.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conn.close()
 
 
-
-# Revisão de parágrafo
-
-def revisar_paragrafo(item: dict, parags: list) -> dict | None:
-    if item.get("categoria") != "textual":
-        return None
-    idx = item["index"]
-    if idx < 0 or idx >= len(parags):
-        return None
-    texto = parags[idx].text.strip()
-    tipos = item.get("tipo", []).copy()
-    ajustes = []
-    # define base do prompt
-    prompt_base = PROMPT_REVISAO
-    # correção leve para capas detectadas por regex (ex.: 'estudo impacto' + 'mês/ano')
-    if re.search(r"(estudo|relatório|avaliação).*impacto.*", texto.lower()) and \
-       re.search(r"(janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)/\d{4}", texto.lower()):
-        tipos.append("capa")
-        ajustes.append("manter capa")
-        prompt_base = PROMPT_FORMATACAO_FIXA
-    # correção leve para títulos curtos em maiúsculas
-    elif len(texto.split()) <= 12 and texto.isupper():
-        tipos.append("título curto em maiúsculas")
-        ajustes.append("manter título curto e visual")
-        prompt_base = PROMPT_FORMATACAO_FIXA
-    # monta prompt final
-    prompt = (f"{prompt_base}\nObjetivo: {', '.join(tipos)}\n"
-              f"Trecho:\n{texto}")
-    tokens_in = contar_tokens(prompt)
-
-    # tenta várias vezes
-    for _ in range(max_retries):
-        resp = acionar_assistant(prompt, ASSISTANT_TEXTUAL)
-        if not resp:
-            continue
-        original, corr, com = extrair_completo(resp)
-        # fallback quando similaridade baixa
-        if original and similaridade(original, texto) < 0.75:
-            prompt_base = PROMPT_FORMATACAO_FIXA
-            prompt = f"{prompt_base}\nTrecho:\n{texto}"
-            tokens_in = contar_tokens(prompt)
-            resp = acionar_assistant(prompt, ASSISTANT_TEXTUAL)
-            if not resp:
-                continue
-            original, corr, com = extrair_completo(resp)
-        if corr and corr.lower() != texto.lower():
-            tokens_out = contar_tokens(resp)
-            return {
-                "index": idx,
-                "original": texto,
-                "corrigido": corr,
-                "comentario": com or resp,
-                "tokens_input": tokens_in,
-                "tokens_output": tokens_out,
-                "ajustes": ajustes
-            }
+def authenticate_user(username: str, password: str) -> dict | None:
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT id, password_hash, full_name FROM users WHERE username = ?", (username,))
+    row = c.fetchone()
+    conn.close()
+    if row and verify_password(password, row[1]):
+        return {"id": row[0], "username": username, "full_name": row[2]}
     return None
 
-# Função principal
+# --- Histórico de Revisões ---
 
-def aplicar(nomes: list[str] | None = None):
-    to_process = nomes or [d for d in os.listdir(PASTA_SAIDA) 
-                            if os.path.isdir(os.path.join(PASTA_SAIDA, d))]
+def log_revision(user_id: int, file_name: str, processed_path: str):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    now = datetime.now().isoformat()
 
-    for nome in to_process:
-        pasta = os.path.join(PASTA_SAIDA, nome)
-        docx_path = os.path.join(PASTA_ENTRADA, nome + ".docx")
-        json_map = os.path.join(pasta, "mapeamento_textual.json")
-        if not os.path.exists(docx_path) or not os.path.exists(json_map):
-            print(f"⏭️ Pulando {nome}")
+    c.execute(
+        "INSERT INTO revisions (user_id, file_name, processed_path, timestamp) VALUES (?, ?, ?, ?)",
+        (user_id, file_name, processed_path, now)
+    )
+    conn.commit()
+    conn.close()
+
+
+def get_history(user_id: int) -> list[tuple]:
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute(
+        "SELECT file_name, processed_path, timestamp FROM revisions WHERE user_id = ? ORDER BY timestamp DESC", (user_id,)
+    )
+    rows = c.fetchall()
+    conn.close()
+    return rows
+
+# --- Fila e status ---
+
+def load_queue():
+    if QUEUE_FILE.exists(): return [l.strip() for l in QUEUE_FILE.read_text().splitlines() if l.strip()]
+    return []
+
+def save_queue(q): QUEUE_FILE.write_text("\n".join(q))
+
+def add_to_queue(nome):
+    q = load_queue();
+    if nome not in q: q.append(nome); save_queue(q)
+    return q.index(nome) + 1
+
+def remove_from_queue(nome):
+    q = load_queue();
+    if nome in q: q.remove(nome); save_queue(q)
+
+
+# --- CSS e Layout ---
+def apply_css():
+    st.markdown("""
+    <style>
+        html, body, [class*="css"], .stApp {
+            background: #fff !important;
+            color: #222 !important;
+            font-family: 'Inter', sans-serif;
+        }
+        .stApp > header, .stApp > footer {
+            display: none !important;
+        }
+        .main-box {
+            max-width: 660px;
+            margin: 14px auto 0 auto;
+            padding: 0;
+            background: none !important;
+        }
+        .logo-dossel img {
+            width: 480px;
+            max-width: 95vw;
+            height: auto;
+            margin: 18px auto 30px auto;
+            display: block;
+        }
+        .title-dossel {
+            text-align: center;
+            color: #007f56;
+            font-weight: 700;
+            font-size: 2.2rem;
+            margin-bottom: 32px;
+        }
+        .stButton, .stDownloadButton {
+            display: flex !important;
+            justify-content: center !important;
+            width: 100% !important;
+        }
+        .stButton button {
+            background-color: #007f56 !important;
+            color: #ffffff !important;
+            border: none !important;
+            border-radius: 4px !important;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 10px 24px;
+            margin: 10px;
+        }
+        .stButton button:hover {
+            background-color: #005f43 !important;
+        }
+        .stDownloadButton button {
+            background-color: #ffffff !important;
+            color: #007f56 !important;
+            border: 2px solid #007f56 !important;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 10px 24px;
+            margin: 10px;
+        }
+        .stDownloadButton button:hover {
+            background: #00AF74 !important;
+            color: #fff !important;
+            border-color: #00AF74 !important;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            margin: 38px auto 14px auto;
+        }
+        section[data-testid="stSidebar"] > div:first-child {
+            background-color: #E6F4EC;
+            padding-top: 2rem;
+        }
+        section[data-testid="stSidebar"] .css-1wvsk4n, .css-1dp5vir {
+            font-size: 1.1rem !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    if "user" not in st.session_state:
+            st.session_state["pagina"] = "login"
+            header()
+            page_login()
+            footer()
+            st.stop()
+
+
+
+def header():
+    st.markdown('<div class="main-box">', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="logo-dossel">'
+        '  <img src="https://viex-americas.com/wp-content/uploads/Patrocinador-Dossel.jpg" '
+        '       alt="Logo Dossel">'
+        '</div>',
+        unsafe_allow_html=True
+    )
+    st.markdown('<div class="title-dossel">Revisor Automático Dossel</div>', unsafe_allow_html=True)
+
+
+
+def page_login():
+    st.markdown('<div class="main-box">', unsafe_allow_html=True)
+    st.subheader("Login")
+    username = st.text_input("Usuário", key="login_username")
+    password = st.text_input("Senha", type="password", key="login_password")
+    if st.button("Entrar", key="login_enter"):
+        user = authenticate_user(username, password)
+        if user:
+            st.session_state.clear()
+            st.session_state['user'] = user
+            st.session_state['pagina'] = 'upload'
+            st.rerun()
+
+        else:
+            st.error("Credenciais inválidas")
+    st.markdown("---")
+    st.write("Ainda não tem conta? ")
+    if st.button("Registrar-se", key="login_register"):
+        st.session_state['show_register'] = True
+
+    # Se estiver pedindo registro
+    if st.session_state.get('show_register'):
+        page_register()
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+
+def page_register():
+    st.markdown('<div class="main-box">', unsafe_allow_html=True)
+    st.subheader("Registro de Usuário")
+    new_user = st.text_input("Usuário", key="register_username")
+    email = st.text_input("E-mail", key="register_email")
+    full_name = st.text_input("Nome Completo", key="register_fullname")
+    pwd = st.text_input("Senha", type="password", key="register_password")
+    pwd2 = st.text_input("Confirme a Senha", type="password", key="register_password2")
+    if st.button("Criar Conta", key="register_create"):
+        if pwd != pwd2:
+            st.error("Senhas não coincidem")
+        elif register_user(new_user, email, full_name, pwd):
+            st.success("Conta criada com sucesso! Faça login.")
+            st.session_state.pop('show_register', None)
+        else:
+            st.error("Usuário ou e-mail já cadastrado")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# Page_history no appdossel.py com correção de chave duplicada e identificação de tipo de revisão
+
+def page_history():
+    st.subheader("Histórico de Revisões")
+    user = st.session_state['user']
+    rows = get_history(user['id'])
+    if not rows:
+        st.info("Nenhuma revisão encontrada.")
+        return
+
+    for fname, path, ts in rows:
+        data_br = datetime.fromisoformat(ts).strftime('%d/%m/%Y')
+        st.write(f"**{data_br} — {fname}**")
+        p = Path(path)
+        if p.is_dir():
+            doc_final = None
+            tipo = "Desconhecido"
+            relatorio = None
+
+            for child in p.iterdir():
+                if "_revisado" in child.name and child.suffix == ".docx" and not doc_final:
+                    doc_final = child
+                    if "completo" in child.name:
+                        tipo = "Revisão Completa"
+                    elif "texto" in child.name:
+                        tipo = "Revisão Rápida"
+                    elif "falhas" in child.name:
+                        tipo = "Revisão com Falhas"
+                    elif "biblio" in child.name:
+                        tipo = "Revisão Bibliográfica"
+                    else:
+                        tipo = "Revisado"
+                elif "relatorio_tecnico" in child.name and child.suffix == ".docx":
+                    relatorio = child
+
+            st.caption(f"🧾 Tipo: {tipo}")
+
+            col1, col2 = st.columns(2)
+            if doc_final and doc_final.is_file():
+                with col1:
+                    st.download_button(
+                        label="📄 Download Revisado",
+                        data=doc_final.read_bytes(),
+                        file_name=doc_final.name,
+                        key=f"{fname}_{ts}_{doc_final.name}"
+                    )
+            if relatorio and relatorio.is_file():
+                with col2:
+                    st.download_button(
+                        label="📑 Download Relatório",
+                        data=relatorio.read_bytes(),
+                        file_name=relatorio.name,
+                        key=f"{fname}_{ts}_{relatorio.name}"
+                    )
+        else:
+            st.warning("⚠️ Pasta de saída não encontrada para este item.")
+
+
+# --- Fluxo Original de Revisão ---
+def page_upload():
+    if st.session_state.get("pagina") != "upload":
+        return
+
+    # Limpa estados antigos que atrapalham a transição
+    for key in ['modo_selected', 'modo_lite', 'removed_from_queue', 'want_start', 'processo_iniciado', 'entrada_path']:
+        st.session_state.pop(key, None)
+
+    st.subheader("Envie um arquivo .docx para revisão:")
+    arquivo = st.file_uploader("Selecione um arquivo .docx para revisão:", type="docx", label_visibility='collapsed')
+
+    if not arquivo:
+        return
+
+    nome = arquivo.name.replace('.docx', '')
+    usuario = st.session_state['user']['username']
+    st.session_state['nome'] = nome
+    st.session_state['usuario'] = usuario
+    st.write(f"**Arquivo carregado:** {nome}")
+
+    if st.button(f"▶️ Iniciar Revisão: {nome}"):
+        st.session_state['want_start'] = True
+
+    if st.session_state.get('want_start'):
+        # Cria pasta de entrada específica do usuário
+        pasta_entrada_usuario = PASTA_ENTRADA / usuario
+        pasta_entrada_usuario.mkdir(parents=True, exist_ok=True)
+
+        # Limpa arquivos anteriores
+        for fpath in pasta_entrada_usuario.iterdir():
+            try:
+                if fpath.is_file():
+                    fpath.unlink()
+                elif fpath.is_dir():
+                    shutil.rmtree(fpath)
+            except FileNotFoundError:
+                pass
+
+        file_path = pasta_entrada_usuario / arquivo.name
+        with open(file_path, 'wb') as f:
+            f.write(arquivo.getbuffer())
+
+        # Atualiza estado e avança para próxima página
+        st.session_state['entrada_path'] = str(file_path)
+        st.session_state['pagina'] = 'modo'
+        st.rerun()
+
+
+def page_mode():
+    nome = st.session_state['nome']
+
+    if not st.session_state.get('modo_selected'):
+        st.markdown('### Escolha o tipo de revisão:')
+        c1, c2 = st.columns(2)
+        if c1.button('🔎 Revisão Completa'):
+            st.session_state['modo_selected'] = True
+            st.session_state['modo_lite'] = False
+            st.rerun()
+        if c2.button('⚡ Revisão Lite'):
+            st.session_state['modo_selected'] = True
+            st.session_state['modo_lite'] = True
+            st.rerun()
+
+    elif not st.session_state.get('pagina') == 'acompanhamento':  # <-- evita reexibir se já mudou
+        modo = 'Lite' if st.session_state['modo_lite'] else 'Completa'
+        st.markdown(f"#### Você quer realizar a revisão **{modo}** do documento **{nome}**?")
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            if st.button('✅ Confirmar Revisão'):
+                st.session_state['pagina'] = 'acompanhamento'
+                st.session_state['processo_iniciado'] = False
+                st.rerun()
+        with col2:
+            if st.button('🔙 Voltar'):
+                st.session_state['pagina'] = 'upload'
+                st.rerun()
+    
+def page_progress():
+    entrada_path = st.session_state.get('entrada_path')
+    nome = st.session_state.get('nome')
+
+    if not entrada_path or not nome:
+        st.session_state['pagina'] = 'upload'
+        st.rerun()
+
+    lite = st.session_state.get('modo_lite', False)
+    gerenciador = Path(__file__).parent / 'gerenciador_revisao_dossel.py'
+
+    if not st.session_state.get('processo_iniciado', False):
+        if STATUS_PATH.exists():
+            STATUS_PATH.unlink()
+
+        antiga = PASTA_SAIDA / nome
+        if antiga.exists():
+            user = st.session_state['user']
+            user_dir = PASTA_HISTORICO / user['username']
+            user_dir.mkdir(parents=True, exist_ok=True)
+
+            pattern = re.compile(rf"^{re.escape(nome)}_v(\d+)$")
+            versões = [int(m.group(1)) for p in user_dir.iterdir() if (m := pattern.match(p.name))]
+            próxima = max(versões, default=0) + 1
+
+            dest = user_dir / f"{nome}_v{próxima}"
+            shutil.move(str(antiga), str(dest))
+            log_revision(user['id'], nome, str(dest))
+
+        if not gerenciador.exists():
+            st.error(f"Script não encontrado: {gerenciador}")
+            return
+
+        with st.spinner('👷 Iniciando gerenciador...'):
+            usuario = st.session_state['user']['username']
+            subprocess.Popen(
+                [sys.executable, str(gerenciador), entrada_path, usuario] +
+                (['--lite'] if lite else [])
+)
+
+            st.session_state['processo_iniciado'] = True
+
+        st.rerun()
+
+    # 🔄 Atualiza barra de progresso
+    v = int(STATUS_PATH.read_text().strip()) if STATUS_PATH.exists() else 0
+
+    bar_html = f"""
+    <div style="position: relative; width: 100%; background-color: #f0f0f0;
+                border-radius: 4px; height: 30px; margin-bottom: 10px;">
+      <div style="width: {v}%; background-color: #007f56; height: 100%;
+                  border-radius: 4px;"></div>
+      <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                  display: flex; align-items: center; justify-content: center;
+                  color: #5A4A2F; font-weight: bold;">{v}%</div>
+    </div>
+    """
+    st.markdown(bar_html, unsafe_allow_html=True)
+
+    if v < 100:
+        col_back, col_cancel = st.columns(2)
+        with col_back:
+            if st.button('🔙 Voltar', key='back_progress'):
+                st.session_state['pagina'] = 'modo'
+                st.rerun()
+
+        with col_cancel:
+            if st.button('❌ Cancelar Revisão', key='cancel_progress'):
+                nome = st.session_state.get('nome')
+                if nome:
+                    pasta = PASTA_SAIDA / nome
+                    if pasta.exists():
+                        shutil.rmtree(pasta)
+                for f in [STATUS_PATH, LOG_PROCESSADOS, LOG_FALHADOS]:
+                    if f.exists():
+                        f.unlink()
+                remove_from_queue(nome)
+                for key in list(st.session_state.keys()):
+                    if key != 'user':
+                        del st.session_state[key]
+                st.session_state['pagina'] = 'upload'
+                st.rerun()
+
+        time.sleep(1)
+        st.rerun()
+
+    else:
+        st.success('✅ Revisão concluída!')
+        st.session_state['pagina'] = 'resultados'
+        st.rerun()
+
+def page_results():
+    # 🚫 Se nome estiver ausente, volta para upload
+    nome = st.session_state.get('nome')
+    if not nome:
+        st.session_state["pagina"] = "upload"
+        st.rerun()
+
+    lite = st.session_state.get('modo_lite', False)
+
+
+    # Remove da fila na primeira renderização
+    if not st.session_state.get('removed_from_queue', False):
+        remove_from_queue(nome)
+        st.session_state['removed_from_queue'] = True
+
+    src_dir = PASTA_SAIDA / nome
+    xlsx = src_dir / 'avaliacao_completa.xlsx'
+    tokens_path = src_dir / 'mapeamento_tokens.xlsx'
+
+    if not xlsx.exists():
+        st.error("Arquivo de resultados não encontrado em saida.")
+        return
+
+    wb = load_workbook(xlsx, data_only=True)
+    rs = wb['Resumo']
+
+    tempo, in_tk, out_tk = 0, 0, 0
+    for row in rs.iter_rows(min_row=2, values_only=True):
+        if not row or len(row) < 4:
             continue
+        tempo += row[1] or 0
+        in_tk += row[2] or 0
+        out_tk += row[3] or 0
 
-        doc = Document(docx_path)
-        with open(json_map, "r", encoding="utf-8") as f:
-            mapa = json.load(f)
+    # Tokens adicionais
+    if tokens_path.exists():
+        try:
+            wb_tokens = load_workbook(tokens_path, data_only=True)
+            aba_tokens = wb_tokens['MapaTokens']
+            for row in aba_tokens.iter_rows(min_row=2, values_only=True):
+                if row and row[1] and row[2]:
+                    in_tk += int(row[1])
+                    out_tk += int(row[2])
+        except Exception as e:
+            st.warning(f"Erro ao somar tokens do mapeador: {e}")
 
-        # extrai parágrafos >15 chars e de tabelas
-        parags = [p for p in doc.paragraphs 
-                  if p.text.strip() and len(p.text.strip()) > 15]
-        for table in doc.tables:
-            for row in table.rows:
-                for cell in row.cells:
-                    for p in cell.paragraphs:
-                        if p.text.strip() and len(p.text.strip()) > 15:
-                            parags.append(p)
+    # Totais por tipo
+    tot = {}
+    if 'Texto' in wb.sheetnames:
+        tot['Textual'] = wb['Texto'].max_row - 1
+    if 'Bibliográfica' in wb.sheetnames:
+        tot['Bibliográfica'] = wb['Bibliográfica'].max_row - 1
+    if 'Falhas' in wb.sheetnames:
+        tot['Estrutura'] = wb['Falhas'].max_row - 1
 
-        revisoes, failures = [], []
-        tokens_in = tokens_out = 0
-        start_all = time.time()
+    df = pd.DataFrame.from_dict(tot, orient='index', columns=['Total']).sort_values('Total')
+    cores = {'Textual':'#007f56','Bibliográfica':'#5A4A2F','Estrutura':'#00AF74'}
 
-        with ThreadPoolExecutor(max_workers=workers_dinamicos()) as executor:
-            futures = {executor.submit(revisar_paragrafo, it, parags): it for it in mapa}
-            for fut in tqdm(as_completed(futures), total=len(futures),
-                             desc=f"🔎 {nome}"):
-                item = futures[fut]
-                try:
-                    texto_item = parags[item["index"]].text
-                except:
-                    texto_item = ""
-                try:
-                    res = fut.result(timeout=result_wait)
-                except TimeoutError:
-                    failures.append({"index": item["index"], "texto": texto_item})
-                    continue
-                if not res:
-                    failures.append({"index": item["index"], "texto": texto_item})
-                    continue
-                idx = res["index"]
-                # preserva prefixo numérico somente para títulos
-                if any('título' in t.lower() for t in item.get('tipo', [])):
-                    full = parags[idx].text
-                    m = re.match(r"^(\d+(?:\.\d+)*\s+)", full)
-                    prefix = m.group(1) if m else ""
-                    parags[idx].text = prefix + res["corrigido"]
-                else:
-                    parags[idx].text = res["corrigido"]
-                revisoes.append(res)
-                tokens_in += res["tokens_input"]
-                tokens_out += res["tokens_output"]
+    c1, c2, c3 = st.columns([1, 1.2, 1])
 
-        # salva docx revisado e falhas
-        doc.save(os.path.join(pasta, f"{nome}_revisado_texto.docx"))
-        if failures:
-            with open(os.path.join(pasta, "falhas_textual.json"), "w", encoding="utf-8") as jf:
-                json.dump(failures, jf, ensure_ascii=False, indent=2)
+    # 📊 Gráfico de barras
+    with c1:
+        st.plotly_chart(
+            px.bar(
+                df,
+                orientation='h',
+                color=df.index,
+                color_discrete_map=cores,
+                labels={'index':'Tipo','Total':'Qtd'}
+            ), use_container_width=True
+        )
 
-        # atualiza planilha e relatório
-        plan_path = os.path.join(pasta, "avaliacao_completa.xlsx")
-        wb = load_workbook(plan_path) if os.path.exists(plan_path) else Workbook()
-        if "Texto" not in wb.sheetnames:
-            aba = wb.create_sheet("Texto")
-            aba.append(["Parágrafo","Tipo","Texto Corrigido"])
+    # 📈 Métricas + Downloads
+    with c2:
+        st.metric('⏱ Tempo (s)', f"{tempo:.1f}")
+        st.metric('📝 Palavras de Entrada', f"{int(in_tk)*0.75:.0f}")
+        st.metric('✍️ Palavras Alteradas', f"{int(out_tk)*0.75:.0f}")
+
+        docs = []
+        if lite:
+            docs.append((f"{nome}_revisado_texto.docx", '📄 Documento Revisado (Lite)'))
         else:
-            aba = wb["Texto"]
-        for rev in revisoes:
-            aba.append([rev["index"]+1, "Textual", rev["corrigido"]])
-        if "Resumo" not in wb.sheetnames:
-            resumo = wb.create_sheet("Resumo")
-            resumo.append(["Revisor","Tempo (s)","Tokens In","Tokens Out","USD","BRL"])
-        else:
-            resumo = wb["Resumo"]
-        tempo = round(time.time()-start_all, 1)
-        usd = (tokens_in*VALOR_INPUT + tokens_out*VALOR_OUTPUT)/1000
-        resumo.append(["Textual",tempo,tokens_in,tokens_out,round(usd,4),round(usd*COTACAO_DOLAR,2)])
-        wb.save(plan_path)
+            docs.append((f"{nome}_revisado_completo.docx", '📄 Documento Revisado'))
+        docs.append((f"relatorio_tecnico_{nome}.docx", '📑 Relatório Técnico'))
 
-        # gera relatório técnico
-        rel_path = os.path.join(pasta, f"relatorio_tecnico_{nome}.docx")
-        rel = Document(rel_path) if os.path.exists(rel_path) else Document()
-        if revisoes:
-            rel.add_page_break()
-            rel.add_heading("1. Revisão Textual Técnica", level=1)
-            for rev in revisoes:
-                par = rel.add_paragraph()
-                par.add_run(f"Parágrafo {rev['index']+1}: ").bold = True
-                par.add_run(rev.get("comentario",""))
-                if rev.get("ajustes"):
-                    rel.add_paragraph("Observações adicionais: "+", ".join(rev["ajustes"]),
-                                     style="Intense Quote")
-        rel.save(rel_path)
-        print(f"✅ Revisão aplicada: {nome}")
+        for fn, lbl in docs:
+            p = src_dir / fn
+            if p.exists():
+                st.download_button(
+                    label=lbl,
+                    data=p.read_bytes(),
+                    file_name=p.name,
+                    key=f"download_{fn}"
+                )
+
+    # 🥧 Pizza de distribuição
+    with c3:
+        st.plotly_chart(
+            px.pie(
+                df,
+                values='Total',
+                names=df.index,
+                color_discrete_map=cores,
+                title='Distribuição %'
+            ), use_container_width=True
+        )
+
+# --- Footer ---
+def footer():
+    st.markdown('<hr style="margin-top: 2rem; margin-bottom: 1rem; border: none; border-top: 1px solid #ccc;"/>', unsafe_allow_html=True)
+    st.markdown('<div class="footer" style="color: #007f56; font-weight: bold;">Powered by Dossel Ambiental</div>', unsafe_allow_html=True)
+    
+
+# --- Main ---
+st.set_page_config(page_title='Revisor Dossel', layout='centered')
+
+# --- Função principal do app ---
+def main():
+    init_db()
+    apply_css()
+
+    if "pagina" not in st.session_state:
+        st.session_state["pagina"] = "upload" if "user" in st.session_state else "login"
+
+    # 🔐 Redireciona para login se necessário
+    if "user" not in st.session_state:
+        if st.session_state["pagina"] != "login":
+            st.session_state["pagina"] = "login"
+            st.rerun()
+        header()
+        page_login()
+        footer()
+        return
+
+    # === SIDEBAR ===
+    with st.sidebar:
+        pagina_atual = st.session_state.get("pagina", "upload")
+        index_padrao = 1 if pagina_atual == "historico" else 0
+
+        secao = option_menu(
+            menu_title=None,
+            options=["Nova Revisão", "Histórico"],
+            icons=["file-earmark-text", "clock-history"],
+            default_index=index_padrao,
+            styles={
+                "container": {"padding": "0!important", "background-color": "#ffffff"},
+                "icon": {"color": "#16a085", "font-size": "18px"},
+                "nav-link": {"margin": "2px 0", "--hover-color": "#f7f7f7"},
+                "nav-link-selected": {"background-color": "#d1f2eb"},
+            }
+        )
+
+        # Registra a última página de revisão (se não for histórico ou login)
+        if st.session_state["pagina"] not in ["historico", "login"]:
+            st.session_state["pagina_revisao"] = st.session_state["pagina"]
+
+        if secao == "Histórico" and st.session_state["pagina"] != "historico":
+            st.session_state["pagina"] = "historico"
+            st.rerun()
+        elif secao == "Nova Revisão":
+            voltar_para = st.session_state.get("pagina_revisao", "upload")
+            if st.session_state["pagina"] != voltar_para:
+                st.session_state["pagina"] = voltar_para
+                st.rerun()
+
+        if st.button("❌ Logout (sair)", use_container_width=True):
+            nome = st.session_state.get("nome")
+            if nome:
+                pasta = Path("saida") / nome
+                if pasta.exists():
+                    shutil.rmtree(pasta)
+            for f in ["status.txt", "documentos_processados.txt", "documentos_falhados.txt"]:
+                p = Path(f)
+                if p.exists():
+                    p.unlink()
+            remove_from_queue(nome)
+            st.session_state.clear()
+            st.rerun()
+
+    # === CONTEÚDO PRINCIPAL ===
+    header()
+
+    pagina = st.session_state["pagina"]
+
+    if pagina == "login":
+        page_login()
+    elif pagina == "upload":
+        page_upload()
+    elif pagina == "modo":
+        page_mode()
+    elif pagina == "acompanhamento":
+        page_progress()
+    elif pagina == "resultados":
+        page_results()
+    elif pagina == "historico":
+        page_history()
+    else:
+        st.error("Página inválida")
+
+    footer()
 
 if __name__ == "__main__":
-    try:
-        aplicar(sys.argv[1:] if len(sys.argv)>1 else None)
-    except Exception:
-        print("❌ Erro:", traceback.format_exc())
-        sys.exit(1)
+    main()
