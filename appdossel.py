@@ -384,38 +384,48 @@ def page_history():
 
 # --- Fluxo Original de Revisão ---
 def page_upload():
-    st.write("📍 Início page_upload(), pagina =", st.session_state.get("pagina"))
+    if 'pagina' not in st.session_state:
+        st.session_state['pagina'] = 'upload'
 
-    # Limpa estados antigos
-    for key in ['modo_selected', 'modo_lite', 'removed_from_queue', 'processo_iniciado']:
-        st.session_state.pop(key, None)
+    st.markdown("📍 Início `page_upload()`, pagina =", st.session_state['pagina'])
 
-    arquivo = st.file_uploader("Selecione um arquivo .docx:", type="docx")
+    st.subheader("Envie um arquivo .docx para revisão:")
+    arquivo = st.file_uploader("Selecione um arquivo .docx para revisão:", type="docx", label_visibility='collapsed')
 
     if arquivo:
         nome = arquivo.name.replace('.docx', '')
         st.session_state['nome'] = nome
-        st.session_state['arquivo_buffer'] = arquivo.getvalue()
-        st.write(f"📁 Arquivo carregado: {nome}")
+        st.session_state['arquivo_buffer'] = arquivo.getbuffer()
 
-        pos = add_to_queue(nome)
-        st.session_state['pos'] = pos
+        st.write(f"**Arquivo carregado:** {nome}")
 
-        if st.button(f"▶️ Iniciar: {nome}"):
+        if 'pos' not in st.session_state:
+            pos = add_to_queue(nome)
+            st.session_state['pos'] = pos
+        else:
+            pos = st.session_state['pos']
+
+        if st.button(f"▶️ Iniciar Revisão: {nome}"):
             st.session_state['want_start'] = True
             st.rerun()
 
+    # Processamento da etapa após clique no botão
     if st.session_state.get('want_start'):
-        st.write("📌 want_start True com nome:", st.session_state.get('nome'))
+        nome = st.session_state.get('nome')
+        pos = st.session_state.get('pos', 0)
 
-        if st.session_state['pos'] > 1:
-            st.warning(f"📋 Sua revisão está na posição {st.session_state['pos']} da fila. Aguarde.")
+        st.markdown(f"📌 `want_start` True com nome: {nome}")
+        st.markdown(f"📋 Posição na fila: {pos}")
+
+        if pos > 1:
+            st.warning(f"📋 Sua revisão está na posição {pos} da fila. Aguarde sua vez.")
         else:
+            # Limpa pasta de entrada
             PASTA_ENTRADA.mkdir(exist_ok=True)
             for fpath in PASTA_ENTRADA.iterdir():
                 fpath.unlink()
 
-            file_path = PASTA_ENTRADA / f"{st.session_state['nome']}.docx"
+            file_path = PASTA_ENTRADA / f"{nome}.docx"
             with open(file_path, 'wb') as f:
                 f.write(st.session_state['arquivo_buffer'])
 
