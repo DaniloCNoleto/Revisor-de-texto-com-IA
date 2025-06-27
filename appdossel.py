@@ -399,12 +399,9 @@ def page_upload():
 
     if st.button(f"▶️ Iniciar Revisão: {nome}"):
         pos = add_to_queue(nome)
-        st.session_state['pos'] = pos
-
         if pos > 1:
             st.warning(f"📋 Sua revisão está na posição {pos} da fila. Aguarde sua vez.")
         else:
-            # prepara pasta de entrada
             PASTA_ENTRADA.mkdir(exist_ok=True)
             for fpath in PASTA_ENTRADA.iterdir():
                 fpath.unlink()
@@ -415,7 +412,6 @@ def page_upload():
 
             st.session_state['entrada_path'] = str(file_path)
             st.session_state['pagina'] = 'modo'
-            set_url_param("pagina", "modo")
             st.rerun()
 
 def page_mode():
@@ -674,11 +670,17 @@ def main():
     apply_css()
 
     # 🔄 Sincroniza ?pagina=... com session_state["pagina"]
+    pagina_ss = st.session_state.get("pagina")
     pagina_url = get_url_param("pagina")
-    if pagina_url in ["upload", "modo", "acompanhamento", "resultados", "historico", "login"]:
+
+    if pagina_url and pagina_url != pagina_ss:
+        # sincroniza a session com a URL somente se foi alterada manualmente
         st.session_state["pagina"] = pagina_url
-    elif "pagina" not in st.session_state:
-        st.session_state["pagina"] = "login" if "user" not in st.session_state else "upload"
+
+    elif not pagina_ss:
+        # define página inicial baseada em autenticação
+        st.session_state["pagina"] = "upload" if "user" in st.session_state else "login"
+
 
     # 🔐 Redireciona para login se não autenticado
     if "user" not in st.session_state:
