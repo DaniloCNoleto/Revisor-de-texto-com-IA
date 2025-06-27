@@ -386,8 +386,9 @@ def page_history():
 def page_upload():
     if 'pagina' not in st.session_state:
         st.session_state['pagina'] = 'upload'
+
     # limpa estados antigos
-    for key in ['modo_selected','modo_lite','removed_from_queue','want_start','processo_iniciado','entrada_path']:
+    for key in ['modo_selected', 'modo_lite', 'removed_from_queue', 'want_start', 'processo_iniciado', 'entrada_path']:
         st.session_state.pop(key, None)
 
     st.subheader("Envie um arquivo .docx para revisão:")
@@ -396,7 +397,7 @@ def page_upload():
     if not arquivo:
         return
 
-    nome = arquivo.name.replace('.docx','')
+    nome = arquivo.name.replace('.docx', '')
     st.session_state['nome'] = nome
     st.write(f"**Arquivo carregado:** {nome}")
 
@@ -412,13 +413,20 @@ def page_upload():
         else:
             # prepara pasta de entrada
             PASTA_ENTRADA.mkdir(exist_ok=True)
-            for fpath in PASTA_ENTRADA.iterdir(): fpath.unlink()
+            for fpath in PASTA_ENTRADA.iterdir():
+                fpath.unlink()
+
             file_path = PASTA_ENTRADA / arquivo.name
             with open(file_path, 'wb') as f:
                 f.write(arquivo.getbuffer())
+
             st.session_state['entrada_path'] = str(file_path)
             st.session_state['pagina'] = 'modo'
+
+            # ✅ Atualiza URL corretamente
+            set_url_param("pagina", "modo")
             st.rerun()
+
 
 
     
