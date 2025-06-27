@@ -384,6 +384,7 @@ def page_history():
 
 # --- Fluxo Original de Revisão ---
 def page_upload():
+    st.write("Página:", st.session_state.get("pagina"))
     if 'pagina' not in st.session_state:
         st.session_state['pagina'] = 'upload'
 
@@ -427,6 +428,7 @@ def page_upload():
 
     
 def page_mode():
+    st.write("🚀 Entrou na page_mode()")
     nome = st.session_state['nome']
 
     if not st.session_state.get('modo_selected'):
@@ -723,7 +725,6 @@ def main():
             set_url_param("pagina", "upload")
             st.rerun()
 
-
         if st.button("❌ Logout (sair)", use_container_width=True):
             nome = st.session_state.get('nome')
             if nome:
@@ -743,6 +744,9 @@ def main():
 
     pagina = st.session_state.get("pagina", "upload")
 
+    # 🔎 Diagnóstico para garantir que está interpretando corretamente a página
+    st.write("🔁 Página ativa no main():", pagina)
+
     if pagina == "login":
         page_login()
     elif pagina == "historico":
@@ -750,6 +754,7 @@ def main():
     elif pagina == "upload":
         page_upload()
     elif pagina == "modo":
+        st.write("🚀 Chamando page_mode()")
         page_mode()
     elif pagina == "acompanhamento":
         page_progress()
@@ -762,6 +767,7 @@ def main():
 
     # 🌐 Atualiza a URL com a página atual
     _sync_url()
+
 
 
 if __name__ == "__main__":
