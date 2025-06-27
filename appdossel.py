@@ -271,6 +271,7 @@ def page_login():
         if user:
             st.session_state.clear()
             st.session_state['user'] = user
+            st.session_state['usuario'] = user['username']
             st.session_state['pagina'] = 'upload'
             st.rerun()
 
@@ -387,7 +388,7 @@ def page_upload():
         return
 
     nome = arquivo.name.replace('.docx', '')
-    usuario = st.session_state['user']['username']
+    usuario = st.session_state.get('usuario')
     st.session_state['nome'] = nome
     st.session_state['usuario'] = usuario
     st.write(f"**Arquivo carregado:** {nome}")
@@ -452,7 +453,7 @@ def page_mode():
 def page_progress():
     entrada_path = st.session_state.get('entrada_path')
     nome = st.session_state.get('nome')
-    usuario = st.session_state['user']['username']
+    usuario = st.session_state.get('usuario')
 
     if not entrada_path or not nome:
         st.session_state['pagina'] = 'upload'
@@ -465,7 +466,7 @@ def page_progress():
         if STATUS_PATH.exists():
             STATUS_PATH.unlink()
 
-        antiga = Path(PASTA_SAIDA) / usuario / nome
+        antiga = Path(PASTA_SAIDA) / st.session_state['usuario'] / nome
         if antiga.exists():
             user = st.session_state['user']
             user_dir = PASTA_HISTORICO / user['username']
@@ -484,11 +485,10 @@ def page_progress():
             return
 
         with st.spinner('👷 Iniciando gerenciador...'):
-            usuario = st.session_state['user']['username']
             subprocess.Popen(
                 [sys.executable, str(gerenciador), entrada_path, usuario] +
                 (['--lite'] if lite else [])
-        )
+            )
 
         st.session_state['processo_iniciado'] = True
 
@@ -520,7 +520,7 @@ def page_progress():
             if st.button('❌ Cancelar Revisão', key='cancel_progress'):
                 nome = st.session_state.get('nome')
                 if nome:
-                    pasta = Path(PASTA_SAIDA) / usuario / nome
+                    pasta = Path(PASTA_SAIDA) / st.session_state['usuario'] / nome
                     if pasta.exists():
                         shutil.rmtree(pasta)
                 for f in [STATUS_PATH, LOG_PROCESSADOS, LOG_FALHADOS]:
@@ -556,8 +556,8 @@ def page_results():
         remove_from_queue(nome)
         st.session_state['removed_from_queue'] = True
 
-    usuario = st.session_state['user']['username']
-    src_dir = Path(PASTA_SAIDA) / usuario / nome
+    usuario = st.session_state.get('usuario')
+    src_dir = Path(PASTA_SAIDA) / st.session_state['usuario'] / nome
     xlsx = src_dir / 'avaliacao_completa.xlsx'
     tokens_path = src_dir / 'mapeamento_tokens.xlsx'
 
