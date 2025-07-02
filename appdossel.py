@@ -319,18 +319,20 @@ def apply_css() -> None:
             --background-color: #fff;
             --text-color: #000;
             --sidebar-bg-light: var(--dossel-green-100);
-            --sidebar-bg-dark: rgba(0, 127, 86, .15);
+
         }
         @media (prefers-color-scheme: dark) {
             :root {
                 --background-color: #111;
                 --text-color: #eee;
+                --sidebar-bg: rgba(0, 127, 86, .15);
             }
         }
 
         html[data-theme="dark"] {
             --background-color: #111;
             --text-color: #eee;
+            --sidebar-bg: rgba(0, 127, 86, .15);
             }
         /* ---------- Corrige o FUNDO BRANCO que sobrou ---------- */
         /* 1) contêiner principal da página */
@@ -387,11 +389,12 @@ def apply_css() -> None:
 
         /* ---------- Sidebar ---------- */
         section[data-testid="stSidebar"] > div:first-child {
-            background: var(--sidebar-bg-light);
+            background: var(--sidebar-bg-light) !important;
             padding-top: 2rem;
         }
-        html[data-theme="dark"] section[data-testid="stSidebar"] > div:first-child {
-            background: var(--sidebar-bg-dark);
+        html[data-theme="dark"] section[data-testid="stSidebar"] > div:first-child,
+        body[data-theme="dark"] section[data-testid="stSidebar"] > div:first-child {
+            background: var(--sidebar-bg) !important;
         }
 
         /* ---------- CENTRALIZA TODO O CONTEÚDO ---------- */
