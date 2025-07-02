@@ -16,7 +16,7 @@ try:
     from passlib.hash import pbkdf2_sha256
 except Exception:  # pragma: no cover - fallback when passlib missing
     pbkdf2_sha256 = None
-from datetime import datetime
+from datetime import datetime, timezone
 from urllib.parse import urlparse, parse_qs  # ➜ novo import para utilidades de URL
 from streamlit_option_menu import option_menu
 import sqlite3
@@ -117,35 +117,57 @@ def upload_e_link(path: Path) -> str:
 
 
 # --- opcional: restaurar + backup do users.db ----------------------------
-"""def restore_db():
+def restore_db():
+    """
+    Restaura o banco de dados do Google Drive de forma inteligente.
+    Só baixa o arquivo se não houver uma versão local ou se a versão do Drive for mais recente.
+    """
     try:
-        from googleapiclient.http import MediaIoBaseDownload
+        print("[restore_db] Verificando a necessidade de restauração...")
+        # 1. Busca o arquivo no Drive para obter seus metadados
+        res = DRIVE.files().list(
+            q=f"'{FOLDER_ID}' in parents and name='users.db'",
+            orderBy="modifiedTime desc",
+            pageSize=1,
+            fields="files(id, modifiedTime)"  # Pede o ID e a data de modificação
+        ).execute()
+
+        if not res.get("files"):
+            print("[restore_db] Nenhum 'users.db' encontrado no Google Drive. Pulando restauração.")
+            return
+
+        remote_file = res["files"][0]
+        file_id = remote_file["id"]
+        
+        # Converte a data de modificação do Drive para um objeto datetime ciente do fuso horário
+        remote_mod_time_str = remote_file["modifiedTime"]
+        remote_mod_time = datetime.fromisoformat(remote_mod_time_str)
+
+        # 2. Verifica se o arquivo local existe e compara as datas
+        if DB_PATH.exists():
+            local_mod_time_unix = os.path.getmtime(DB_PATH)
+            local_mod_time = datetime.fromtimestamp(local_mod_time_unix, tz=timezone.utc)
+            
+            # Se o arquivo local for mais novo ou da mesma data, não faz nada
+            if local_mod_time >= remote_mod_time:
+                print(f"[restore_db] A versão local ('{local_mod_time}') é mais recente que a do Drive ('{remote_mod_time}'). Mantendo a local.")
+                return
+
+        print(f"[restore_db] Versão do Drive é mais recente. Baixando 'users.db'...")
+        # 3. Se chegou aqui, baixa o arquivo do Drive
+        request = DRIVE.files().get_media(fileId=file_id)
+        tmp_path = DB_PATH.with_suffix('.tmp')
+        with DB_LOCK, io.FileIO(tmp_path, "wb") as fh:
+            downloader = MediaIoBaseDownload(fh, request)
+            done = False
+            while not done:
+                _, done = downloader.next_chunk()
+        os.replace(tmp_path, DB_PATH)
+        os.chmod(DB_PATH, 0o666)
+        print("[restore_db] 'users.db' restaurado com sucesso do Google Drive.")
+
     except Exception as e:
-        print("[restore_db] falha no import ➜", e)
-        return
-    res = DRIVE.files().list(
-        q=f"'{FOLDER_ID}' in parents and name='users.db'",
-        orderBy="modifiedTime desc",
-        pageSize=1,
-        fields="files(id)"
-    ).execute()
-
-    if not res.get("files"):
-        print("[restore_db] nada encontrado")
-        return
-
-    file_id = res["files"][0]["id"]
-    request = DRIVE.files().get_media(fileId=file_id)
-    tmp_path = DB_PATH.with_suffix('.tmp')
-    with DB_LOCK, io.FileIO(tmp_path, "wb") as fh:
-        downloader = MediaIoBaseDownload(fh, request)
-        done = False
-        while not done:
-            _, done = downloader.next_chunk()
-    os.replace(tmp_path, DB_PATH)
-
-    os.chmod(DB_PATH, 0o666)
-    print("[restore_db] baixado", DB_PATH.stat().st_size, "bytes")"""
+        print(f"[restore_db] Falha durante o processo de restauração: {e}")
 
 def mark_db_dirty():
     # seta flag na sessão global
