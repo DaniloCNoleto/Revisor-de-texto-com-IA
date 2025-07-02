@@ -9,8 +9,7 @@ tiktoken
 passlib
 pandas
 plotly
-streamlit_option_menu
-option_menu
+streamlit-option-menu>=0.4.0
 mimetypes
 io
 base64
