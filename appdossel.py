@@ -233,6 +233,21 @@ def apply_css() -> None:
             --dossel-green-100: #E6F4EC;
         }
 
+        /* ---------- RESET de fundo que estava sobrepondo ---------- */
+        /* 1) container que envolve toda a página */
+        [data-testid="block-container"] {
+            background: var(--background-color) !important;
+        }
+        /* 2) colunas geradas por st.columns(...) */
+        [data-testid="column"] {
+            background: transparent !important;   /* ou use var(--background-color) */
+        }
+        /* 3) cartões de st.metric() que ficavam brancos atrás do número */
+        [data-testid="metric-container"] {
+            background: transparent !important;
+            color: var(--text-color) !important;
+        }
+
         /* ---------- Elementos básicos ---------- */
         html, body, [class*="css"], .stApp {
             background: var(--background-color) !important;
@@ -313,7 +328,6 @@ def apply_css() -> None:
         html[data-theme="dark"] .title-dossel { color: var(--dossel-green-400); }
 
         html[data-theme="dark"] .stDownloadButton button {
-            /* deixamos o botão “outline” visível no fundo escuro */
             border-color: var(--dossel-green-400) !important;
             color: var(--dossel-green-400) !important;
         }
@@ -323,20 +337,21 @@ def apply_css() -> None:
         }
 
         html[data-theme="dark"] section[data-testid="stSidebar"] > div:first-child {
-            background: rgba(0, 127, 86, .15);  /* verde 600 com transparência */
+            background: rgba(0, 127, 86, .15);
         }
         </style>
         """,
         unsafe_allow_html=True,
     )
 
-    # --- (restante da lógica que você já tinha) ---
+    # --------- restante da lógica original ---------
     if "user" not in st.session_state:
         st.session_state["pagina"] = "login"
         header()
         page_login()
         footer()
         st.stop()
+
 
 
 def header():
@@ -552,7 +567,7 @@ def page_mode():
             st.session_state['modo_selected'] = True
             st.session_state['modo_lite'] = False
             st.rerun()
-        if c2.button('⚡ Revisão Simples'):
+        if c2.button('⚡ Revisão Lite'):
             st.session_state['modo_selected'] = True
             st.session_state['modo_lite'] = True
             st.rerun()
