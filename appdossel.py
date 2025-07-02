@@ -12,12 +12,17 @@ from openpyxl import load_workbook
 import pandas as pd
 import plotly.express as px
 from passlib.hash import pbkdf2_sha256
+try:
+    from passlib.hash import pbkdf2_sha256
+except Exception:  # pragma: no cover - fallback when passlib missing
+    pbkdf2_sha256 = None
 from datetime import datetime
 from urllib.parse import urlparse, parse_qs  # ➜ novo import para utilidades de URL
 from streamlit_option_menu import option_menu
 import sqlite3
 from filelock import FileLock
 import hashlib
+import hmac
 # --- Drive service-account ---
 import json
 import base64
@@ -70,7 +75,7 @@ def init_db():
                 created_at TEXT NOT NULL
             )
             """
-    )
+        )
         c.execute(
             """
             CREATE TABLE IF NOT EXISTS revisions (
@@ -82,7 +87,7 @@ def init_db():
                 FOREIGN KEY(user_id) REFERENCES users(id)
             )
             """
-            )
+        )
         conn.commit()
         conn.close()
 
@@ -93,13 +98,13 @@ def upload_e_link(path: Path) -> str:
     mime = mimetypes.guess_type(path)[0] or "application/octet-stream"
 
     # 1) upload
-    meta  = {"name": path.name, "parents": [FOLDER_ID]}
+    meta = {"name": path.name, "parents": [FOLDER_ID]}
     try:
         media = MediaIoBaseUpload(path.open("rb"), mimetype=mime)
     except FileNotFoundError:
         raise FileNotFoundError(f"Arquivo não encontrado: {path}")
-    file  = DRIVE.files().create(body=meta, media_body=media,
-                                 fields="id").execute()
+    file = DRIVE.files().create(body=meta, media_body=media,
+                                fields="id").execute()
     file_id = file["id"]
 
     # 2) libera “anyone with link” → read
@@ -126,10 +131,11 @@ def restore_db():
     ).execute()
 
     if not res.get("files"):
-        print("[restore_db] nada encontrado"); return
+        print("[restore_db] nada encontrado")
+        return
 
-    file_id  = res["files"][0]["id"]
-    request  = DRIVE.files().get_media(fileId=file_id)
+    file_id = res["files"][0]["id"]
+    request = DRIVE.files().get_media(fileId=file_id)
     tmp_path = DB_PATH.with_suffix('.tmp')
     with DB_LOCK, io.FileIO(tmp_path, "wb") as fh:
         downloader = MediaIoBaseDownload(fh, request)
@@ -196,7 +202,6 @@ def backup_db():
                 print(f"[backup_db] erro, retry em {sleep_time}s")
                 time.sleep(sleep_time)
 
-   
     st.session_state["db_dirty"] = False
 
     # 2) garante permissão pública (caso tenha sido criado agora)
@@ -211,14 +216,35 @@ def backup_db():
 
 def hash_password(password: str) -> str:
     return pbkdf2_sha256.hash(password)
+    """Hash de senha com passlib ou fallback nativo."""
 
+    if pbkdf2_sha256:
+        return pbkdf2_sha256.hash(password)
+
+    # Fallback simplificado em caso de ausência do passlib
+    salt = os.urandom(12)
+    dk = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 29000)
+    return "$pbkdf2-sha256$29000$" + base64.b64encode(salt).decode().rstrip("=") + "$" + \
+        base64.b64encode(dk).decode().rstrip("=")
 
 def verify_password(password: str, hash_str: str) -> bool:
-    try:
-        return pbkdf2_sha256.verify(password, hash_str)
-    except:
-        return False
+    """Verifica senha utilizando passlib ou implementação local."""
+    if pbkdf2_sha256:
+        try:
+            return pbkdf2_sha256.verify(password, hash_str)
+        except Exception:
+            return False
 
+    try:
+        if not hash_str.startswith("$pbkdf2-sha256$"):
+            return False
+        _, _, rounds, salt_b64, hash_b64 = hash_str.split("$")
+        salt = base64.b64decode(salt_b64 + "=" * (-len(salt_b64) % 4))
+        dk = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, int(rounds))
+        calc = base64.b64encode(dk).decode().rstrip("=")
+        return hmac.compare_digest(calc, hash_b64)
+    except Exception:
+        return False
 
 def register_user(username: str, email: str, full_name: str, password: str) -> bool:
     with DB_LOCK:
@@ -262,20 +288,19 @@ def log_revision(
 ):
     """Registra uma revisão no banco de dados.
 
-    Quando ``timestamp`` é fornecido, ele permite agrupar registros
-    relacionados (por exemplo, documento e relatório) pelo mesmo instante.
+    Quando `timestamp é fornecido, ele permite agrupar registros    relacionados (por exemplo, documento e relatório) pelo mesmo instante.
     """
     with DB_LOCK:
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
         now = timestamp or datetime.now().isoformat()
-    c.execute(
+        c.execute(
             "INSERT INTO revisions (user_id, file_name, processed_path, timestamp) VALUES (?, ?, ?, ?)",
             (user_id, file_name, processed_path, now)
         )
-    conn.commit()
-    conn.close()
-    mark_db_dirty()
+        conn.commit()
+        conn.close()
+        mark_db_dirty()
 
 
 def get_history(user_id: int) -> list[tuple[str, str, str]]:
@@ -298,26 +323,32 @@ def get_history(user_id: int) -> list[tuple[str, str, str]]:
         print(f"❌ Erro no banco de dados: {e}")
         return []
     finally:
-        if  'conn' in locals():
+        if 'conn' in locals():
             conn.close()
 
 
 # --- Fila e status ---
 
 def load_queue():
-    if QUEUE_FILE.exists(): return [l.strip() for l in QUEUE_FILE.read_text().splitlines() if l.strip()]
+    if QUEUE_FILE.exists():
+        return [l.strip() for l in QUEUE_FILE.read_text().splitlines() if l.strip()]
     return []
 
-def save_queue(q): QUEUE_FILE.write_text("\n".join(q))
+def save_queue(q):
+    QUEUE_FILE.write_text("\n".join(q))
 
 def add_to_queue(nome):
-    q = load_queue();
-    if nome not in q: q.append(nome); save_queue(q)
+    q = load_queue()
+    if nome not in q:
+        q.append(nome)
+        save_queue(q)
     return q.index(nome) + 1
 
 def remove_from_queue(nome):
-    q = load_queue();
-    if nome in q: q.remove(nome); save_queue(q)
+    q = load_queue()
+    if nome in q:
+        q.remove(nome)
+        save_queue(q)
 
 
 # --- CSS e Layout ---
@@ -459,7 +490,6 @@ def header():
     st.markdown('<div class="title-dossel">Revisor Automático Dossel</div>', unsafe_allow_html=True)
 
 
-
 def page_login():
     st.markdown('<div class="main-box">', unsafe_allow_html=True)
     st.subheader("Login")
@@ -473,7 +503,6 @@ def page_login():
             st.session_state['usuario'] = user['username']
             st.session_state['pagina'] = 'upload'
             st.rerun()
-
         else:
             st.error("Credenciais inválidas")
     st.markdown("---")
@@ -530,14 +559,16 @@ def page_history():
 
     user = st.session_state.get("user")
     if not user:
-        st.error("Usuário não autenticado."); return
+        st.error("Usuário não autenticado.")
+        return
 
     usuario = user["username"]
     linhas = get_history(user["id"])      # (file_name, processed_path, ts_iso)
     if not linhas:
-        st.info("Nenhuma revisão encontrada."); return
+        st.info("Nenhuma revisão encontrada.")
+        return
 
-     # 1️⃣ agrupa por timestamp (documento + relatório com o mesmo instante)
+    # 1️⃣ agrupa por timestamp (documento + relatório com o mesmo instante)
     grupos: dict[tuple[str, str], dict] = {}
     independentes: list[tuple] = []
 
@@ -548,9 +579,9 @@ def page_history():
             chave = (raiz, ts_key)
             g = grupos.setdefault(chave, {"raiz": raiz, "doc": None, "rel": None, "data": ts})
             if fname.lower().startswith("relatório"):
-                 g["rel"] = pth
+                g["rel"] = pth
             else:
-                 g["doc"] = pth          # data principal = doc revisado
+                g["doc"] = pth          # data principal = doc revisado
         else:
             independentes.append((fname, pth, ts))
 
@@ -591,18 +622,25 @@ def page_history():
                 dir_saida = candidatos[0]
 
         if not dir_saida.exists() or not dir_saida.is_dir():
-            st.warning("⚠️ Pasta de saída não encontrada."); st.markdown("---"); continue
+            st.warning("⚠️ Pasta de saída não encontrada.")
+            st.markdown("---")
+            continue
 
         doc_final, relatorio, tipo = None, None, "Desconhecido"
         for child in dir_saida.iterdir():
             if child.suffix == ".docx":
                 if "_revisado" in child.name and not doc_final:
                     doc_final = child
-                    if   "completo" in child.name: tipo = "Revisão Completa"
-                    elif "texto"    in child.name: tipo = "Revisão Rápida"
-                    elif "falhas"   in child.name: tipo = "Revisão com Falhas"
-                    elif "biblio"   in child.name: tipo = "Revisão Bibliográfica"
-                    else: tipo = "Revisado"
+                    if "completo" in child.name:
+                        tipo = "Revisão Completa"
+                    elif "texto" in child.name:
+                        tipo = "Revisão Rápida"
+                    elif "falhas" in child.name:
+                        tipo = "Revisão com Falhas"
+                    elif "biblio" in child.name:
+                        tipo = "Revisão Bibliográfica"
+                    else:
+                        tipo = "Revisado"
                 elif child.name.startswith("relatorio_tecnico"):
                     relatorio = child
 
@@ -696,18 +734,18 @@ def page_mode():
             if st.button('🔙 Voltar'):
                 st.session_state['pagina'] = 'upload'
                 st.rerun()
-    
+
 def page_progress():
     entrada_path = st.session_state.get("entrada_path")
-    nome         = st.session_state.get("nome")
-    usuario      = st.session_state.get("usuario")
+    nome = st.session_state.get("nome")
+    usuario = st.session_state.get("usuario")
 
     # ─── validações ───────────────────────────────────────────────
     if not entrada_path or not nome:
         st.session_state["pagina"] = "upload"
         st.rerun()
 
-    lite        = st.session_state.get("modo_lite", False)
+    lite = st.session_state.get("modo_lite", False)
     gerenciador = Path(__file__).parent / "gerenciador_revisao_dossel.py"
 
     # ─── dispara o gerenciador 1× só ─────────────────────────────
@@ -719,7 +757,7 @@ def page_progress():
         # 1. versiona revisão anterior (LOCAL → opcional upload)
         antiga = Path(PASTA_SAIDA) / usuario / nome
         if antiga.exists():
-            user     = st.session_state["user"]
+            user = st.session_state["user"]
             hist_dir = Path(PASTA_HISTORICO) / user["username"]
             hist_dir.mkdir(parents=True, exist_ok=True)
 
@@ -728,7 +766,7 @@ def page_progress():
                        if (m := re.match(fr"^{re.escape(nome)}_v(\d+)$", p.name))]
             dest = hist_dir / f"{nome}_v{max(versoes, default=0)+1}"
             shutil.move(str(antiga), str(dest))
-            
+
 
             # (a) sobe ZIP da pasta antiga (se quiser registrar no Drive)
             # link_ant = upload_e_link(shutil.make_archive(dest, "zip", dest))
@@ -807,7 +845,7 @@ def page_progress():
     )
     rel_path = src_dir / f"relatorio_tecnico_{nome}.docx"
 
-     # Espera até 15 s pelo documento final aparecer
+    # Espera até 15 s pelo documento final aparecer
     for _ in range(15):
         if doc_final.exists():
             break
@@ -818,7 +856,7 @@ def page_progress():
 
     st.success("✅ Revisão concluída!")
 
-        # upload Drive
+    # upload Drive
     if not st.session_state.get("revision_logged", False):
         user = st.session_state["user"]
 
@@ -845,10 +883,10 @@ def page_progress():
 
 def page_results():
     # 🚫 Se dados básicos faltarem, volta para upload
-    user     = st.session_state.get("user")
-    nome     = st.session_state.get("nome")
-    usuario  = user["username"] if user else st.session_state.get("usuario")
-    lite     = st.session_state.get("modo_lite", False)
+    user = st.session_state.get("user")
+    nome = st.session_state.get("nome")
+    usuario = user["username"] if user else st.session_state.get("usuario")
+    lite = st.session_state.get("modo_lite", False)
 
     if not (nome and usuario):
         st.session_state["pagina"] = "upload"
@@ -861,8 +899,8 @@ def page_results():
 
     # --- Caminhos padrão ---------------------------------------------------
     src_dir = Path(PASTA_SAIDA) / usuario / nome
-    xlsx    = src_dir / "avaliacao_completa.xlsx"
-    tokens  = src_dir / "mapeamento_tokens.xlsx"
+    xlsx = src_dir / "avaliacao_completa.xlsx"
+    tokens = src_dir / "mapeamento_tokens.xlsx"
 
     # --- Espera até 30 s pelo .xlsx ----------------------------------------
     for _ in range(30):
@@ -876,9 +914,9 @@ def page_results():
     if not xlsx.exists():
         possiveis = list(Path(PASTA_SAIDA).glob(f"*/{nome}/avaliacao_completa.xlsx"))
         if possiveis:
-            xlsx    = possiveis[0]
+            xlsx = possiveis[0]
             src_dir = xlsx.parent
-            tokens  = src_dir / "mapeamento_tokens.xlsx"
+            tokens = src_dir / "mapeamento_tokens.xlsx"
 
     if not xlsx.exists():
         st.error("Nenhum resultado encontrado em **PASTA_SAIDA**.")
@@ -891,30 +929,30 @@ def page_results():
     tempo = in_tk = out_tk = 0
     for r in rs.iter_rows(min_row=2, values_only=True):
         if r and len(r) >= 4:
-            tempo  += r[1] or 0
-            in_tk  += r[2] or 0
+            tempo += r[1] or 0
+            in_tk += r[2] or 0
             out_tk += r[3] or 0
 
     # Tokens adicionais
     if tokens.exists():
         try:
             wb_tok = load_workbook(tokens, data_only=True)
-            aba    = wb_tok["MapaTokens"]
+            aba = wb_tok["MapaTokens"]
             for r in aba.iter_rows(min_row=2, values_only=True):
                 if r and r[1] and r[2]:
-                    in_tk  += int(r[1])
+                    in_tk += int(r[1])
                     out_tk += int(r[2])
         except Exception as e:
             st.warning(f"Erro ao somar tokens do mapeador: {e}")
 
     # Totais por tipo
     tot = {}
-    if "Texto"         in wb.sheetnames: tot["Textual"]       = wb["Texto"].max_row        - 1
+    if "Texto" in wb.sheetnames: tot["Textual"] = wb["Texto"].max_row - 1
     if "Bibliográfica" in wb.sheetnames: tot["Bibliográfica"] = wb["Bibliográfica"].max_row - 1
-    if "Falhas"        in wb.sheetnames: tot["Estrutura"]     = wb["Falhas"].max_row       - 1
+    if "Falhas" in wb.sheetnames: tot["Estrutura"] = wb["Falhas"].max_row - 1
 
-    df    = pd.DataFrame.from_dict(tot, orient="index", columns=["Total"]).sort_values("Total")
-    cores = {"Textual":"#007f56", "Bibliográfica":"#5A4A2F", "Estrutura":"#00AF74"}
+    df = pd.DataFrame.from_dict(tot, orient="index", columns=["Total"]).sort_values("Total")
+    cores = {"Textual": "#007f56", "Bibliográfica": "#5A4A2F", "Estrutura": "#00AF74"}
 
     c1, c2, c3 = st.columns([1, 1.2, 1])
 
@@ -923,7 +961,7 @@ def page_results():
         st.plotly_chart(
             px.bar(df, orientation="h", color=df.index,
                    color_discrete_map=cores,
-                   labels={"index":"Tipo", "Total":"Qtd"}),
+                   labels={"index": "Tipo", "Total": "Qtd"}),
             use_container_width=True
         )
 
@@ -960,11 +998,11 @@ def page_results():
     # 📈 Métricas + Downloads
     with c2:
         st.metric("⏱ Tempo (s)", f"{tempo:.1f}")
-        st.metric("📝 Palavras de Entrada",  f"{int(in_tk)*0.75:.0f}")
-        st.metric("✍️ Palavras Alteradas",   f"{int(out_tk)*0.75:.0f}")
+        st.metric("📝 Palavras de Entrada", f"{int(in_tk)*0.75:.0f}")
+        st.metric("✍️ Palavras Alteradas", f"{int(out_tk)*0.75:.0f}")
 
-        docs = [(f"{nome}_revisado_texto.docx",   "📄 Documento Revisado (Lite)", link_doc)] if lite else \
-               [(f"{nome}_revisado_completo.docx","📄 Documento Revisado",        link_doc)]
+        docs = [(f"{nome}_revisado_texto.docx", "📄 Documento Revisado (Lite)", link_doc)] if lite else \
+               [(f"{nome}_revisado_completo.docx", "📄 Documento Revisado", link_doc)]
         docs.append((f"relatorio_tecnico_{nome}.docx", "📑 Relatório Técnico", link_rel))
 
         for fn, lbl, link in docs:
@@ -994,7 +1032,7 @@ def page_results():
 def footer():
     st.markdown('<hr style="margin-top: 2rem; margin-bottom: 1rem; border: none; border-top: 1px solid #ccc;"/>', unsafe_allow_html=True)
     st.markdown('<div class="footer" style="color: #007f56; font-weight: bold;">Powered by Dossel Ambiental</div>', unsafe_allow_html=True)
-    
+
 
 # --- Main ---------------------------------------------------------------
 st.set_page_config(page_title='Revisor Dossel', layout='centered')
@@ -1018,7 +1056,10 @@ def main():
         if st.session_state["pagina"] != "login":
             st.session_state["pagina"] = "login"
             st.rerun()
-        header(); page_login(); footer(); return
+        header()
+        page_login()
+        footer()
+        return
 
     # === SIDEBAR ========================================================
     with st.sidebar:
@@ -1043,18 +1084,21 @@ def main():
             st.session_state["pagina_revisao"] = st.session_state["pagina"]
 
         if secao == "Histórico" and st.session_state["pagina"] != "historico":
-            st.session_state["pagina"] = "historico"; st.rerun()
+            st.session_state["pagina"] = "historico"
+            st.rerun()
         elif secao == "Nova Revisão":
             voltar = st.session_state.get("pagina_revisao", "upload")
             if st.session_state["pagina"] != voltar:
-                st.session_state["pagina"] = voltar; st.rerun()
+                st.session_state["pagina"] = voltar
+                st.rerun()
 
         # 🔘 Logout
         if st.button("❌ Logout (sair)", use_container_width=True):
             nome = st.session_state.get("nome")
             if nome:
                 pasta = Path(PASTA_SAIDA) / st.session_state['usuario'] / nome
-                if pasta.exists(): shutil.rmtree(pasta)
+                if pasta.exists():
+                    shutil.rmtree(pasta)
             for f in ["status.txt", "documentos_processados.txt", "documentos_falhados.txt"]:
                 Path(f).unlink(missing_ok=True)
             remove_from_queue(nome)
@@ -1066,19 +1110,27 @@ def main():
             except Exception as e:
                 print("[backup_db] erro ignorado ➜", e)
 
-            st.session_state.clear(); st.rerun()
+            st.session_state.clear()
+            st.rerun()
 
     # === CONTEÚDO PRINCIPAL ============================================
     header()
     pagina = st.session_state["pagina"]
 
-    if   pagina == "login":          page_login()
-    elif pagina == "upload":         page_upload()
-    elif pagina == "modo":           page_mode()
-    elif pagina == "acompanhamento": page_progress()
-    elif pagina == "resultados":     page_results()
-    elif pagina == "historico":      page_history()
-    else:                            st.error("Página inválida")
+    if pagina == "login":
+        page_login()
+    elif pagina == "upload":
+        page_upload()
+    elif pagina == "modo":
+        page_mode()
+    elif pagina == "acompanhamento":
+        page_progress()
+    elif pagina == "resultados":
+        page_results()
+    elif pagina == "historico":
+        page_history()
+    else:
+        st.error("Página inválida")
 
     footer()
 
