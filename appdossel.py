@@ -215,18 +215,17 @@ def backup_db():
 # --- Autenticação ---
 
 def hash_password(password: str) -> str:
-    return pbkdf2_sha256.hash(password)
     """Hash de senha com passlib ou fallback nativo."""
-
+    # Primeiro, verifica se a biblioteca passlib está disponível
     if pbkdf2_sha256:
         return pbkdf2_sha256.hash(password)
 
+    # Se não estiver, usa o fallback (implementação manual)
     # Fallback simplificado em caso de ausência do passlib
     salt = os.urandom(12)
     dk = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 29000)
     return "$pbkdf2-sha256$29000$" + base64.b64encode(salt).decode().rstrip("=") + "$" + \
-        base64.b64encode(dk).decode().rstrip("=")
-
+           base64.b64encode(dk).decode().rstrip("=")
 def verify_password(password: str, hash_str: str) -> bool:
     """Verifica senha utilizando passlib ou implementação local."""
     if pbkdf2_sha256:
