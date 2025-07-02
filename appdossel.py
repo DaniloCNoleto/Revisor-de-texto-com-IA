@@ -16,6 +16,25 @@ from datetime import datetime
 from urllib.parse import urlparse, parse_qs  # ➜ novo import para utilidades de URL
 from streamlit_option_menu import option_menu
 import sqlite3
+# --- Drive service-account ---
+import json
+import base64
+import io
+import mimetypes
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseUpload
+
+SA_INFO = json.loads(
+    base64.b64decode(os.environ["SA_KEY_B64"]).decode()
+)
+CREDS = service_account.Credentials.from_service_account_info(
+            SA_INFO,
+            scopes=["https://www.googleapis.com/auth/drive.file"]
+        )
+DRIVE = build("drive", "v3", credentials=CREDS)
+FOLDER_ID = os.environ["FOLDER_ID"]         # 1cN0r1gyy9kN2S7_n-5NmpVOzlnjRsStU
+
 
 # ------------------------------------------------------------------
 # ------------------------ Paths e DB ------------------------------
@@ -61,6 +80,47 @@ def init_db():
     )
     conn.commit()
     conn.close()
+
+def upload_e_link(path: Path) -> str:
+    """Envia <path> à pasta do Drive e devolve URL pública de download."""
+    mime = mimetypes.guess_type(path)[0] or "application/octet-stream"
+
+    # 1) upload
+    meta  = {"name": path.name, "parents": [FOLDER_ID]}
+    media = MediaIoBaseUpload(path.open("rb"), mimetype=mime)
+    file  = DRIVE.files().create(body=meta, media_body=media,
+                                 fields="id").execute()
+    file_id = file["id"]
+
+    # 2) libera “anyone with link” → read
+    DRIVE.permissions().create(fileId=file_id,
+                               body={"type": "anyone", "role": "reader"}
+                               ).execute()
+
+    # 3) link direto
+    return f"https://drive.google.com/uc?export=download&id={file_id}"
+
+
+# --- opcional: restaurar + backup do users.db ----------------------------
+def restore_db():
+    res = DRIVE.files().list(
+        q=f"'{FOLDER_ID}' in parents and name='users.db'",
+        orderBy="modifiedTime desc",
+        pageSize=1,
+        fields="files(id)"
+    ).execute()
+    if res.get("files"):
+        fid = res["files"][0]["id"]
+        fh  = io.FileIO(DB_PATH, "wb")
+        DRIVE.files().get_media(fileId=fid).execute(fd=fh)
+
+def backup_db():
+    media = MediaIoBaseUpload(open(DB_PATH, "rb"),
+                              mimetype="application/octet-stream")
+    DRIVE.files().create(body={"name": "users.db",
+                               "parents": [FOLDER_ID]},
+                         media_body=media).execute()
+
 
 # --- Autenticação ---
 
@@ -161,45 +221,58 @@ def remove_from_queue(nome):
 
 
 # --- CSS e Layout ---
-def apply_css():
-    st.markdown("""
-    <style>
+def apply_css() -> None:
+    st.markdown(
+        """
+        <style>
+        /* ---------- Paleta Dossel ---------- */
+        :root {
+            --dossel-green-600: #007f56;
+            --dossel-green-700: #005f43;
+            --dossel-green-400: #00AF74;
+            --dossel-green-100: #E6F4EC;
+        }
+
+        /* ---------- Elementos básicos ---------- */
         html, body, [class*="css"], .stApp {
-            background: #fff !important;
-            color: #222 !important;
+            background: var(--background-color) !important;
+            color: var(--text-color) !important;
             font-family: 'Inter', sans-serif;
         }
-        .stApp > header, .stApp > footer {
-            display: none !important;
-        }
+
+        .stApp > header, .stApp > footer { display: none !important; }
+
         .main-box {
             max-width: 660px;
-            margin: 14px auto 0 auto;
+            margin: 14px auto 0;
             padding: 0;
-            background: none !important;
         }
+
         .logo-dossel img {
             width: 480px;
             max-width: 95vw;
             height: auto;
-            margin: 18px auto 30px auto;
+            margin: 18px auto 30px;
             display: block;
         }
+
         .title-dossel {
             text-align: center;
-            color: #007f56;
+            color: var(--dossel-green-600);
             font-weight: 700;
             font-size: 2.2rem;
             margin-bottom: 32px;
         }
+
+        /* ---------- Botões padrão ---------- */
         .stButton, .stDownloadButton {
             display: flex !important;
             justify-content: center !important;
             width: 100% !important;
         }
         .stButton button {
-            background-color: #007f56 !important;
-            color: #ffffff !important;
+            background: var(--dossel-green-600) !important;
+            color: #fff !important;
             border: none !important;
             border-radius: 4px !important;
             font-weight: 600;
@@ -208,44 +281,62 @@ def apply_css():
             margin: 10px;
         }
         .stButton button:hover {
-            background-color: #005f43 !important;
+            background: var(--dossel-green-700) !important;
         }
+
         .stDownloadButton button {
-            background-color: #ffffff !important;
-            color: #007f56 !important;
-            border: 2px solid #007f56 !important;
+            background: transparent !important;
+            border: 2px solid var(--dossel-green-600) !important;
+            color: var(--dossel-green-600) !important;
             font-weight: 600;
             font-size: 1.1rem;
             padding: 10px 24px;
             margin: 10px;
         }
         .stDownloadButton button:hover {
-            background: #00AF74 !important;
+            background: var(--dossel-green-400) !important;
             color: #fff !important;
-            border-color: #00AF74 !important;
+            border-color: var(--dossel-green-400) !important;
         }
-        .footer {
-            text-align: center;
-            font-size: 12px;
-            color: #888;
-            margin: 38px auto 14px auto;
-        }
+
+        /* ---------- Sidebar ---------- */
         section[data-testid="stSidebar"] > div:first-child {
-            background-color: #E6F4EC;
+            background: var(--dossel-green-100);
             padding-top: 2rem;
         }
-        section[data-testid="stSidebar"] .css-1wvsk4n, .css-1dp5vir {
+        section[data-testid="stSidebar"] .css-1wvsk4n,
+        section[data-testid="stSidebar"] .css-1dp5vir {
             font-size: 1.1rem !important;
         }
-    </style>
-    """, unsafe_allow_html=True)
-    if "user" not in st.session_state:
-            st.session_state["pagina"] = "login"
-            header()
-            page_login()
-            footer()
-            st.stop()
 
+        /* ---------- Ajustes para tema ESCURO ---------- */
+        html[data-theme="dark"] .title-dossel { color: var(--dossel-green-400); }
+
+        html[data-theme="dark"] .stDownloadButton button {
+            /* deixamos o botão “outline” visível no fundo escuro */
+            border-color: var(--dossel-green-400) !important;
+            color: var(--dossel-green-400) !important;
+        }
+        html[data-theme="dark"] .stDownloadButton button:hover {
+            background: var(--dossel-green-400) !important;
+            color: #fff !important;
+        }
+
+        html[data-theme="dark"] section[data-testid="stSidebar"] > div:first-child {
+            background: rgba(0, 127, 86, .15);  /* verde 600 com transparência */
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # --- (restante da lógica que você já tinha) ---
+    if "user" not in st.session_state:
+        st.session_state["pagina"] = "login"
+        header()
+        page_login()
+        footer()
+        st.stop()
 
 
 def header():
@@ -309,6 +400,19 @@ def page_register():
 
 # Page_history no appdossel.py com correção de chave duplicada e identificação de tipo de revisão
 
+# helper: decide entre abrir link ou baixar arquivo local
+def botao_download(label: str, destino: str, key: str):
+    if destino.startswith(("http://", "https://")):
+        st.link_button(label, url=destino, use_container_width=True)
+    else:
+        p = Path(destino)
+        if p.exists():
+            st.download_button(label, p.read_bytes(),
+                               file_name=p.name, key=key)
+        else:
+            st.warning("⚠️ Arquivo não encontrado.")
+
+# ───────────────────────────────────────────────────────────────
 def page_history():
     st.subheader("Histórico de Revisões")
 
@@ -318,79 +422,75 @@ def page_history():
         return
 
     usuario = user["username"]
-    rows = get_history(user["id"])          # (file_name, processed_path, timestamp)
+    rows = get_history(user["id"])                 # (file_name, processed_path, timestamp)
     if not rows:
         st.info("Nenhuma revisão encontrada.")
         return
 
-    # Mais recente primeiro
-    rows = sorted(rows, key=lambda x: x[2], reverse=True)
+    rows = sorted(rows, key=lambda x: x[2], reverse=True)  # mais recente primeiro
 
     for fname, processed_path, ts_iso in rows:
         data_br = datetime.fromisoformat(ts_iso).strftime("%d/%m/%Y")
         st.write(f"**{data_br} — {fname}**")
 
-        # ---------------------------------------------------------------
-        # 1️⃣ Caminho salvo no banco
-        dir_saida = Path(processed_path) if processed_path else None
+        # ─── CASO 1: processed_path já é um link (novo fluxo) ────────────
+                # ─── CASO 1: processed_path é link externo (Drive, SP etc.) ─────
+        if processed_path.startswith(("http://", "https://")):
 
-        # 2️⃣ Caminho "padrão" (caso o banco não tenha ou foi movido)
+            # identifica se é Relatório ou Doc revisado pelo nome salvo no DB
+            if fname.lower().startswith("relatório"):
+                label = "📑 Download Relatório"
+                tipo  = "Relatório Técnico"
+            else:
+                label = "📄 Download Revisado"
+                tipo  = "Revisão (link externo)"
+
+            st.caption(f"🧾 Tipo: {tipo}")
+            botao_download(label, processed_path,
+                           key=f"{fname}_{ts_iso}_link")
+            st.markdown("---")
+            continue   # vai para o próximo registro
+
+
+        # ─── CASO 2: caminho local (fluxo antigo) ───────────────────────
+        dir_saida = Path(processed_path) if processed_path else None
         if not (dir_saida and dir_saida.exists()):
             dir_saida = Path(PASTA_SAIDA) / usuario / fname
-
-        # 3️⃣ Busca em toda a árvore se ainda não achar
         if not dir_saida.exists():
-            encontrados = list(Path(PASTA_SAIDA).glob(f"*/{fname}"))
-            if encontrados:
-                dir_saida = encontrados[0]
+            candidatos = list(Path(PASTA_SAIDA).glob(f"*/{fname}"))
+            if candidatos: dir_saida = candidatos[0]
 
-        # ---------------------------------------------------------------
         if not dir_saida.exists() or not dir_saida.is_dir():
             st.warning("⚠️ Pasta de saída não encontrada para este item.")
-            continue
+            st.markdown("---");  continue
 
-        # Procura arquivos dentro da pasta
-        doc_final  = None
-        relatorio  = None
-        tipo       = "Desconhecido"
-
+        # procura arquivos .docx / relatório
+        doc_final, relatorio, tipo = None, None, "Desconhecido"
         for child in dir_saida.iterdir():
             if child.suffix == ".docx":
                 if "_revisado" in child.name and not doc_final:
                     doc_final = child
-                    if "completo" in child.name:
-                        tipo = "Revisão Completa"
-                    elif "texto" in child.name:
-                        tipo = "Revisão Rápida"
-                    elif "falhas" in child.name:
-                        tipo = "Revisão com Falhas"
-                    elif "biblio" in child.name:
-                        tipo = "Revisão Bibliográfica"
-                    else:
-                        tipo = "Revisado"
+                    if   "completo" in child.name: tipo = "Revisão Completa"
+                    elif "texto"    in child.name: tipo = "Revisão Rápida"
+                    elif "falhas"   in child.name: tipo = "Revisão com Falhas"
+                    elif "biblio"   in child.name: tipo = "Revisão Bibliográfica"
+                    else: tipo = "Revisado"
                 elif child.name.startswith("relatorio_tecnico"):
                     relatorio = child
 
         st.caption(f"🧾 Tipo: {tipo}")
 
         col1, col2 = st.columns(2)
-        if doc_final and doc_final.is_file():
+        if doc_final:
             with col1:
-                st.download_button(
-                    label="📄 Download Revisado",
-                    data=doc_final.read_bytes(),
-                    file_name=doc_final.name,
-                    key=f"{fname}_{ts_iso}_{doc_final.name}"
-                )
-        if relatorio and relatorio.is_file():
+                botao_download("📄 Download Revisado", str(doc_final),
+                               key=f"{fname}_{ts_iso}_{doc_final.name}")
+        if relatorio:
             with col2:
-                st.download_button(
-                    label="📑 Download Relatório",
-                    data=relatorio.read_bytes(),
-                    file_name=relatorio.name,
-                    key=f"{fname}_{ts_iso}_{relatorio.name}"
-                )
+                botao_download("📑 Download Relatório", str(relatorio),
+                               key=f"{fname}_{ts_iso}_{relatorio.name}")
 
+        st.markdown("---")
 
 
 # --- Fluxo Original de Revisão ---
@@ -471,19 +571,12 @@ def page_mode():
                 st.session_state['pagina'] = 'upload'
                 st.rerun()
     
-import re, sys, time, shutil, subprocess
-from pathlib import Path
-import streamlit as st
-
-# PASTA_SAIDA, PASTA_HISTORICO, STATUS_PATH, LOG_PROCESSADOS, LOG_FALHADOS,
-# remove_from_queue(), log_revision()  ➜  já existem no seu script
-
 def page_progress():
     entrada_path = st.session_state.get("entrada_path")
-    nome         = st.session_state.get("nome")           # nome do doc / pasta
-    usuario      = st.session_state.get("usuario")        # login do usuário
+    nome         = st.session_state.get("nome")
+    usuario      = st.session_state.get("usuario")
 
-    # ────────────────────────── validações iniciais ───────────────────────
+    # ─── validações ───────────────────────────────────────────────
     if not entrada_path or not nome:
         st.session_state["pagina"] = "upload"
         st.rerun()
@@ -491,111 +584,109 @@ def page_progress():
     lite        = st.session_state.get("modo_lite", False)
     gerenciador = Path(__file__).parent / "gerenciador_revisao_dossel.py"
 
-    # ────────────────────────── dispara o gerenciador ─────────────────────
+    # ─── dispara o gerenciador 1× só ─────────────────────────────
     if not st.session_state.get("processo_iniciado", False):
 
-        # limpa status antigo
-        if STATUS_PATH.exists():
-            STATUS_PATH.unlink()
+        # 0. limpa status
+        STATUS_PATH.unlink(missing_ok=True)
 
-        # versiona revisão anterior, se houver
+        # 1. versiona revisão anterior (LOCAL → opcional upload)
         antiga = Path(PASTA_SAIDA) / usuario / nome
         if antiga.exists():
             user      = st.session_state["user"]
             hist_dir  = Path(PASTA_HISTORICO) / user["username"]
             hist_dir.mkdir(parents=True, exist_ok=True)
 
-            pattern   = re.compile(rf"^{re.escape(nome)}_v(\d+)$")
-            versoes   = [int(m.group(1))
-                         for p in hist_dir.iterdir()
-                         if (m := pattern.match(p.name))]
-            proxima   = max(versoes, default=0) + 1
-
-            dest      = hist_dir / f"{nome}_v{proxima}"
+            vers = [int(m.group(1))
+                    for p in hist_dir.iterdir()
+                    if (m := re.match(fr"^{re.escape(nome)}_v(\d+)$", p.name))]
+            dest = hist_dir / f"{nome}_v{max(vers, default=0)+1}"
             shutil.move(str(antiga), str(dest))
-            log_revision(user["id"], nome, str(dest))
 
+            # (a) sobe ZIP da pasta antiga (se quiser registrar no Drive)
+            # link_ant = upload_e_link(shutil.make_archive(dest, "zip", dest))
+            # (b) ou apenas guarda o caminho local
+            log_revision(user["id"], nome, str(dest))
+            backup_db()
+
+        # 2. garante que o script existe
         if not gerenciador.exists():
             st.error(f"Script não encontrado: {gerenciador}")
             return
 
+        # 3. chama o gerenciador (sub-processo)
         with st.spinner("👷 Iniciando gerenciador…"):
             subprocess.Popen(
                 [sys.executable, str(gerenciador), entrada_path, usuario]
                 + (["--lite"] if lite else [])
             )
-
         st.session_state["processo_iniciado"] = True
         st.rerun()
 
-    # ────────────────────────── barra de progresso ────────────────────────
+    # ─── barra de progresso ──────────────────────────────────────
     v = int(STATUS_PATH.read_text().strip()) if STATUS_PATH.exists() else 0
-    bar_html = f"""
-    <div style="position: relative; width: 100%; background-color: #f0f0f0;
-                border-radius: 4px; height: 30px; margin-bottom: 10px;">
-      <div style="width: {v}%; background-color: #007f56; height: 100%;
-                  border-radius: 4px;"></div>
-      <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-                  display: flex; align-items: center; justify-content: center;
-                  color: #5A4A2F; font-weight: bold;">{v}%</div>
-    </div>
-    """
-    st.markdown(bar_html, unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <div style="position: relative; width: 100%; background:#f0f0f0;
+                    border-radius:4px;height:30px;margin-bottom:10px;">
+          <div style="width:{v}%;background:#007f56;height:100%;
+                      border-radius:4px;"></div>
+          <div style="position:absolute;top:0;left:0;width:100%;height:100%;
+                      display:flex;align-items:center;justify-content:center;
+                      color:#5A4A2F;font-weight:bold;">{v}%</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-    # ────────────────────────── enquanto < 100 % ──────────────────────────
+    # ─── se ainda não terminou ───────────────────────────────────
     if v < 100:
         col_back, col_cancel = st.columns(2)
-
-        with col_back:
-            if st.button("🔙 Voltar", key="back_progress"):
-                st.session_state["pagina"] = "modo"
-                st.rerun()
-
-        with col_cancel:
-            if st.button("❌ Cancelar Revisão", key="cancel_progress"):
-                if nome:
-                    pasta = Path(PASTA_SAIDA) / usuario / nome
-                    if pasta.exists():
-                        shutil.rmtree(pasta)
-                for f in [STATUS_PATH, LOG_PROCESSADOS, LOG_FALHADOS]:
-                    if f.exists():
-                        f.unlink()
-                remove_from_queue(nome)
-                for key in list(st.session_state.keys()):
-                    if key != "user":
-                        del st.session_state[key]
-                st.session_state["pagina"] = "upload"
-                st.rerun()
-
+        ...
         time.sleep(1)
         st.rerun()
 
     # ────────────────────────── quando chegar a 100 % ─────────────────────
     st.success("✅ Revisão concluída!")
 
-    # grava histórico apenas uma vez
     if not st.session_state.get("revision_logged", False):
-        user     = st.session_state["user"]
-        src_dir  = Path(PASTA_SAIDA) / usuario / nome
-        log_revision(user["id"], nome, str(src_dir))
+        user    = st.session_state["user"]
+        src_dir = Path(PASTA_SAIDA) / usuario / nome
+
+        # 1️⃣ caminhos dos dois .docx
+        doc_final = src_dir / (f"{nome}_revisado_texto.docx"
+                            if lite else f"{nome}_revisado_completo.docx")
+        rel_path  = src_dir / f"relatorio_tecnico_{nome}.docx"       # ← NOVO
+
+        # 2️⃣ envia ambos ao Drive
+        link_doc = upload_e_link(doc_final)                          # já existia
+        link_rel = upload_e_link(rel_path) if rel_path.exists() else None  # ← NOVO
+
+        # 3️⃣ grava no histórico
+        log_revision(user["id"], nome, link_doc)                     # doc revisado
+        if link_rel:                                                 # ← NOVO
+            log_revision(user["id"], f"Relatório {nome}", link_rel)  # grava 2ª linha
+
+        backup_db()                                                  # mantém o DB salvo
         st.session_state["revision_logged"] = True
+
 
     st.session_state["pagina"] = "resultados"
     st.rerun()
 
+# PASTA_SAIDA, PASTA_HISTORICO, STATUS_PATH, LOG_PROCESSADOS, LOG_FALHADOS,
+# remove_from_queue(), log_revision()  ➜  já existem no seu script
 
 def page_results():
     # 🚫 Se dados básicos faltarem, volta para upload
-    user     = st.session_state.get("user") 
+    user     = st.session_state.get("user")
     nome     = st.session_state.get("nome")
     usuario  = user["username"] if user else st.session_state.get("usuario")
     lite     = st.session_state.get("modo_lite", False)
-    
+
     if not (nome and usuario):
         st.session_state["pagina"] = "upload"
         st.rerun()
-
-    lite = st.session_state.get("modo_lite", False)
 
     # Remove da fila na primeira renderização
     if not st.session_state.get("removed_from_queue", False):
@@ -607,34 +698,31 @@ def page_results():
     xlsx    = src_dir / "avaliacao_completa.xlsx"
     tokens  = src_dir / "mapeamento_tokens.xlsx"
 
-    # --- 1) Espera até 30 s pelo arquivo no caminho padrão -----------------
-    for _ in range(30):                      # 30 × 1 s  → 30 s máx.
+    # --- Espera até 30 s pelo .xlsx ----------------------------------------
+    for _ in range(30):
         if xlsx.exists():
             break
         with st.spinner("Processando… aguarde alguns segundos."):
             time.sleep(1)
-        st.rerun()                           # força nova renderização
+        st.rerun()
 
-    # --- 2) Procura em toda a árvore caso ainda não exista -----------------
+    # Procura alternativa se não encontrou
     if not xlsx.exists():
-        possiveis = list(                  # procura apenas 2 níveis abaixo
-            Path(PASTA_SAIDA).glob(f"*/{nome}/avaliacao_completa.xlsx")
-        )
+        possiveis = list(Path(PASTA_SAIDA).glob(f"*/{nome}/avaliacao_completa.xlsx"))
         if possiveis:
             xlsx    = possiveis[0]
             src_dir = xlsx.parent
             tokens  = src_dir / "mapeamento_tokens.xlsx"
 
-    # Dê-se por vencido se não achou de jeito nenhum
     if not xlsx.exists():
         st.error("Nenhum resultado encontrado em **PASTA_SAIDA**.")
         st.stop()
 
-    # -------- Daqui para baixo o código original (leituras, gráficos, etc.)
+    # ----------------------------------------------------------------------
     wb = load_workbook(xlsx, data_only=True)
     rs = wb["Resumo"]
 
-    tempo, in_tk, out_tk = 0, 0, 0
+    tempo = in_tk = out_tk = 0
     for r in rs.iter_rows(min_row=2, values_only=True):
         if r and len(r) >= 4:
             tempo  += r[1] or 0
@@ -655,9 +743,9 @@ def page_results():
 
     # Totais por tipo
     tot = {}
-    if "Texto"        in wb.sheetnames: tot["Textual"]      = wb["Texto"].max_row        - 1
+    if "Texto"         in wb.sheetnames: tot["Textual"]       = wb["Texto"].max_row        - 1
     if "Bibliográfica" in wb.sheetnames: tot["Bibliográfica"] = wb["Bibliográfica"].max_row - 1
-    if "Falhas"       in wb.sheetnames: tot["Estrutura"]    = wb["Falhas"].max_row       - 1
+    if "Falhas"        in wb.sheetnames: tot["Estrutura"]     = wb["Falhas"].max_row       - 1
 
     df    = pd.DataFrame.from_dict(tot, orient="index", columns=["Total"]).sort_values("Total")
     cores = {"Textual":"#007f56", "Bibliográfica":"#5A4A2F", "Estrutura":"#00AF74"}
@@ -673,22 +761,54 @@ def page_results():
             use_container_width=True
         )
 
+    # ─────────── Links do Drive (doc + relatório) ──────────────
+    conn = sqlite3.connect(DB_PATH)
+    rows_link = conn.execute(
+        """
+        SELECT file_name, processed_path
+        FROM revisions
+        WHERE user_id = ?
+          AND (file_name = ? OR file_name = ?)
+        ORDER BY timestamp DESC
+        """,
+        (user["id"], nome, f"Relatório {nome}")
+    ).fetchall()
+    conn.close()
+
+    link_doc = link_rel = None
+    for fn, pth in rows_link:
+        if pth.startswith(("http://", "https://")):
+            if fn.startswith("Relatório"):
+                link_rel = pth
+            else:
+                link_doc = pth
+
+    # helper
+    def prefer_local_then_link(path_local: Path, link_drive: str | None):
+        if path_local.exists():
+            return ("local", path_local)
+        if link_drive:
+            return ("link", link_drive)
+        return (None, None)
+
     # 📈 Métricas + Downloads
     with c2:
         st.metric("⏱ Tempo (s)", f"{tempo:.1f}")
         st.metric("📝 Palavras de Entrada",  f"{int(in_tk)*0.75:.0f}")
         st.metric("✍️ Palavras Alteradas",   f"{int(out_tk)*0.75:.0f}")
 
-        # Arquivos disponíveis
-        docs = [(f"{nome}_revisado_texto.docx",   "📄 Documento Revisado (Lite)")] if lite else \
-               [(f"{nome}_revisado_completo.docx","📄 Documento Revisado")]
-        docs.append((f"relatorio_tecnico_{nome}.docx", "📑 Relatório Técnico"))
+        docs = [(f"{nome}_revisado_texto.docx",   "📄 Documento Revisado (Lite)", link_doc)] if lite else \
+               [(f"{nome}_revisado_completo.docx","📄 Documento Revisado",        link_doc)]
+        docs.append((f"relatorio_tecnico_{nome}.docx", "📑 Relatório Técnico", link_rel))
 
-        for fn, lbl in docs:
-            p = src_dir / fn
-            if p.exists():
-                st.download_button(lbl, p.read_bytes(), file_name=p.name,
+        for fn, lbl, link in docs:
+            origem, recurso = prefer_local_then_link(src_dir / fn, link)
+            if origem == "local":
+                st.download_button(lbl, recurso.read_bytes(),
+                                   file_name=recurso.name,
                                    key=f"dl_{fn}")
+            elif origem == "link":
+                st.link_button(lbl, url=recurso, use_container_width=True)
 
     # 🥧 Pizza
     with c3:
@@ -699,35 +819,37 @@ def page_results():
             use_container_width=True
         )
 
-
 # --- Footer ---
 def footer():
     st.markdown('<hr style="margin-top: 2rem; margin-bottom: 1rem; border: none; border-top: 1px solid #ccc;"/>', unsafe_allow_html=True)
     st.markdown('<div class="footer" style="color: #007f56; font-weight: bold;">Powered by Dossel Ambiental</div>', unsafe_allow_html=True)
     
 
-# --- Main ---
+# --- Main ---------------------------------------------------------------
 st.set_page_config(page_title='Revisor Dossel', layout='centered')
 
-# --- Função principal do app ---
 def main():
+    # 1️⃣ Restaura o banco apenas se as variáveis da service-account existirem
+    try:
+        if "SA_KEY_B64" in os.environ and "FOLDER_ID" in os.environ:
+            restore_db()       # traz users.db do Drive
+    except Exception as e:
+        print("[restore_db] erro ignorado ➜", e)
+
     init_db()
     apply_css()
 
     if "pagina" not in st.session_state:
         st.session_state["pagina"] = "upload" if "user" in st.session_state else "login"
 
-    # 🔐 Redireciona para login se necessário
+    # 🔐 Se não logado, força página de login
     if "user" not in st.session_state:
         if st.session_state["pagina"] != "login":
             st.session_state["pagina"] = "login"
             st.rerun()
-        header()
-        page_login()
-        footer()
-        return
+        header(); page_login(); footer(); return
 
-    # === SIDEBAR ===
+    # === SIDEBAR ========================================================
     with st.sidebar:
         pagina_atual = st.session_state.get("pagina", "upload")
         index_padrao = 1 if pagina_atual == "historico" else 0
@@ -745,52 +867,47 @@ def main():
             }
         )
 
-        # Registra a última página de revisão (se não for histórico ou login)
+        # guarda página anterior para voltar da aba Histórico
         if st.session_state["pagina"] not in ["historico", "login"]:
             st.session_state["pagina_revisao"] = st.session_state["pagina"]
 
         if secao == "Histórico" and st.session_state["pagina"] != "historico":
-            st.session_state["pagina"] = "historico"
-            st.rerun()
+            st.session_state["pagina"] = "historico"; st.rerun()
         elif secao == "Nova Revisão":
-            voltar_para = st.session_state.get("pagina_revisao", "upload")
-            if st.session_state["pagina"] != voltar_para:
-                st.session_state["pagina"] = voltar_para
-                st.rerun()
+            voltar = st.session_state.get("pagina_revisao", "upload")
+            if st.session_state["pagina"] != voltar:
+                st.session_state["pagina"] = voltar; st.rerun()
 
+        # 🔘 Logout
         if st.button("❌ Logout (sair)", use_container_width=True):
             nome = st.session_state.get("nome")
             if nome:
                 pasta = Path(PASTA_SAIDA) / st.session_state['usuario'] / nome
-                if pasta.exists():
-                    shutil.rmtree(pasta)
+                if pasta.exists(): shutil.rmtree(pasta)
             for f in ["status.txt", "documentos_processados.txt", "documentos_falhados.txt"]:
-                p = Path(f)
-                if p.exists():
-                    p.unlink()
+                Path(f).unlink(missing_ok=True)
             remove_from_queue(nome)
-            st.session_state.clear()
-            st.rerun()
 
-    # === CONTEÚDO PRINCIPAL ===
+            # 2️⃣ Faz backup imediato do banco antes de limpar a sessão
+            try:
+                if "SA_KEY_B64" in os.environ and "FOLDER_ID" in os.environ:
+                    backup_db()
+            except Exception as e:
+                print("[backup_db] erro ignorado ➜", e)
+
+            st.session_state.clear(); st.rerun()
+
+    # === CONTEÚDO PRINCIPAL ============================================
     header()
-
     pagina = st.session_state["pagina"]
 
-    if pagina == "login":
-        page_login()
-    elif pagina == "upload":
-        page_upload()
-    elif pagina == "modo":
-        page_mode()
-    elif pagina == "acompanhamento":
-        page_progress()
-    elif pagina == "resultados":
-        page_results()
-    elif pagina == "historico":
-        page_history()
-    else:
-        st.error("Página inválida")
+    if   pagina == "login":          page_login()
+    elif pagina == "upload":         page_upload()
+    elif pagina == "modo":           page_mode()
+    elif pagina == "acompanhamento": page_progress()
+    elif pagina == "resultados":     page_results()
+    elif pagina == "historico":      page_history()
+    else:                            st.error("Página inválida")
 
     footer()
 
