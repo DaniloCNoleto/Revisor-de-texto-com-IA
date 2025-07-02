@@ -1040,9 +1040,9 @@ def main():
     # 1️⃣ Restaura o banco apenas se as variáveis da service-account existirem
     try:
         if "SA_KEY_B64" in os.environ and "FOLDER_ID" in os.environ:
-            #restore_db()       # traz users.db do Drive
+            restore_db()       # traz users.db do Drive
     except Exception as e:
-        #print("[restore_db] erro ignorado ➜", e)
+        print("[restore_db] erro ignorado ➜", e)
 
     init_db()
     apply_css()
