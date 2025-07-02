@@ -94,7 +94,10 @@ def upload_e_link(path: Path) -> str:
 
     # 1) upload
     meta  = {"name": path.name, "parents": [FOLDER_ID]}
-    media = MediaIoBaseUpload(path.open("rb"), mimetype=mime)
+    try:
+        media = MediaIoBaseUpload(path.open("rb"), mimetype=mime)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Arquivo não encontrado: {path}")
     file  = DRIVE.files().create(body=meta, media_body=media,
                                  fields="id").execute()
     file_id = file["id"]
@@ -315,6 +318,8 @@ def apply_css() -> None:
             --dossel-green-100: #E6F4EC;
             --background-color: #fff;
             --text-color: #000;
+            --sidebar-bg-light: var(--dossel-green-100);
+            --sidebar-bg-dark: rgba(0, 127, 86, .15);
         }
         @media (prefers-color-scheme: dark) {
             :root {
@@ -375,18 +380,18 @@ def apply_css() -> None:
             border-color: var(--dossel-green-400) !important;
             color: #fff !important;
         }
-        .stButton, .stDownloadButton { display:flex; justify-content:center; }
-        .stButton button, .stDownloadButton button { margin:auto; max-width:320px; }
+        .stButton, .stDownloadButton, .stLinkButton { display:flex; justify-content:center; }
+        .stButton button, .stDownloadButton button, .stLinkButton a { margin:auto; max-width:320px; }
 
         .main-box { display:flex; flex-direction:column; align-items:center; text-align:center; gap:1rem; }
 
         /* ---------- Sidebar ---------- */
         section[data-testid="stSidebar"] > div:first-child {
-            background: var(--dossel-green-100);
+            background: var(--sidebar-bg-light);
             padding-top: 2rem;
         }
         html[data-theme="dark"] section[data-testid="stSidebar"] > div:first-child {
-            background: rgba(0, 127, 86, .15);
+            background: var(--sidebar-bg-dark);
         }
 
         /* ---------- CENTRALIZA TODO O CONTEÚDO ---------- */
@@ -428,7 +433,7 @@ def header():
     else:
         st.markdown(
             '<div class="logo-dossel">'
-            '  <img src="https://viex-americas.com/wp-content/uploads/Patrocinador-Dossel.jpg" '
+            '  <img src="Dossel - Logo Horizontal.png" '
             '       alt="Logo Dossel">'
             '</div>',
             unsafe_allow_html=True,
@@ -782,7 +787,15 @@ def page_progress():
         if not doc_final.exists():
             st.error(f"Arquivo final não encontrado: {doc_final}")
             return
-        link_doc = upload_e_link(doc_final)
+        if not doc_final.exists():
+            st.error(f"Arquivo final não encontrado: {doc_final}")
+            return
+
+        try:
+            link_doc = upload_e_link(doc_final)
+        except FileNotFoundError as e:
+            st.error(str(e))
+            return
         link_rel = upload_e_link(rel_path) if rel_path.exists() else None
 
         log_revision(user["id"], nome, link_doc)
@@ -981,7 +994,7 @@ def main():
             icons=["file-earmark-text", "clock-history"],
             default_index=index_padrao,
             styles={
-                "container": {"padding": "0!important", "background-color": "transparent"},
+                 "container": {"padding": "0!important", "background-color": "transparent"},
                 "icon": {"color": "#00AF74", "font-size": "18px"},
                 "nav-link": {"margin": "2px 0", "--hover-color": "#f7f7f7"},
                 "nav-link-selected": {"background-color": "#00AF74"},
