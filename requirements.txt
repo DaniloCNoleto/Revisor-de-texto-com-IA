@@ -10,10 +10,9 @@ passlib
 pandas
 plotly
 streamlit-option-menu>=0.4.0
-mimetypes
-io
-base64
-json
-service_account
-build
-MediaIoBaseUpload
+
+# Google Drive API
+google-api-python-client>=2.124.0
+google-auth>=2.29.0
+google-auth-httplib2>=0.2.0
+google-auth-oauthlib>=1.2.0
