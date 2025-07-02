@@ -997,7 +997,7 @@ def main():
             icons=["file-earmark-text", "clock-history"],
             default_index=index_padrao,
             styles={
-                "container": {"padding": "0!important", "background-color": "var(--background-color) !important;"},
+                "container": {"padding": "0!important", "background-color": "#4d3b20"},
                 "icon": {"color": "#00AF74", "font-size": "18px"},
                 "nav-link": {"margin": "2px 0", "--hover-color": "#f7f7f7"},
                 "nav-link-selected": {"background-color": "#00AF74"},
