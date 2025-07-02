@@ -538,13 +538,15 @@ def page_history():
         st.info("Nenhuma revisão encontrada."); return
 
      # 1️⃣ agrupa por timestamp (documento + relatório com o mesmo instante)
-    grupos: dict[str, dict] = {}
+    grupos: dict[tuple[str, str], dict] = {}
     independentes: list[tuple] = []
 
     for fname, pth, ts in linhas:
         if pth.startswith(("http://", "https://")):
             raiz = fname.removeprefix("Relatório ").strip()
-            g = grupos.setdefault(ts, {"raiz": raiz, "doc": None, "rel": None, "data": ts})
+            ts_key = ts.split(".")[0]  # ignora microssegundos
+            chave = (raiz, ts_key)
+            g = grupos.setdefault(chave, {"raiz": raiz, "doc": None, "rel": None, "data": ts})
             if fname.lower().startswith("relatório"):
                  g["rel"] = pth
             else:
