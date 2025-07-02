@@ -413,7 +413,10 @@ def page_register():
 # Page_history no appdossel.py com correção de chave duplicada e identificação de tipo de revisão
 
 # helper: decide entre abrir link ou baixar arquivo local
-def botao_download(label: str, destino: str, key: str):
+# ───── Helper único para todos os downloads ────────────────────────────
+def botao_download(label: str, destino: str | None, *, key: str):
+    if not destino:
+        return
     if destino.startswith(("http://", "https://")):
         st.link_button(label, url=destino, use_container_width=True)
     else:
@@ -424,59 +427,69 @@ def botao_download(label: str, destino: str, key: str):
         else:
             st.warning("⚠️ Arquivo não encontrado.")
 
-# ───────────────────────────────────────────────────────────────
+
+# ───── Histórico agrupando relatórios e docs revisados ─────────────────
 def page_history():
     st.subheader("Histórico de Revisões")
 
     user = st.session_state.get("user")
     if not user:
-        st.error("Usuário não autenticado.")
-        return
+        st.error("Usuário não autenticado."); return
 
     usuario = user["username"]
-    rows = get_history(user["id"])                 # (file_name, processed_path, timestamp)
-    if not rows:
-        st.info("Nenhuma revisão encontrada.")
-        return
+    linhas = get_history(user["id"])      # (file_name, processed_path, ts_iso)
+    if not linhas:
+        st.info("Nenhuma revisão encontrada."); return
 
-    rows = sorted(rows, key=lambda x: x[2], reverse=True)  # mais recente primeiro
+    # 1️⃣ agrupa por documento-base se processed_path for link externo
+    grupos: dict[str, dict] = {}
+    independentes: list[tuple] = []
 
-    for fname, processed_path, ts_iso in rows:
+    for fname, pth, ts in linhas:
+        if pth.startswith(("http://", "https://")):
+            raiz = fname.removeprefix("Relatório ").strip()
+            g = grupos.setdefault(raiz, {"doc": None, "rel": None, "data": ts})
+            if fname.lower().startswith("relatório"):
+                g["rel"]  = pth
+            else:
+                g["doc"]  = pth
+                g["data"] = ts          # data principal = doc revisado
+        else:
+            independentes.append((fname, pth, ts))
+
+    # 2️⃣ renderiza grupos (mais recentes primeiro)
+    ordenados = sorted(grupos.items(), key=lambda x: x[1]["data"], reverse=True)
+    for raiz, info in ordenados:
+        data_br = datetime.fromisoformat(info["data"])\
+                           .strftime("%d/%m/%Y")
+        st.write(f"**{data_br} — {raiz}**")
+        col1, col2 = st.columns(2)
+        if info["doc"]:
+            with col1:
+                botao_download("📄 Download Revisado", info["doc"],
+                               key=f"{raiz}_doc")
+        if info["rel"]:
+            with col2:
+                botao_download("📑 Download Relatório", info["rel"],
+                               key=f"{raiz}_rel")
+        st.markdown("---")
+
+    # 3️⃣ renderiza itens antigos (pasta local) — fluxo original ------------
+    for fname, processed_path, ts_iso in independentes:
         data_br = datetime.fromisoformat(ts_iso).strftime("%d/%m/%Y")
         st.write(f"**{data_br} — {fname}**")
 
-        # ─── CASO 1: processed_path já é um link (novo fluxo) ────────────
-                # ─── CASO 1: processed_path é link externo (Drive, SP etc.) ─────
-        if processed_path.startswith(("http://", "https://")):
-
-            # identifica se é Relatório ou Doc revisado pelo nome salvo no DB
-            if fname.lower().startswith("relatório"):
-                label = "📑 Download Relatório"
-                tipo  = "Relatório Técnico"
-            else:
-                label = "📄 Download Revisado"
-                tipo  = "Revisão (link externo)"
-
-            st.caption(f"🧾 Tipo: {tipo}")
-            botao_download(label, processed_path,
-                           key=f"{fname}_{ts_iso}_link")
-            st.markdown("---")
-            continue   # vai para o próximo registro
-
-
-        # ─── CASO 2: caminho local (fluxo antigo) ───────────────────────
         dir_saida = Path(processed_path) if processed_path else None
         if not (dir_saida and dir_saida.exists()):
             dir_saida = Path(PASTA_SAIDA) / usuario / fname
         if not dir_saida.exists():
             candidatos = list(Path(PASTA_SAIDA).glob(f"*/{fname}"))
-            if candidatos: dir_saida = candidatos[0]
+            if candidatos:
+                dir_saida = candidatos[0]
 
         if not dir_saida.exists() or not dir_saida.is_dir():
-            st.warning("⚠️ Pasta de saída não encontrada para este item.")
-            st.markdown("---");  continue
+            st.warning("⚠️ Pasta de saída não encontrada."); st.markdown("---"); continue
 
-        # procura arquivos .docx / relatório
         doc_final, relatorio, tipo = None, None, "Desconhecido"
         for child in dir_saida.iterdir():
             if child.suffix == ".docx":
@@ -491,17 +504,15 @@ def page_history():
                     relatorio = child
 
         st.caption(f"🧾 Tipo: {tipo}")
-
         col1, col2 = st.columns(2)
         if doc_final:
             with col1:
                 botao_download("📄 Download Revisado", str(doc_final),
-                               key=f"{fname}_{ts_iso}_{doc_final.name}")
+                               key=f"{fname}_{ts_iso}_doc")
         if relatorio:
             with col2:
                 botao_download("📑 Download Relatório", str(relatorio),
-                               key=f"{fname}_{ts_iso}_{relatorio.name}")
-
+                               key=f"{fname}_{ts_iso}_rel")
         st.markdown("---")
 
 
@@ -872,7 +883,7 @@ def main():
             icons=["file-earmark-text", "clock-history"],
             default_index=index_padrao,
             styles={
-                "container": {"padding": "0!important", "background-color": "#ffffff"},
+                "container": {"padding": "0!important", "background-color": "var(--background-color)"},
                 "icon": {"color": "#00AF74", "font-size": "18px"},
                 "nav-link": {"margin": "2px 0", "--hover-color": "#f7f7f7"},
                 "nav-link-selected": {"background-color": "#00AF74"},
