@@ -315,7 +315,7 @@ def apply_css() -> None:
             --dossel-green-600: #007f56;
             --dossel-green-700: #005f43;
             --dossel-green-400: #00AF74;
-            --dossel-green-100: #E6F4EC;
+            --dossel-green-100: #3cba72;
             --background-color: #fff;
             --text-color: #000;
             --sidebar-bg-light: var(--dossel-green-100);
@@ -997,7 +997,7 @@ def main():
             icons=["file-earmark-text", "clock-history"],
             default_index=index_padrao,
             styles={
-                "container": {"padding": "transparent", "background-color": "transparent"},
+                "container": {"padding": "0!important", "background-color": "transparent"},
                 "icon": {"color": "#00AF74", "font-size": "18px"},
                 "nav-link": {"margin": "2px 0", "--hover-color": "#f7f7f7"},
                 "nav-link-selected": {"background-color": "#00AF74"},
