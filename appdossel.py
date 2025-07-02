@@ -14,7 +14,7 @@ import plotly.express as px
 from passlib.hash import pbkdf2_sha256
 from datetime import datetime
 from urllib.parse import urlparse, parse_qs  # ➜ novo import para utilidades de URL
-from streamlit_option_menu import option_menu
+from streamlit import option_menu
 import sqlite3
 from filelock import FileLock
 import hashlib
@@ -25,7 +25,7 @@ import io
 import mimetypes
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaIoBaseUpload
+from googleapiclient.http import MediaIoBaseUpload, MediaIoBaseDownload
 
 
 SA_INFO = json.loads(
@@ -249,15 +249,25 @@ def authenticate_user(username: str, password: str) -> dict | None:
 
 # --- Histórico de Revisões ---
 
-def log_revision(user_id: int, file_name: str, processed_path: str):
+def log_revision(
+    user_id: int,
+    file_name: str,
+    processed_path: str,
+    timestamp: str | None = None,
+):
+    """Registra uma revisão no banco de dados.
+
+    Quando ``timestamp`` é fornecido, ele permite agrupar registros
+    relacionados (por exemplo, documento e relatório) pelo mesmo instante.
+    """
     with DB_LOCK:
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
-        now = datetime.now().isoformat()
+        now = timestamp or datetime.now().isoformat()
     c.execute(
             "INSERT INTO revisions (user_id, file_name, processed_path, timestamp) VALUES (?, ?, ?, ?)",
-            (user_id, file_name, processed_path, now)
-        )
+        (user_id, file_name, processed_path, now)
+    )
     conn.commit()
     conn.close()
     mark_db_dirty()
@@ -522,37 +532,42 @@ def page_history():
     if not linhas:
         st.info("Nenhuma revisão encontrada."); return
 
-    # 1️⃣ agrupa por documento-base se processed_path for link externo
+     # 1️⃣ agrupa por timestamp (documento + relatório com o mesmo instante)
     grupos: dict[str, dict] = {}
     independentes: list[tuple] = []
 
     for fname, pth, ts in linhas:
         if pth.startswith(("http://", "https://")):
             raiz = fname.removeprefix("Relatório ").strip()
-            g = grupos.setdefault(raiz, {"doc": None, "rel": None, "data": ts})
+            g = grupos.setdefault(ts, {"raiz": raiz, "doc": None, "rel": None, "data": ts})
             if fname.lower().startswith("relatório"):
-                g["rel"]  = pth
+                 g["rel"] = pth
             else:
-                g["doc"]  = pth
-                g["data"] = ts          # data principal = doc revisado
+                 g["doc"] = pth          # data principal = doc revisado
         else:
             independentes.append((fname, pth, ts))
 
     # 2️⃣ renderiza grupos (mais recentes primeiro)
-    ordenados = sorted(grupos.items(), key=lambda x: x[1]["data"], reverse=True)
-    for raiz, info in ordenados:
-        data_br = datetime.fromisoformat(info["data"])\
-                           .strftime("%d/%m/%Y")
-        st.write(f"**{data_br} — {raiz}**")
+    ordenados = sorted(grupos.values(), key=lambda x: x["data"], reverse=True)
+    for info in ordenados:
+        data_br = datetime.fromisoformat(info["data"]).strftime("%d/%m/%Y")
+        st.write(f"**{data_br} — {info['raiz']}**")
         col1, col2 = st.columns(2)
+        
         if info["doc"]:
             with col1:
-                botao_download("📄 Download Revisado", info["doc"],
-                               key=f"{raiz}_doc")
+                botao_download(
+                    "📄 Download Revisado",
+                    info["doc"],
+                    key=f"{info['raiz']}_{info['data']}_doc",
+                )
         if info["rel"]:
             with col2:
-                botao_download("📑 Download Relatório", info["rel"],
-                               key=f"{raiz}_rel")
+                botao_download(
+                    "📑 Download Relatório",
+                    info["rel"],
+                    key=f"{info['raiz']}_{info['data']}_rel",
+                )
         st.markdown("---")
 
     # 3️⃣ renderiza itens antigos (pasta local) — fluxo original ------------
@@ -706,8 +721,7 @@ def page_progress():
                        if (m := re.match(fr"^{re.escape(nome)}_v(\d+)$", p.name))]
             dest = hist_dir / f"{nome}_v{max(versoes, default=0)+1}"
             shutil.move(str(antiga), str(dest))
-            log_revision(user["id"], nome, str(dest))
-            backup_db()
+            
 
             # (a) sobe ZIP da pasta antiga (se quiser registrar no Drive)
             # link_ant = upload_e_link(shutil.make_archive(dest, "zip", dest))
@@ -808,9 +822,10 @@ def page_progress():
             return
         link_rel = upload_e_link(rel_path) if rel_path.exists() else None
 
-        log_revision(user["id"], nome, link_doc)
+        ts_now = datetime.now().isoformat()
+        log_revision(user["id"], nome, link_doc, ts_now)
         if link_rel:
-            log_revision(user["id"], f"Relatório {nome}", link_rel)
+            log_revision(user["id"], f"Relatório {nome}", link_rel, ts_now)
 
         backup_db()
         st.session_state["revision_logged"] = True
