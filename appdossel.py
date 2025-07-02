@@ -233,23 +233,26 @@ def apply_css() -> None:
             --dossel-green-100: #E6F4EC;
         }
 
-        /* ---------- RESET de fundo que estava sobrepondo ---------- */
-        /* 1) container que envolve toda a página */
-        [data-testid="block-container"] {
+        /* ---------- Corrige o FUNDO BRANCO que sobrou ---------- */
+        /* 1) contêiner principal da página */
+        [data-testid="stAppViewContainer"],
+        /* 2) bloco central (quando existir) */
+        [data-testid="block-container"],
+        /* 3) qualquer div de 1º nível dentro do contêiner (pega as css-hash) */
+        [data-testid="stAppViewContainer"] > div {
             background: var(--background-color) !important;
+            color: var(--text-color) !important;   /* força textos dentro */
         }
-        /* 2) colunas geradas por st.columns(...) */
-        [data-testid="column"] {
-            background: transparent !important;   /* ou use var(--background-color) */
-        }
-        /* 3) cartões de st.metric() que ficavam brancos atrás do número */
+
+        /* zerar fundo de colunas e métricas */
+        [data-testid="column"],
         [data-testid="metric-container"] {
             background: transparent !important;
             color: var(--text-color) !important;
         }
 
-        /* ---------- Elementos básicos ---------- */
-        html, body, [class*="css"], .stApp {
+        /* ---------- Elementos globais ---------- */
+        html, body, .stApp, [class*="css"] {
             background: var(--background-color) !important;
             color: var(--text-color) !important;
             font-family: 'Inter', sans-serif;
@@ -257,61 +260,26 @@ def apply_css() -> None:
 
         .stApp > header, .stApp > footer { display: none !important; }
 
-        .main-box {
-            max-width: 660px;
-            margin: 14px auto 0;
-            padding: 0;
-        }
+        /* ---------- Identidade Dossel (igual à versão anterior) ---------- */
+        .title-dossel { color: var(--dossel-green-600); }
+        html[data-theme="dark"] .title-dossel,
+        body[data-theme="dark"]  .title-dossel { color: var(--dossel-green-400); }
 
-        .logo-dossel img {
-            width: 480px;
-            max-width: 95vw;
-            height: auto;
-            margin: 18px auto 30px;
-            display: block;
-        }
-
-        .title-dossel {
-            text-align: center;
-            color: var(--dossel-green-600);
-            font-weight: 700;
-            font-size: 2.2rem;
-            margin-bottom: 32px;
-        }
-
-        /* ---------- Botões padrão ---------- */
-        .stButton, .stDownloadButton {
-            display: flex !important;
-            justify-content: center !important;
-            width: 100% !important;
-        }
         .stButton button {
             background: var(--dossel-green-600) !important;
             color: #fff !important;
-            border: none !important;
-            border-radius: 4px !important;
-            font-weight: 600;
-            font-size: 1.1rem;
-            padding: 10px 24px;
-            margin: 10px;
         }
-        .stButton button:hover {
-            background: var(--dossel-green-700) !important;
-        }
+        .stButton button:hover { background: var(--dossel-green-700) !important; }
 
         .stDownloadButton button {
             background: transparent !important;
             border: 2px solid var(--dossel-green-600) !important;
             color: var(--dossel-green-600) !important;
-            font-weight: 600;
-            font-size: 1.1rem;
-            padding: 10px 24px;
-            margin: 10px;
         }
         .stDownloadButton button:hover {
             background: var(--dossel-green-400) !important;
-            color: #fff !important;
             border-color: var(--dossel-green-400) !important;
+            color: #fff !important;
         }
 
         /* ---------- Sidebar ---------- */
@@ -319,23 +287,6 @@ def apply_css() -> None:
             background: var(--dossel-green-100);
             padding-top: 2rem;
         }
-        section[data-testid="stSidebar"] .css-1wvsk4n,
-        section[data-testid="stSidebar"] .css-1dp5vir {
-            font-size: 1.1rem !important;
-        }
-
-        /* ---------- Ajustes para tema ESCURO ---------- */
-        html[data-theme="dark"] .title-dossel { color: var(--dossel-green-400); }
-
-        html[data-theme="dark"] .stDownloadButton button {
-            border-color: var(--dossel-green-400) !important;
-            color: var(--dossel-green-400) !important;
-        }
-        html[data-theme="dark"] .stDownloadButton button:hover {
-            background: var(--dossel-green-400) !important;
-            color: #fff !important;
-        }
-
         html[data-theme="dark"] section[data-testid="stSidebar"] > div:first-child {
             background: rgba(0, 127, 86, .15);
         }
@@ -344,14 +295,13 @@ def apply_css() -> None:
         unsafe_allow_html=True,
     )
 
-    # --------- restante da lógica original ---------
+    # ---------- lógica para redirecionar quem ainda não fez login ----------
     if "user" not in st.session_state:
         st.session_state["pagina"] = "login"
         header()
         page_login()
         footer()
         st.stop()
-
 
 
 def header():
