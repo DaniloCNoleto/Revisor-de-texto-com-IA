@@ -656,7 +656,7 @@ def page_mode():
             st.session_state['modo_selected'] = True
             st.session_state['modo_lite'] = False
             st.rerun()
-        if c2.button('⚡ Revisão Simples'):
+        if c2.button('⚡ Revisão Lite'):
             st.session_state['modo_selected'] = True
             st.session_state['modo_lite'] = True
             st.rerun()
@@ -772,30 +772,34 @@ def page_progress():
                         del st.session_state[k]
 
                 st.session_state["pagina"] = "upload"
-                time.sleep(1)
                 st.rerun()
+
+            time.sleep(1)
+            st.rerun()
 
     # ────────────────────────── quando chegar a 100 % ─────────────────────
     st.success("✅ Revisão concluída!")
 
-    if not st.session_state.get("revision_logged", False):
-        user    = st.session_state["user"]
-        src_dir = Path(PASTA_SAIDA) / usuario / nome
+    src_dir = Path(PASTA_SAIDA) / usuario / nome
+    doc_final = src_dir / (
+        f"{nome}_revisado_texto.docx" if lite else f"{nome}_revisado_completo.docx"
+    )
+    rel_path = src_dir / f"relatorio_tecnico_{nome}.docx"
 
-        # arquivos finais
-        doc_final = src_dir / (f"{nome}_revisado_texto.docx"
-                               if lite else f"{nome}_revisado_completo.docx")
-        rel_path  = src_dir / f"relatorio_tecnico_{nome}.docx"
+     # Espera até 15 s pelo documento final aparecer
+    for _ in range(15):
+        if doc_final.exists():
+            break
+        time.sleep(1)
+    if not doc_final.exists():
+        st.error(f"Arquivo final não encontrado: {doc_final}")
+        return
+
+    st.success("✅ Revisão concluída!")
 
         # upload Drive
-       # Espera até 15 s pelo documento final aparecer
-        for _ in range(15):
-            if doc_final.exists():
-                break
-            time.sleep(1)
-        if not doc_final.exists():
-            st.error(f"Arquivo final não encontrado: {doc_final}")
-            return
+    if not st.session_state.get("revision_logged", False):
+        user = st.session_state["user"]
 
         try:
             link_doc = upload_e_link(doc_final)
