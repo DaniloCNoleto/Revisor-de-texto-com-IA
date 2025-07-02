@@ -16,6 +16,8 @@ from datetime import datetime
 from urllib.parse import urlparse, parse_qs  # ➜ novo import para utilidades de URL
 from streamlit_option_menu import option_menu
 import sqlite3
+from filelock import FileLock
+import hashlib
 # --- Drive service-account ---
 import json
 import base64
@@ -42,6 +44,7 @@ FOLDER_ID = os.environ["FOLDER_ID"]         # 1cN0r1gyy9kN2S7_n-5NmpVOzlnjRsStU
 # ------------------------------------------------------------------
 
 DB_PATH = Path("users.db")
+DB_LOCK = FileLock(str(DB_PATH) + ".lock")
 PASTA_ENTRADA = Path("entrada")
 PASTA_SAIDA = "saida"
 PASTA_HISTORICO = Path("historico")
@@ -53,34 +56,34 @@ QUEUE_FILE = Path("queue.txt")
 # --- Inicialização do DB ---
 
 def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute(
-        """
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            full_name TEXT,
-            password_hash TEXT NOT NULL,
-            created_at TEXT NOT NULL
-        )
-        """
+    with DB_LOCK:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute(
+            """
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                full_name TEXT,
+                password_hash TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )
+            """
     )
-    c.execute(
-        """
-        CREATE TABLE IF NOT EXISTS revisions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            file_name TEXT NOT NULL,
-            processed_path TEXT NOT NULL,
-            timestamp TEXT NOT NULL,
-            FOREIGN KEY(user_id) REFERENCES users(id)
-        )
-        """
-    )
-    conn.commit()
-    conn.close()
+     c.execute(
+            """
+            CREATE TABLE IF NOT EXISTS revisions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                file_name TEXT NOT NULL,
+                processed_path TEXT NOT NULL,
+                timestamp TEXT NOT NULL,
+                FOREIGN KEY(user_id) REFERENCES users(id)
+            )
+            """
+        conn.commit()
+        conn.close()
 
 def upload_e_link(path: Path) -> str:
     """Envia <path> à pasta do Drive e devolve URL pública de download."""
@@ -116,12 +119,13 @@ def restore_db():
 
     file_id  = res["files"][0]["id"]
     request  = DRIVE.files().get_media(fileId=file_id)
-    fh       = io.FileIO(DB_PATH, "wb")
-    downloader = MediaIoBaseDownload(fh, request)
-
-    done = False
-    while not done:
-        _, done = downloader.next_chunk()
+    tmp_path = DB_PATH.with_suffix('.tmp')
+    with DB_LOCK, io.FileIO(tmp_path, "wb") as fh:
+        downloader = MediaIoBaseDownload(fh, request)
+        done = False
+        while not done:
+            _, done = downloader.next_chunk()
+    os.replace(tmp_path, DB_PATH)
 
     os.chmod(DB_PATH, 0o666)
     print("[restore_db] baixado", DB_PATH.stat().st_size, "bytes")
@@ -138,31 +142,50 @@ def backup_db():
         return
 
     # 1) garante commits encerrados
-    with sqlite3.connect(DB_PATH):
-        pass
+    with DB_LOCK:
+        with sqlite3.connect(DB_PATH):
+            pass
 
     # 2) procura users.db na pasta
-    res = DRIVE.files().list(
-        q=f"'{FOLDER_ID}' in parents and name='users.db'",
-        fields="files(id)",
-        pageSize=1
-    ).execute()
+        sha1_local = hashlib.sha1(DB_PATH.read_bytes()).hexdigest()
 
-    media = MediaIoBaseUpload(open(DB_PATH, "rb"),
-                              mimetype="application/octet-stream",
-                              resumable=True)
+        res = DRIVE.files().list(
+            q=f"'{FOLDER_ID}' in parents and name='users.db'",
+            fields="files(id, appProperties)",
+            pageSize=1
+        ).execute()
 
-    if res.get("files"):
-        fid = res["files"][0]["id"]
-        DRIVE.files().update(fileId=fid, media_body=media).execute()
-        print("[backup_db] users.db atualizado")
-    else:
-        DRIVE.files().create(body={"name": "users.db",
-                                   "parents": [FOLDER_ID]},
-                             media_body=media).execute()
-        print("[backup_db] users.db criado")
+         media = MediaIoBaseUpload(open(DB_PATH, "rb"),
+                                  mimetype="application/octet-stream",
+                                  resumable=True)
 
-    # 3) limpa flag
+        tries = 3
+        while tries:
+            try:
+                if res.get("files"):
+                    fid = res["files"][0]["id"]
+                    remote_sha = res["files"][0].get("appProperties", {}).get("sha1")
+                    if remote_sha == sha1_local:
+                        print("[backup_db] sem mudanças")
+                        break
+                    body = {"appProperties": {"sha1": sha1_local}}
+                    DRIVE.files().update(fileId=fid, media_body=media, body=body).execute()
+                    print("[backup_db] users.db atualizado")
+                else:
+                    body = {"name": "users.db", "parents": [FOLDER_ID], "appProperties": {"sha1": sha1_local}}
+                    DRIVE.files().create(body=body, media_body=media).execute()
+                    print("[backup_db] users.db criado")
+                break
+            except Exception as e:
+                tries -= 1
+                if not tries:
+                    print(f"[backup_db] falhou: {e}")
+                    return
+                sleep_time = 2 ** (3 - tries)
+                print(f"[backup_db] erro, retry em {sleep_time}s")
+                time.sleep(sleep_time)
+
+   
     st.session_state["db_dirty"] = False
 
     # 2) garante permissão pública (caso tenha sido criado agora)
@@ -187,30 +210,33 @@ def verify_password(password: str, hash_str: str) -> bool:
 
 
 def register_user(username: str, email: str, full_name: str, password: str) -> bool:
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    try:
-        pwd_hash = hash_password(password)
-        now = datetime.now().isoformat()
+    with DB_LOCK:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        try:
+            pwd_hash = hash_password(password)
+            now = datetime.now().isoformat()
 
         c.execute(
-            "INSERT INTO users (username, email, full_name, password_hash, created_at) VALUES (?, ?, ?, ?, ?)",
-            (username, email, full_name, pwd_hash, now)
-        )
-        conn.commit()
-        return True
-    except sqlite3.IntegrityError:
-        return False
-    finally:
-        conn.close()
+                "INSERT INTO users (username, email, full_name, password_hash, created_at) VALUES (?, ?, ?, ?, ?)",
+                (username, email, full_name, pwd_hash, now)
+            )
+            conn.commit()
+            mark_db_dirty()
+            return True
+        except sqlite3.IntegrityError:
+            return False
+        finally:
+            conn.close()
 
 
 def authenticate_user(username: str, password: str) -> dict | None:
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute("SELECT id, password_hash, full_name FROM users WHERE username = ?", (username,))
-    row = c.fetchone()
-    conn.close()
+    with DB_LOCK:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("SELECT id, password_hash, full_name FROM users WHERE username = ?", (username,))
+        row = c.fetchone()
+        conn.close()
     if row and verify_password(password, row[1]):
         return {"id": row[0], "username": username, "full_name": row[2]}
     return None
@@ -218,38 +244,40 @@ def authenticate_user(username: str, password: str) -> dict | None:
 # --- Histórico de Revisões ---
 
 def log_revision(user_id: int, file_name: str, processed_path: str):
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    now = datetime.now().isoformat()
-
+    with DB_LOCK:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        now = datetime.now().isoformat()
     c.execute(
-        "INSERT INTO revisions (user_id, file_name, processed_path, timestamp) VALUES (?, ?, ?, ?)",
-        (user_id, file_name, processed_path, now)
-    )
-    conn.commit()
-    conn.close()
+            "INSERT INTO revisions (user_id, file_name, processed_path, timestamp) VALUES (?, ?, ?, ?)",
+            (user_id, file_name, processed_path, now)
+        )
+        conn.commit()
+        conn.close()
+        mark_db_dirty()
 
 
 def get_history(user_id: int) -> list[tuple[str, str, str]]:
     try:
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        c.execute(
-            """
-            SELECT file_name, processed_path, timestamp 
-            FROM revisions 
-            WHERE user_id = ? 
-            ORDER BY timestamp DESC
-            """,
-            (user_id,)
-        )
-        rows = c.fetchall()
-        return rows
+        with DB_LOCK:
+            conn = sqlite3.connect(DB_PATH)
+            c = conn.cursor()
+            c.execute(
+                """
+                SELECT file_name, processed_path, timestamp
+                FROM revisions
+                WHERE user_id = ?
+                ORDER BY timestamp DESC
+                """,
+                (user_id,)
+            )
+            rows = c.fetchall()
+            return rows
     except sqlite3.Error as e:
         print(f"❌ Erro no banco de dados: {e}")
         return []
     finally:
-        if conn:
+        if  'conn' in locals():
             conn.close()
 
 
@@ -282,8 +310,20 @@ def apply_css() -> None:
             --dossel-green-700: #005f43;
             --dossel-green-400: #00AF74;
             --dossel-green-100: #E6F4EC;
+            --background-color: #fff;
+            --text-color: #000;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #111;
+                --text-color: #eee;
+            }
         }
 
+        html[data-theme="dark"] {
+            --background-color: #111;
+            --text-color: #eee;
+            }
         /* ---------- Corrige o FUNDO BRANCO que sobrou ---------- */
         /* 1) contêiner principal da página */
         [data-testid="stAppViewContainer"],
@@ -332,6 +372,10 @@ def apply_css() -> None:
             border-color: var(--dossel-green-400) !important;
             color: #fff !important;
         }
+        .stButton, .stDownloadButton { display:flex; justify-content:center; }
+        .stButton button, .stDownloadButton button { margin:auto; max-width:320px; }
+
+        .main-box { display:flex; flex-direction:column; align-items:center; text-align:center; gap:1rem; }
 
         /* ---------- Sidebar ---------- */
         section[data-testid="stSidebar"] > div:first-child {
@@ -345,10 +389,14 @@ def apply_css() -> None:
         /* ---------- CENTRALIZA TODO O CONTEÚDO ---------- */
         /* o Streamlit envolve cada página em data-testid="block-container" */
         [data-testid="block-container"] {
-            max-width: 660px;        /* mesma largura da Dossel */
-            margin: 14px auto 0;     /* auto nas laterais => centraliza */
-            padding-left: .5rem;     /* respiro em telas pequenas */
+            margin: 14px auto 0;
+            padding-left: .5rem;
             padding-right: .5rem;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            min-height:calc(100vh - 4rem);
+            justify-content:center;
         }
 
         </style>
@@ -667,7 +715,7 @@ def page_progress():
     st.markdown(
         f"""
         <div style="position: relative; width: 100%; background:#f0f0f0;
-                    border-radius:4px;height:30px;margin-bottom:10px;">
+                    border-radius:4px;height:30px;margin:10px auto;">
           <div style="width:{v}%;background:#007f56;height:100%;
                       border-radius:4px;"></div>
           <div style="position:absolute;top:0;left:0;width:100%;height:100%;
