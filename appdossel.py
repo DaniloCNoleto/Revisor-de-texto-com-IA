@@ -113,6 +113,11 @@ def upload_e_link(path: Path) -> str:
 
 # --- opcional: restaurar + backup do users.db ----------------------------
 def restore_db():
+    try:
+        from googleapiclient.http import MediaIoBaseDownload
+    except Exception as e:
+        print("[restore_db] falha no import ➜", e)
+        return
     res = DRIVE.files().list(
         q=f"'{FOLDER_ID}' in parents and name='users.db'",
         orderBy="modifiedTime desc",
@@ -266,8 +271,8 @@ def log_revision(
         now = timestamp or datetime.now().isoformat()
     c.execute(
             "INSERT INTO revisions (user_id, file_name, processed_path, timestamp) VALUES (?, ?, ?, ?)",
-        (user_id, file_name, processed_path, now)
-    )
+            (user_id, file_name, processed_path, now)
+        )
     conn.commit()
     conn.close()
     mark_db_dirty()
@@ -977,6 +982,11 @@ def page_results():
                    title="Distribuição %"),
             use_container_width=True
         )
+    st.markdown("---")
+    if st.button("🔙 Voltar", key="back_results"):
+        st.session_state["pagina"] = "upload"
+        st.rerun()
+
 
 # --- Footer ---
 def footer():
