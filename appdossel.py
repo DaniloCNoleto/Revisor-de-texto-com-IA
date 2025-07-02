@@ -71,7 +71,7 @@ def init_db():
             )
             """
     )
-     c.execute(
+        c.execute(
             """
             CREATE TABLE IF NOT EXISTS revisions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -82,6 +82,7 @@ def init_db():
                 FOREIGN KEY(user_id) REFERENCES users(id)
             )
             """
+            )
         conn.commit()
         conn.close()
 
@@ -155,7 +156,7 @@ def backup_db():
             pageSize=1
         ).execute()
 
-         media = MediaIoBaseUpload(open(DB_PATH, "rb"),
+        media = MediaIoBaseUpload(open(DB_PATH, "rb"),
                                   mimetype="application/octet-stream",
                                   resumable=True)
 
@@ -217,7 +218,7 @@ def register_user(username: str, email: str, full_name: str, password: str) -> b
             pwd_hash = hash_password(password)
             now = datetime.now().isoformat()
 
-        c.execute(
+            c.execute(
                 "INSERT INTO users (username, email, full_name, password_hash, created_at) VALUES (?, ?, ?, ?, ?)",
                 (username, email, full_name, pwd_hash, now)
             )
@@ -252,9 +253,9 @@ def log_revision(user_id: int, file_name: str, processed_path: str):
             "INSERT INTO revisions (user_id, file_name, processed_path, timestamp) VALUES (?, ?, ?, ?)",
             (user_id, file_name, processed_path, now)
         )
-        conn.commit()
-        conn.close()
-        mark_db_dirty()
+    conn.commit()
+    conn.close()
+    mark_db_dirty()
 
 
 def get_history(user_id: int) -> list[tuple[str, str, str]]:
