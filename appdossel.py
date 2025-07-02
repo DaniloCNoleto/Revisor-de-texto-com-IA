@@ -25,6 +25,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 
+
 SA_INFO = json.loads(
     base64.b64decode(os.environ["SA_KEY_B64"]).decode()
 )
@@ -109,47 +110,60 @@ def restore_db():
         pageSize=1,
         fields="files(id)"
     ).execute()
-    if res.get("files"):
-        fid = res["files"][0]["id"]
-        fh  = io.FileIO(DB_PATH, "wb")
-        DRIVE.files().get_media(fileId=fid).execute(fd=fh)
 
-def backup_db() -> None:
-    """
-    Envia o users.db para o Google Drive.
-    • Se já existe um users.db na pasta <FOLDER_ID>, faz UPDATE (sobrescreve).
-    • Caso contrário, cria o arquivo pela primeira vez.
-    """
-    # 0) garante que qualquer transação pendente foi concluída antes do upload
+    if not res.get("files"):
+        print("[restore_db] nada encontrado"); return
+
+    file_id  = res["files"][0]["id"]
+    request  = DRIVE.files().get_media(fileId=file_id)
+    fh       = io.FileIO(DB_PATH, "wb")
+    downloader = MediaIoBaseDownload(fh, request)
+
+    done = False
+    while not done:
+        _, done = downloader.next_chunk()
+
+    os.chmod(DB_PATH, 0o666)
+    print("[restore_db] baixado", DB_PATH.stat().st_size, "bytes")
+
+def mark_db_dirty():
+    # seta flag na sessão global
+    st.session_state["db_dirty"] = True
+
+
+def backup_db():
+    # 0) roda só se mexemos no banco
+    if not st.session_state.get("db_dirty"):
+        print("[backup_db] ignorado – nada mudou")
+        return
+
+    # 1) garante commits encerrados
     with sqlite3.connect(DB_PATH):
         pass
 
-    # 1) verifica se já há users.db na pasta
+    # 2) procura users.db na pasta
     res = DRIVE.files().list(
         q=f"'{FOLDER_ID}' in parents and name='users.db'",
         fields="files(id)",
         pageSize=1
     ).execute()
 
-    media = MediaIoBaseUpload(
-        open(DB_PATH, "rb"),
-        mimetype="application/octet-stream",
-        resumable=True
-    )
+    media = MediaIoBaseUpload(open(DB_PATH, "rb"),
+                              mimetype="application/octet-stream",
+                              resumable=True)
 
-    if res.get("files"):                 # já existe → faz update
+    if res.get("files"):
         fid = res["files"][0]["id"]
-        DRIVE.files().update(
-            fileId=fid,
-            media_body=media
-        ).execute()
-        print("[backup_db] users.db atualizado:", fid)
-    else:                                # não existe → cria
-        DRIVE.files().create(
-            body={"name": "users.db", "parents": [FOLDER_ID]},
-            media_body=media
-        ).execute()
-        print("[backup_db] users.db criado (primeiro upload)")
+        DRIVE.files().update(fileId=fid, media_body=media).execute()
+        print("[backup_db] users.db atualizado")
+    else:
+        DRIVE.files().create(body={"name": "users.db",
+                                   "parents": [FOLDER_ID]},
+                             media_body=media).execute()
+        print("[backup_db] users.db criado")
+
+    # 3) limpa flag
+    st.session_state["db_dirty"] = False
 
     # 2) garante permissão pública (caso tenha sido criado agora)
     #    — opcional, mas útil se quiser baixar manualmente sem login —
@@ -616,15 +630,17 @@ def page_progress():
         # 1. versiona revisão anterior (LOCAL → opcional upload)
         antiga = Path(PASTA_SAIDA) / usuario / nome
         if antiga.exists():
-            user      = st.session_state["user"]
-            hist_dir  = Path(PASTA_HISTORICO) / user["username"]
+            user     = st.session_state["user"]
+            hist_dir = Path(PASTA_HISTORICO) / user["username"]
             hist_dir.mkdir(parents=True, exist_ok=True)
 
-            vers = [int(m.group(1))
-                    for p in hist_dir.iterdir()
-                    if (m := re.match(fr"^{re.escape(nome)}_v(\d+)$", p.name))]
-            dest = hist_dir / f"{nome}_v{max(vers, default=0)+1}"
+            versoes = [int(m.group(1))
+                       for p in hist_dir.iterdir()
+                       if (m := re.match(fr"^{re.escape(nome)}_v(\d+)$", p.name))]
+            dest = hist_dir / f"{nome}_v{max(versoes, default=0)+1}"
             shutil.move(str(antiga), str(dest))
+            log_revision(user["id"], nome, str(dest))
+            backup_db()
 
             # (a) sobe ZIP da pasta antiga (se quiser registrar no Drive)
             # link_ant = upload_e_link(shutil.make_archive(dest, "zip", dest))
@@ -665,9 +681,31 @@ def page_progress():
     # ─── se ainda não terminou ───────────────────────────────────
     if v < 100:
         col_back, col_cancel = st.columns(2)
-        ...
-        time.sleep(1)
-        st.rerun()
+
+        with col_back:
+            if st.button("🔙 Voltar", key="back_progress"):
+                st.session_state["pagina"] = "modo"
+                st.rerun()
+
+        with col_cancel:
+            if st.button("❌ Cancelar Revisão", key="cancel_progress"):
+                # exclui pasta de saída e arquivos temporários
+                pasta = Path(PASTA_SAIDA) / usuario / nome
+                if pasta.exists():
+                    shutil.rmtree(pasta, ignore_errors=True)
+
+                for f in [STATUS_PATH, LOG_PROCESSADOS, LOG_FALHADOS]:
+                    f.unlink(missing_ok=True)
+
+                remove_from_queue(nome)
+
+                # limpa sessão (mas preserva login)
+                for k in list(st.session_state.keys()):
+                    if k not in ("user",):
+                        del st.session_state[k]
+
+                st.session_state["pagina"] = "upload"
+                st.rerun()
 
     # ────────────────────────── quando chegar a 100 % ─────────────────────
     st.success("✅ Revisão concluída!")
@@ -676,23 +714,21 @@ def page_progress():
         user    = st.session_state["user"]
         src_dir = Path(PASTA_SAIDA) / usuario / nome
 
-        # 1️⃣ caminhos dos dois .docx
+        # arquivos finais
         doc_final = src_dir / (f"{nome}_revisado_texto.docx"
-                            if lite else f"{nome}_revisado_completo.docx")
-        rel_path  = src_dir / f"relatorio_tecnico_{nome}.docx"       # ← NOVO
+                               if lite else f"{nome}_revisado_completo.docx")
+        rel_path  = src_dir / f"relatorio_tecnico_{nome}.docx"
 
-        # 2️⃣ envia ambos ao Drive
-        link_doc = upload_e_link(doc_final)                          # já existia
-        link_rel = upload_e_link(rel_path) if rel_path.exists() else None  # ← NOVO
+        # upload Drive
+        link_doc = upload_e_link(doc_final)
+        link_rel = upload_e_link(rel_path) if rel_path.exists() else None
 
-        # 3️⃣ grava no histórico
-        log_revision(user["id"], nome, link_doc)                     # doc revisado
-        if link_rel:                                                 # ← NOVO
-            log_revision(user["id"], f"Relatório {nome}", link_rel)  # grava 2ª linha
+        log_revision(user["id"], nome, link_doc)
+        if link_rel:
+            log_revision(user["id"], f"Relatório {nome}", link_rel)
 
-        backup_db()                                                  # mantém o DB salvo
+        backup_db()
         st.session_state["revision_logged"] = True
-
 
     st.session_state["pagina"] = "resultados"
     st.rerun()
