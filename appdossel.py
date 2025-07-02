@@ -290,6 +290,16 @@ def apply_css() -> None:
         html[data-theme="dark"] section[data-testid="stSidebar"] > div:first-child {
             background: rgba(0, 127, 86, .15);
         }
+
+        /* ---------- CENTRALIZA TODO O CONTEÚDO ---------- */
+        /* o Streamlit envolve cada página em data-testid="block-container" */
+        [data-testid="block-container"] {
+            max-width: 660px;        /* mesma largura da Dossel */
+            margin: 14px auto 0;     /* auto nas laterais => centraliza */
+            padding-left: .5rem;     /* respiro em telas pequenas */
+            padding-right: .5rem;
+        }
+
         </style>
         """,
         unsafe_allow_html=True,
