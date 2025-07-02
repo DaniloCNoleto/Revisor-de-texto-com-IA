@@ -656,7 +656,7 @@ def page_mode():
             st.session_state['modo_selected'] = True
             st.session_state['modo_lite'] = False
             st.rerun()
-        if c2.button('⚡ Revisão Lite'):
+        if c2.button('⚡ Revisão Simples'):
             st.session_state['modo_selected'] = True
             st.session_state['modo_lite'] = True
             st.rerun()
