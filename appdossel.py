@@ -14,7 +14,7 @@ import plotly.express as px
 from passlib.hash import pbkdf2_sha256
 from datetime import datetime
 from urllib.parse import urlparse, parse_qs  # ➜ novo import para utilidades de URL
-from streamlit import option_menu
+from streamlit_option_menu import option_menu
 import sqlite3
 from filelock import FileLock
 import hashlib
