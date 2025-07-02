@@ -315,7 +315,7 @@ def apply_css() -> None:
             --dossel-green-600: #007f56;
             --dossel-green-700: #005f43;
             --dossel-green-400: #00AF74;
-            --dossel-green-100: #3cba72;
+            --dossel-green-100: #6B7280;
             --background-color: #fff;
             --text-color: #000;
             --sidebar-bg-light: var(--dossel-green-100);
