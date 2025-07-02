@@ -88,6 +88,8 @@ def init_db():
 
 def upload_e_link(path: Path) -> str:
     """Envia <path> à pasta do Drive e devolve URL pública de download."""
+    if not path.exists():
+        raise FileNotFoundError(f"Arquivo não encontrado: {path}")
     mime = mimetypes.guess_type(path)[0] or "application/octet-stream"
 
     # 1) upload
@@ -416,13 +418,21 @@ def apply_css() -> None:
 
 def header():
     st.markdown('<div class="main-box">', unsafe_allow_html=True)
-    st.markdown(
-        '<div class="logo-dossel">'
-        '  <img src="https://viex-americas.com/wp-content/uploads/Patrocinador-Dossel.jpg" '
-        '       alt="Logo Dossel">'
-        '</div>',
-        unsafe_allow_html=True
-    )
+    logo_path = Path("Dossel - Logo Horizontal.png")
+    if logo_path.exists():
+        img_b64 = base64.b64encode(logo_path.read_bytes()).decode()
+        st.markdown(
+            f'<div class="logo-dossel"><img src="data:image/png;base64,{img_b64}" alt="Logo Dossel"></div>',
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown(
+            '<div class="logo-dossel">'
+            '  <img src="https://viex-americas.com/wp-content/uploads/Patrocinador-Dossel.jpg" '
+            '       alt="Logo Dossel">'
+            '</div>',
+            unsafe_allow_html=True,
+        )
     st.markdown('<div class="title-dossel">Revisor Automático Dossel</div>', unsafe_allow_html=True)
 
 
@@ -769,6 +779,9 @@ def page_progress():
         rel_path  = src_dir / f"relatorio_tecnico_{nome}.docx"
 
         # upload Drive
+        if not doc_final.exists():
+            st.error(f"Arquivo final não encontrado: {doc_final}")
+            return
         link_doc = upload_e_link(doc_final)
         link_rel = upload_e_link(rel_path) if rel_path.exists() else None
 
@@ -968,7 +981,7 @@ def main():
             icons=["file-earmark-text", "clock-history"],
             default_index=index_padrao,
             styles={
-                "container": {"padding": "0!important", "background-color": "var(--background-color)"},
+                "container": {"padding": "0!important", "background-color": "transparent"},
                 "icon": {"color": "#00AF74", "font-size": "18px"},
                 "nav-link": {"margin": "2px 0", "--hover-color": "#f7f7f7"},
                 "nav-link-selected": {"background-color": "#00AF74"},
