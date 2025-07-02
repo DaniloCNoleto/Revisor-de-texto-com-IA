@@ -772,6 +772,7 @@ def page_progress():
                         del st.session_state[k]
 
                 st.session_state["pagina"] = "upload"
+                time.sleep(1)
                 st.rerun()
 
     # ────────────────────────── quando chegar a 100 % ─────────────────────
@@ -787,9 +788,11 @@ def page_progress():
         rel_path  = src_dir / f"relatorio_tecnico_{nome}.docx"
 
         # upload Drive
-        if not doc_final.exists():
-            st.error(f"Arquivo final não encontrado: {doc_final}")
-            return
+       # Espera até 15 s pelo documento final aparecer
+        for _ in range(15):
+            if doc_final.exists():
+                break
+            time.sleep(1)
         if not doc_final.exists():
             st.error(f"Arquivo final não encontrado: {doc_final}")
             return
