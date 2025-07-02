@@ -114,12 +114,49 @@ def restore_db():
         fh  = io.FileIO(DB_PATH, "wb")
         DRIVE.files().get_media(fileId=fid).execute(fd=fh)
 
-def backup_db():
-    media = MediaIoBaseUpload(open(DB_PATH, "rb"),
-                              mimetype="application/octet-stream")
-    DRIVE.files().create(body={"name": "users.db",
-                               "parents": [FOLDER_ID]},
-                         media_body=media).execute()
+def backup_db() -> None:
+    """
+    Envia o users.db para o Google Drive.
+    • Se já existe um users.db na pasta <FOLDER_ID>, faz UPDATE (sobrescreve).
+    • Caso contrário, cria o arquivo pela primeira vez.
+    """
+    # 0) garante que qualquer transação pendente foi concluída antes do upload
+    with sqlite3.connect(DB_PATH):
+        pass
+
+    # 1) verifica se já há users.db na pasta
+    res = DRIVE.files().list(
+        q=f"'{FOLDER_ID}' in parents and name='users.db'",
+        fields="files(id)",
+        pageSize=1
+    ).execute()
+
+    media = MediaIoBaseUpload(
+        open(DB_PATH, "rb"),
+        mimetype="application/octet-stream",
+        resumable=True
+    )
+
+    if res.get("files"):                 # já existe → faz update
+        fid = res["files"][0]["id"]
+        DRIVE.files().update(
+            fileId=fid,
+            media_body=media
+        ).execute()
+        print("[backup_db] users.db atualizado:", fid)
+    else:                                # não existe → cria
+        DRIVE.files().create(
+            body={"name": "users.db", "parents": [FOLDER_ID]},
+            media_body=media
+        ).execute()
+        print("[backup_db] users.db criado (primeiro upload)")
+
+    # 2) garante permissão pública (caso tenha sido criado agora)
+    #    — opcional, mas útil se quiser baixar manualmente sem login —
+    # DRIVE.permissions().create(
+    #     fileId=fid, body={"type": "anyone", "role": "reader"}
+    # ).execute()
+
 
 
 # --- Autenticação ---
